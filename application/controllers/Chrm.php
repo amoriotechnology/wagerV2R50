@@ -1061,14 +1061,8 @@ public function edit_timesheet()
 
 public function time_list()
 {
-           $CI = & get_instance();
-           $CC = & get_instance();
-            $CII = & get_instance();
-           $CI->load->model('invoice_content');
-           
-           $this->load->model('Hrm_model');
-           $w = & get_instance();
-           $w->load->model('Ppurchases');
+      
+   
            $company_info = $w->Ppurchases->retrieve_company();
            $datacontent = $CC->invoice_content->retrieve_data();
             $timesheet_id = $this->input->get('timesheet_id');
