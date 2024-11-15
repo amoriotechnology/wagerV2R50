@@ -2,7 +2,7 @@
 <?php
    $CI = & get_instance();
    $CI->load->model('Web_settings');
-   $CI->load->model('Reports');
+
    $CI->load->model('Users');
      $CI->load->model('Hrm_model');
    $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
@@ -167,31 +167,12 @@ $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
                            <?php break; } } ?>
                         </ul>
                      </div>
+                
                      <div class="menuCol col-xl-3 col-lg-3 col-md-12">
                         <ul class="dropdown-submenu">
-                           <?php 
-                              foreach(  $this->session->userdata('admin_data') as $admtest){
-                              $split=explode('-',$admtest);
-                              if(trim($split[0])=='setting'){
-                               ?>
-                           <li class="menu-title" style="color:#17202a"><b>SMS</b></li>
-                           <li><a href=" <?php echo base_url('Csms/configure') ?>"><i class="pe-7s-users"></i><?php echo display('sms_configure'); ?></a></li>
-                           <li><a href="<?php echo base_url('') ?>"><i  class="pe-7s-users" ></i>&nbsp;&nbsp;Email Template </a></li>
-                           <li><a href="<?php echo base_url('') ?>"><i class="pe-7s-users"></i>&nbsp;&nbsp;Alerts Template </a></li>
-                           <li class="menu-title" style="color:#17202a"><b><?php echo display('Help');  ?></b></li>
-                           <li><a href="<?php echo base_url('Cservice/help_desk') ?>"><i class="fa fa-comments"></i>&nbsp;&nbsp; Help </a></li>
-                         
-                         <?php break; } } ?>
-                        </ul>
-                     </div>
-                     <div class="menuCol col-xl-3 col-lg-3 col-md-12">
-                        <ul class="dropdown-submenu">
-                           <li class="menu-title" style="color:#17202a"><b><?php echo display('Admin Details');  ?></b></li>
-                           <li><a href="<?php echo base_url('Cweb_setting/invoice_template') ?>"><i class="ti-settings"></i></i>&nbsp;&nbsp;Sales Invoice </a></li>
-                           <li><a href="<?php echo base_url('Cweb_setting/invoice_design') ?>"><i class="ti-settings"></i></i>&nbsp;&nbsp;Invoice Design </a></li>
-                           <li><a href="<?php echo base_url('Cweb_setting/invoice_content') ?>"><i class="ti-settings"></i></i>&nbsp;&nbsp;Invoice Content </a></li>
+                         <li class="menu-title" style="color:#17202a"><b><?php echo ('User Details');  ?></b></li>
                            <li><a href="<?php echo base_url('Company_setup/manage_company') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Manage My Company</a></li>
-                           <li><a href="<?php echo base_url('/Language') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Language </a></li>
+                         
                            <li><a href="<?php echo base_url('User/manage_user') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Manage Users </a></li>
                            <li><a href="<?php echo base_url('Admin_dashboard/edit_profile') ?>"><i class="pe-7s-users"></i> <?php  echo  display('user_profile'); ?></a></li>
                          <li><a href=" <?php echo base_url('Admin_dashboard/change_password_form') ?>"><i class="pe-7s-settings"></i><?php   echo display('Change Password'); ?></a></li>
@@ -207,18 +188,22 @@ $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
                            <li class="menu-title" style="color:#17202a"><b><?php echo display('Admin Details');  ?></b></li>
                            <li><a href="<?php echo base_url('Currency/currency_form') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;<?php echo display('currency');  ?></a></li>
                            <li><a href="<?php echo base_url('/Cweb_setting') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Setting </a></li>
-                           <li><a href="<?php echo base_url('Cweb_setting/mail_setting') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;<?php echo display('mail_setting'); ?> </a></li>
-                           <li><a href="<?php echo base_url('Language/import_page') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Import Csv </a></li>
+                          
                            <li><a href=" <?php echo base_url('Admin_dashboard/dashboardsetting') ?>"><i class="ti-dashboard"></i>Dashboard Settings</a></li>
                            <br>
-                           <li class="menu-title" style="color:#17202a"><b><?php echo ('LogOut');  ?></b></li>
-                           <li><a href="<?php echo base_url('Admin_dashboard/logout') ?>"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;<?php echo display('logout');  ?></a></li>
+                          
                            <?php            
                               break;
                               }
                               } ?>
                         </ul>
                      </div>
+                       <div class="menuCol col-xl-3 col-lg-3 col-md-12">
+                          <ul class="dropdown-submenu">
+ <li class="menu-title" style="color:#17202a"><b><?php echo ('LogOut');  ?></b></li>
+                           <li><a href="<?php echo base_url('Admin_dashboard/logout') ?>"><i class="fa fa-sign-out"></i>&nbsp;&nbsp;<?php echo display('logout');  ?></a></li>
+                           </ul>
+                           </div>
                   </div>
                   <?php } ?>
                   <?php if($_SESSION['u_type']==1 ){ ?>

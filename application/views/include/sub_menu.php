@@ -1,1 +1,0 @@
-<?php echo display('submenu_part')?>

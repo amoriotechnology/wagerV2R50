@@ -768,7 +768,7 @@ public function email_setting($view_email, $email_con) {
         $CI->load->model('invoice_content');
         
        $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-       $dataw = $CI->invoice_design->retrieve_data();
+       $dataw = $CI->Invoice_content->retrieve_data();
        $datac = $CD->Companies->company_details();
        $datacontent = $CI->invoice_content->retrieve_data();
 
@@ -802,7 +802,7 @@ public function email_setting($view_email, $email_con) {
         $CC->load->model('invoice_content');
            $CI->load->model('Web_settings');
    $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-       $dataw = $CI->invoice_design->retrieve_data();
+       $dataw = $CI->Invoice_content->retrieve_data();
        $datacontent = $CI->invoice_content->retrieve_data();
        $data= array(
         'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') , 

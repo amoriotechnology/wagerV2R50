@@ -4,7 +4,16 @@ class Companies extends CI_Model {
 	{
 		parent::__construct();
 	}
-	
+	   public function retrieve_company() {
+        $this->db->select('*');
+        $this->db->from('company_information');
+        $this->db->limit('1');
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        }
+        return false;
+    }
 	public function companyList($id = null)
 	{
 		$this->db->select('*');
@@ -237,6 +246,18 @@ public function company_info()
 		}
 		return false;
 	}
+	//  public function retrieve_company($id) {
+    //    $this->db->select('a.first_name,a.last_name,a.address,a.phone,a.company_name,b.username as email');
+    //     $this->db->from('users a');
+    //     $this->db->join('user_login b','b.user_id=a.user_id','left');
+    //     $this->db->where('a.user_id',$id);
+    //     $this->db->limit('1');
+    //     $query = $this->db->get();
+    //     if ($query->num_rows() > 0) {
+    //         return $query->result_array();
+    //     }
+    //     return false;
+    // }
 	#==============Update company==================#
 	public function update_company($data,$company_id)
 	{
