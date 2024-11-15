@@ -2343,38 +2343,34 @@ public function sc_info_count($templ_name, $payperiod) {
 
 
 
-
-    public function employee_info($templ_name){
-
-        $this->db->select('*');
-        $this->db->from('employee_history');
-        $this->db->where('id', $templ_name);
-        $this->db->where('create_by',$this->session->userdata('user_id'));
-        $query = $this->db->get();
-    //   echo $this->db->last_query(); die();
-         if ($query->num_rows() > 0) {
-           return $query->result_array();
-         }
-
-        return true;
+// Employee Details - Madhu
+public function employee_info($templ_name, $user_id)
+{
+    $this->db->select('*');
+    $this->db->from('employee_history');
+    $this->db->where('id', $templ_name);
+    $this->db->where('create_by',$user_id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+       return $query->result_array();
     }
 
+    return true;
+}
 
-
-
-
-    public function timesheet_info_data($timesheet_id){
-        $this->db->select('*');
-        $this->db->from('timesheet_info');
-        $this->db->where('timesheet_id', $timesheet_id);
-        $this->db->where('create_by',$this->session->userdata('user_id'));
-        $query = $this->db->get();
-      //   echo $this->db->last_query();
-         if ($query->num_rows() > 0) {
-           return $query->result_array();
-         }
-        return true;
-    }
+// Timesheet Details - Madhu
+public function timesheet_info_data($timesheet_id, $user_id)
+{
+    $this->db->select('*');
+    $this->db->from('timesheet_info');
+    $this->db->where('timesheet_id', $timesheet_id);
+    $this->db->where('create_by',$user_id);
+    $query = $this->db->get();
+     if ($query->num_rows() > 0) {
+       return $query->result_array();
+     }
+    return true;
+}
 
 
 
@@ -4822,6 +4818,30 @@ public function getTotalLogs($search, $date, $status = 'All', $decodedId)
         return false;
     }
     return $query->num_rows();
+}
+
+//Retrieve Company Information - Madhu
+public function retrieve_companyinformation($user_id) 
+{
+    $this->db->select('*');
+    $this->db->from('company_information');
+    $this->db->where('company_id', $user_id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+}
+
+//Retrieve Company name, Address, mobile, email, reg_number, website, address  - Madhu
+public function retrieve_companydata($user_id) 
+{
+    $this->db->select('*');
+    $this->db->from('invoice_content');
+    $this->db->where('uid', $user_id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
 }
 
 
