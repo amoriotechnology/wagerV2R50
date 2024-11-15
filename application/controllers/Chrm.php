@@ -3222,15 +3222,7 @@ public function add_dailybreak_info()
     $data = $this->Hrm_model->insert_dailybreak_data($postData);
     echo json_encode($data);
 }
-
-
-public function add_dailybreak_info()
-{
-    $postData = $this->input->post('dailybreak_name');
-    $data = $this->Hrm_model->insert_dailybreak_data($postData);
-    echo json_encode($data);
-}
-    
+  
     
 
 // Payslip Function - Madhu
@@ -3381,8 +3373,6 @@ public function pay_slip()
 public function thisPeriodAmount($data, $scValueAmount1, $user_id, $company_id) 
 {   
 
-    
-
     $workingHour = $this->db->select('work_hour, created_by')->where('created_by', $user_id)->get()->row(); 
     print_r($workingHour); die;
     echo "<pre>"; print_r($data); echo "</pre>"; die;
@@ -3483,88 +3473,6 @@ public function pay_slip_list()
   $this->template->full_admin_html_view($content);
 }
     
-public function payslipIndexData() 
-{     
-    $encodedId      = isset($_GET['id']) ? $_GET['id'] : null;
-    $admin_id      = isset($_GET['admin_id']) ? $_GET['admin_id'] : null;
-    $decodedId      = decodeBase64UrlParameter($encodedId);
-
-      $limit          = $this->input->post("length");
-      $start          = $this->input->post("start");
-      $search         = $this->input->post("search")["value"];
-      $orderField     = $this->input->post("columns")[$this->input->post("order")[0]["column"]]["data"];
-      $orderDirection = $this->input->post("order")[0]["dir"];
-      $date           = $this->input->post("payslip_date_search");
-      $emp_name       = $this->input->post('employee_name');
-      $items         = $this->Hrm_model->getPaginatedpayslip($limit,$start,$orderField,$orderDirection,$search,$date,$emp_name);
-      $infodatainfo   = $this->Hrm_model->getPaginatedpayslip($limit,$start,$orderField,$orderDirection,$search,$date,$emp_name);
-      $sc_no_datainfo = $this->Hrm_model->getPaginatedscpayslip($limit,$start,$orderField,$orderDirection,$search,$date,$emp_name);
-      $sc_info_choice_yes = $this->Hrm_model->getPaginatedscchoiceyes($limit,$start,$orderField,$orderDirection,$search,$date,$emp_name);
-      array_merge($items, $infodatainfo, $sc_no_datainfo, $sc_info_choice_yes);
-
-      $totalItems     = $this->Hrm_model->getTotalpayslip($search,$date,$emp_name);
-      $data           = [];
-      $i              = $start + 1;
-      $edit           = "";
-      $delete         = "";
-
-      foreach ($items as $item) {
-          $row = [
-              "table_id"      => $i,
-              "first_name"    => $item["first_name"] .' '. $item["middle_name"].' '. $item["last_name"],
-              "job_title"  => $item["job_title"],
-              "month"         => $item["month"],
-              "cheque_date"    => $item["cheque_date"],
-              "total_hours" => (!empty($item['total_hours']) ? $item['total_hours'] : 0),
-              "tot_amt"   => (!empty($item['extra_this_hour']) ? ($item['above_extra_sum'] + $item['extra_thisrate']) : $item['above_extra_sum']),
-              "overtime"   => !empty($item['extra_this_hour']) ? $item['extra_this_hour'] : '0',
-              "sales_comm" => $item['sales_c_amount'],
-              "action" => "<a href='" . base_url('Chrm/time_list?id=' . $encodedId . '&admin_id=' . $admin_id . '&timesheet_id=' . $item['timesheet_id'] . '&templ_name=' . $item['templ_name']) . "' class='btnclr btn btn-success btn-sm'> <i class='fa fa-window-restore'></i> </a>"
-          ];
-          $data[] = $row;
-          $i++;
-      }
-
-      $response = [
-          "draw"            => $this->input->post("draw"),
-          "recordsTotal"    => $totalItems,
-          "recordsFiltered" => $totalItems,
-          "data"            => $data,
-      ];
-      echo json_encode($response);
-}
-    
-    
-
-
-public function expense_list()
-{ 
-
-   $setting_detail = $this->Web_settings->retrieve_setting_editdata();
-   $data['expen_list'] =$this->Hrm_model->expense_list();
-   $data['expenses_data_get'] =$this->Hrm_model->expenses_data_get();
-   $data['setting_detail'] =$setting_detail;
-   $content = $this->parser->parse('hr/expense_list', $data, true);
-   $this->template->full_admin_html_view($content);
-}
-
-
-
-
-
-
-public function pay_slip_list() 
-{
-  $data['title'] = display('pay_slip_list');
-  $this->load->model('Hrm_model');
-  $CI = & get_instance();
-  $CI->load->model('Web_settings');
-  $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-  $data['employee_data'] =$this->Hrm_model->employee_data_get();
-
-  $content = $this->parser->parse('hr/pay_slip_list', $data, true);
-  $this->template->full_admin_html_view($content);
-}
     
 public function payslipIndexData() 
 {     
@@ -7292,8 +7200,21 @@ public function manage_workinghours()
       redirect(base_url("Chrm/week_setting"));
     }
 
-    
-
+    // Get Quater Function - Madhu
+    public function getQuarter($month) 
+    {
+        if ($month >= 1 && $month <= 3) {
+            return 'Q1';
+        } elseif ($month >= 4 && $month <= 6) {
+            return 'Q2';
+        } elseif ($month >= 7 && $month <= 9) {
+            return 'Q3';
+        } elseif ($month >= 10 && $month <= 12) {
+            return 'Q4';
+        } else {
+            return 'Unknown';
+        }
+    }
 
     // Log Data Table List
     public function logIndexData()
