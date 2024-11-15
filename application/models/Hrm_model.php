@@ -2241,24 +2241,6 @@ $query = $this->db->get();
 
 
 
-public function local_state_tax($employee_status,$final,$local_tax_range, $stateTax="")
-{
-    $this->db->select('employee,employer,create_by');
-    $this->db->from('state_localtax');
-    $this->db->where($employee_status,$local_tax_range);
-    if($stateTax !=""){
-        $this->db->like('tax', $stateTax);
-    }
-    $this->db->where('create_by', $this->session->userdata('user_id'));  
-    $query = $this->db->get();
-    // echo $this->db->last_query();die;
-    if ($query->num_rows() > 0) {
-       return $query->result_array();
-    }
-     return true;
- }
-
-
 
 
 
@@ -4839,6 +4821,76 @@ public function retrieve_companydata($user_id)
     }
 }
 
-
+public function  available_country_tax($employee_id,$user_id,$start_date)
+{
+$this->db->select('COUNT(*) as row_count,SUM(info_payslip.s_tax) as total_social_tax, 
+SUM(info_payslip.m_tax) as total_medicare_tax, SUM(info_payslip.f_tax) as total_fed_tax, SUM(info_payslip.u_tax) as total_unemp_tax,
+SUM(info_payslip.total_amount) as total_amount, SUM(timesheet_info.total_hours) as total_hours');
+$this->db->from('timesheet_info');
+$this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
+$this->db->where('info_payslip.templ_name', $employee_id);
+$this->db->where('info_payslip.create_by', $user_id);
+$this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE(' $start_date', '%m/%d/%Y')", NULL, FALSE);
+$query = $this->db->get();
+if ($query->num_rows() > 0) {
+    $result = $query->row_array();
+    return $result;
+}
+return [];
 }
 
+public function get_state_details($find,$table,$where,$state,$user_id){
+     $this->db->select($find)->from($table)->where($where, $state)->where('created_by', $user_id);
+     $query = $this->db->get();
+   
+if ($query->num_rows() > 0) {
+    $result = $query->row_array();
+    
+    return $result;
+}
+return [];
+   
+}
+
+public function working_state_tax($employee_status,$final,$local_tax_range, $stateTax="",$user_id)
+{
+    $this->db->select('employee,employer');
+    $this->db->from('state_localtax');
+    $this->db->where($employee_status,$local_tax_range);
+    if($stateTax !=""){
+        $this->db->like('tax', $stateTax);
+    }
+    $this->db->where('created_by', $user_id);  
+    $query = $this->db->get();
+
+   if ($query->num_rows() > 0) {
+       return $query->result_array();
+    }
+     return true;
+ }
+
+
+public function get_tax_history($tax_type,$tax,$timesheet){
+    $this->db->select('amount')->from('tax_history')
+    ->where('tax_type', $tax_type)
+    ->where('tax', $tax)
+    ->where('time_sheet_id', $timesheet);
+   $query= $this->db->get();
+   if ($query->num_rows() > 0) {
+ $result = $query->row_array();
+ return $result['amount'];
+   }else{
+   return null;
+   }
+}
+public function get_tax_history_basedon_employee($find,$tax,$start,$employee,$tax_type=null){
+   $this->db->select($find)
+    ->from("tax_history")
+    ->where("timesheet_info.templ_name", $employee)
+    ->where("tax_history.tax", $tax)
+    ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
+    ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$start', '%m/%d/%Y')", NULL, FALSE);
+$query = $this->db->get();
+return $query->num_rows();
+}
+}

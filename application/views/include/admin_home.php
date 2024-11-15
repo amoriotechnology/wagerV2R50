@@ -1,6 +1,7 @@
 
 <!-- Admin Home Start -->
 <div class="content-wrapper">
+
    <section class="content-header">
       <div class="header-icon">
          <figure class="one">
