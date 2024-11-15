@@ -49,21 +49,21 @@ class Template {
         $top_menu    = '';
 
         if ($CI->auth->is_admin()) {
-            $menu_template = 'include/top_menu';
-            $logged_data   = 'include/admin_loggedin_info';
+            // $menu_template = 'include/top_menu';
+            // $logged_data   = 'include/admin_loggedin_info';
 
             $log_info = array(
                 'email'  => $CI->session->userdata('user_name'),
                 'logout' => base_url() . 'Admin_dashboard/logout'
             );
-            $top_menu    = $CI->parser->parse($menu_template, true);
-            $logged_info = $CI->parser->parse($logged_data, $log_info, true);
+            // $top_menu    = $CI->parser->parse($menu_template, true);
+            // $logged_info = $CI->parser->parse($logged_data, $log_info, true);
         }
-        $CI->load->model('Products');
-        $company_info = $CI->Products->retrieve_company();
+        $CI->load->model('Companies');
+        $company_info = $CI->Companies->retrieve_company();
         $data = array(
-            'logindata'    => $logged_info,
-            'mainmenu'     => $top_menu,
+           // 'logindata'    => $logged_info,
+          //  'mainmenu'     => $top_menu,
             'content'      => $content,
             'msg_content'  => $message,
             'company_info' => $company_info

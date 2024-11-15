@@ -17,7 +17,7 @@ class Chrm extends CI_Controller {
         $this->load->library('session');
         $this->load->model('Web_settings');
         $this->load->model('Hrm_model');
-        $this->load->model('Ppurchases');
+     
         $this->load->model('invoice_content');
         $this->auth->check_admin_auth();
     }
@@ -1065,7 +1065,7 @@ public function time_list()
            $CC = & get_instance();
             $CII = & get_instance();
            $CI->load->model('invoice_content');
-              $CII->load->model('invoice_design');
+           
            $this->load->model('Hrm_model');
            $w = & get_instance();
            $w->load->model('Ppurchases');
@@ -1088,7 +1088,7 @@ public function time_list()
  
            $hrate= $data['timesheet_data'][0]['h_rate'];
            $total_hours=  $data['timesheet_data'][0]['total_hours'];
-              $dataw = $CII->invoice_design->retrieve_data($this->session->userdata('user_id'));
+              $dataw = $CII->Invoice_content->retrieve_data($this->session->userdata('user_id'));
                $payperiod =$data['timesheet_data'][0]['month'];
                     $get_date = explode('-', $payperiod);
          $d1 = $get_date[1];
@@ -2480,14 +2480,14 @@ public function payslip_setting() {
         $data['title'] = display('payslip');
         $CI = & get_instance();
         $CD = & get_instance();
-        $CI->load->model('invoice_design');
+      
         $CD->load->model('Companies');
         $CI->load->model('Web_settings');
-        $CI->load->model('invoice_content');
+        $CI->load->model('Invoice_content');
        $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-       $dataw = $CI->invoice_design->get_data_payslip();
+       $dataw = $CI->Invoice_content->get_data_payslip();
        $datac = $CD->Companies->company_details();
-           $datacontent = $CI->invoice_content->retrieve_data();
+           $datacontent = $CI->Invoice_content->retrieve_data();
        $data= array(
             'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
         'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : '') ,
@@ -2622,63 +2622,6 @@ public function officeloan_edit($transaction_id) {
        $this->template->full_admin_html_view($content);
     }
 
-
-
-
-
-
-
-
-
-
-
-    // Pdf Download Expenses
-    public function expense_download($id)
-    {
-        $CI = & get_instance();
-        $CC = & get_instance();
-        $CA = & get_instance();
-        $CI->load->model('Web_settings');
-        $CI->load->model('Hrm_model');
-        $CA->load->model('invoice_design');
-        $CC->load->model('invoice_content');
-        $CI->load->model('invoice_content');
-        $w = & get_instance();
-        $w->load->model('Ppurchases');
-        $company_info = $w->Ppurchases->retrieve_company();
-        $expense_pdf = $CI->Hrm_model->pdf_expense($id);
-          //print_r($expense_pdf);.;
-        $setting=  $CI->Web_settings->retrieve_setting_editdata();
-        $dataw = $CA->invoice_design->retrieve_data();
-        // print_r($dataw); .;
-        // $datacontent = $CC->invoice_content->retrieve_data();
-        $datacontent = $CI->invoice_content->retrieve_info_data();
-
-        $currency_details = $CI->Web_settings->retrieve_setting_editdata();
-        $curn_info_default = $CI->db->select('*')->from('currency_tbl')->where('icon',$currency_details[0]['currency'])->get()->result_array();
-        $data=array(
-            'curn_info_default' =>$curn_info_default[0]['currency_name'],
-            'currency'  =>$currency_details[0]['currency'],
-            'header'=> $dataw[0]['header'],
-            'logo'=>(!empty($setting[0]['invoice_logo'])?$setting[0]['invoice_logo']:$company_info[0]['logo']),  
-            'color'=> $dataw[0]['color'],
-            'template'=> $dataw[0]['template'],
-            'company'=> $datacontent,
-            'expense_pdf' => $expense_pdf,
-
-            
-          'company'=>(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']),   
-          'phone'=>(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']),   
-          'email'=>(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']),   
-          // 'reg_number'=>(!empty($datacontent[0]['reg_number'])?$datacontent[0]['reg_number']:$company_info[0]['reg_number']),  
-          'website'=>(!empty($datacontent[0]['website'])?$datacontent[0]['website']:$company_info[0]['website']),   
-          'address'=>(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address'])
-        );
-        print_r($dataw[0]['color']);
-
-        $content = $this->load->view('hr/expense_html_pdf', $data, true);
-        $this->template->full_admin_html_view($content);
-    }
 
 
 
@@ -2952,7 +2895,7 @@ public function employee_update_form() {
                 $w->load->model('Ppurchases');
                 $CI->load->model('Invoices');
                 $CI->load->model('Web_settings');
-                $CA->load->model('invoice_design');
+           
                 $CC->load->model('invoice_content');
                 $this->load->model('Hrm_model');
 
@@ -2963,7 +2906,7 @@ public function employee_update_form() {
 
                  $office_loan_datas = $this->Hrm_model->office_loan_datas($transaction_id);
                  $datacontent = $CC->invoice_content->retrieve_data();
-                 $dataw = $CA->invoice_design->retrieve_data();
+                 $dataw = $CA->Invoice_content->retrieve_data();
                  $setting=  $CI->Web_settings->retrieve_setting_editdata();
 
                  $data=array(
@@ -3020,7 +2963,7 @@ public function employee_update_form() {
                       $w->load->model('Ppurchases');
                     //  $CI->load->model('Invoices');
                       $CI->load->model('Web_settings');
-                      $CA->load->model('invoice_design');
+                    
                       $CC->load->model('invoice_content');
                       $CI = & get_instance();
                       $this->auth->check_admin_auth();
@@ -3031,7 +2974,7 @@ public function employee_update_form() {
                           $employee_data = $this->db->select('first_name,last_name,designation,id')->from('employee_history')->where('id',$pdf[0]['templ_name'])->get()->row();
                         //  print_r($employee_data);.;
                          $setting=  $CI->Web_settings->retrieve_setting_editdata();
-                         $dataw = $CA->invoice_design->retrieve_data();
+                         $dataw = $CA->Invoice_content->retrieve_data();
                          $datacontent = $CC->invoice_content->retrieve_data();
                          $data=array(
                        
@@ -3078,7 +3021,7 @@ public function timesheed_inserted_data() {
   $w->load->model('Ppurchases');
   $CI->load->model('Invoices');
   $CI->load->model('Web_settings');
-  $CA->load->model('invoice_design');
+
   $CC->load->model('invoice_content');
   $CI = & get_instance();
   $this->auth->check_admin_auth();

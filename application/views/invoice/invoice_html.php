@@ -1,5 +1,0 @@
-<?php 
-
-ECHO $ramji; 
-
-?>

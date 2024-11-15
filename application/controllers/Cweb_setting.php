@@ -37,21 +37,12 @@ class Cweb_setting extends CI_Controller {
         $content = $this->load->view('web_setting/agree_view', $data, true);
         $this->template->full_admin_html_view($content);
     }
-     public function new_funcion()
-    {
-        $CI = & get_instance();
-        $CI->auth->check_admin_auth();
-        $postData = $this->input->post('new_payment_terms');
-        $get_info_data = $CI->Web_settings->get_info_data($postData);
-        echo json_encode($get_info_data);
-    }
+   
     public function fetchAttachments()
     {   
         $CI = & get_instance();
         $id = $this->input->post('inbox_id'); 
         $email_attach = $CI->Web_settings->Fetchemailattachment($id);
-        // print_r($email_attach); die();
-        // $files_attachment = explode(",", $email_attach[0]->files);
         echo json_encode($email_attach);
     }
     
@@ -1606,69 +1597,7 @@ class Cweb_setting extends CI_Controller {
             echo 'Error sending email: ' . $this->email->print_debugger();
         }
     }
-    // public function emailSending()
-    // {
-    //     $to = $this->input->post('to_email');
-    //     $cc = $this->input->post('cc_email');
-    //     $subject = $this->input->post('subject');
-    //     $message = $this->input->post('message');
-    //     $created = $this->session->userdata('user_id');
-    //     $random_id = rand(10,100);
-
-    //     $mail_set = $this->db->select('*')->from('email_config ')->get()->result_array();
-
-    //     foreach ($mail_set as $key => $value) {
-    //         $stm_user = $value['smtp_user'];
-    //         $stm_pass = $value['smtp_pass'];
-    //     }
-
-    //     $this->load->library('email');
-    //     $config = array(
-    //       'protocol' => 'smtp',
-    //       'smtp_host' => 'ssl://smtp.gmail.com',
-    //       'smtp_user' => $stm_user,
-    //       'smtp_pass' => $stm_pass,
-    //       'smtp_port' => 465,
-    //       'smtp_timeout' => 30,
-    //       'charset' => 'utf-8',
-    //       'newline' => '\r\n',
-    //       'mailtype' => 'html',
-          
-    //     );
-
-    //     $this->email->initialize($config);
-    //     $this->email->set_newline("\r\n");
-    //     $this->email->set_crlf("\r\n");
-    //     $this->email->from($to, 'Your Name');
-    //     $this->email->to($to);
-    //     $this->email->cc($cc);
-    //     $this->email->subject($subject);
-    //     $this->email->message($message);
-
-    //     if ($this->email->send()) {
-    //         echo "<script>alert('Email Send successfully');</script>";
-
-    //         file_put_contents("assets/Email/sendemail.txt", ("\n".$random_id.'|'.$to.'|'.$cc.'|'.$subject.'|'.$message.'|'),FILE_APPEND);
-
-    //         $data = array(
-    //             'to_email' => $to,
-    //             'cc_email' => $cc,
-    //             'subject' => $subject,
-    //             'message' => $message,
-    //             'created_by' => $created
-    //         );
-
-    //         $this->db->insert('email_data', $data);
-
-    //         redirect(base_url('Cweb_setting/email_setting'));
-    //         // echo  $this->db->last_query(); die();
-    //     } else {
-    //         echo "<script>alert('Email Send Failed !!!!!');</script>";
-    //         // echo 'Error sending email: ' . $this->email->print_debugger();
-    //     }
-    // }
-    
-
+ 
     function invoice_design()
 {
    $content = $this->lweb_setting->invoice_design();
