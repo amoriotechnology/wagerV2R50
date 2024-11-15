@@ -220,28 +220,31 @@ public function total_amt_wr30()
         return false;
       }
 }
+
+
 public function sc_get_data_pay($d1 = null, $empid, $timesheetid)
-        {
-            if ($d1 === null || $empid === null || $timesheetid === null) {
-                return false; // Return false if any required parameter is null
-            }
-            $this->db->select("SUM(tax_history.s_tax) as s_s_tax, SUM(tax_history.m_tax) as s_m_tax, SUM(tax_history.u_tax) as s_u_tax, SUM(tax_history.f_tax) as s_f_tax, SUM(tax_history.sales_c_amount) as S_sales_c_amount");
-            $this->db->from('tax_history');
-            $this->db->join('timesheet_info', 'timesheet_info.timesheet_id = tax_history.time_sheet_id');
-            $this->db->where('timesheet_info.create_by', $this->session->userdata('user_id'));
-            $this->db->where('tax_history.tax', 'Income tax');
-             $this->db->where('tax_history.tax_type', 'state_tax');
-           
-                $this->db->where('tax_history.employee_id', $empid);
-            $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
-            $this->db->group_by('tax_history.s_tax,tax_history.m_tax,tax_history.u_tax,tax_history.f_tax,tax_history.tax');
-            $query = $this->db->get();
-     
-            if ($query->num_rows() > 0) {
-                return $query->result_array();
-            }
-            return false;
-        }
+{
+    if ($d1 === null || $empid === null || $timesheetid === null) {
+        return false; 
+    }
+    
+    $this->db->select("SUM(tax_history.s_tax) as s_s_tax, SUM(tax_history.m_tax) as s_m_tax, SUM(tax_history.u_tax) as s_u_tax, SUM(tax_history.f_tax) as s_f_tax, SUM(tax_history.sales_c_amount) as S_sales_c_amount");
+    $this->db->from('tax_history');
+    $this->db->join('timesheet_info', 'timesheet_info.timesheet_id = tax_history.time_sheet_id');
+    $this->db->where('timesheet_info.create_by', $this->session->userdata('user_id'));
+    $this->db->where('tax_history.tax', 'Income tax');
+     $this->db->where('tax_history.tax_type', 'state_tax');
+   
+        $this->db->where('tax_history.employee_id', $empid);
+    $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
+    $this->db->group_by('tax_history.s_tax,tax_history.m_tax,tax_history.u_tax,tax_history.f_tax,tax_history.tax');
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+    return false;
+}
 
 
 
@@ -1983,27 +1986,19 @@ public function state_tax(){
     }
 
 
-
-
-
-
-
-
-
-    public function federal_tax_info($employee_status,$final,$federal_range){
-        $this->db->select('employee');
-        $this->db->from('federal_tax');
-        $this->db->where($employee_status,$federal_range);
-        $this->db->where('created_by',$this->session->userdata('user_id'));
-       $query = $this->db->get();
-    //    echo $this->db->last_query(); die;
-
-      if ($query->num_rows() > 0) {
-            
-           return $query->result_array();
-        }else{
-  return 0;
-        }
+// Retrieve Federal Tax - Madhu
+public function federal_tax_info($employee_status,$final,$federal_range, $user_id)
+{
+    $this->db->select('employee');
+    $this->db->from('federal_tax');
+    $this->db->where($employee_status,$federal_range);
+    $this->db->where('created_by',$user_id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+       return $query->result_array();
+    }else{
+        return 0;
+    }
 }
 
 
