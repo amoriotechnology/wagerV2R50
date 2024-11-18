@@ -829,7 +829,7 @@ foreach ($items as $item) {
 }
 
 
-// Old Federal Overall Summary - Madhu
+// Federal Overall Summary - Madhu
 public function federal_summary()
 {
     $setting_detail = $this->Web_settings->retrieve_setting_editdata();
@@ -1076,7 +1076,7 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
             if ($this_period >= $split[0] && $this_period <= $split[1]) {
                 $range = $split[0] . "-" . $split[1];
                 $data['working_tax'] = $this->Hrm_model->working_state_tax($employee_tax, $this_period, $range, $state_tax[0]['state'], $user_id);
-            
+        
                 if (!empty($data['working_tax'])) {
                     foreach ($data['working_tax'] as $contribution) {
                      
@@ -1086,6 +1086,7 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                         $employee_contribution = ($employee / 100) * $this_period;
                        
                         $employer_contribution = ($employer / 100) * $this_period;
+                     
                         $row = $this->db->select('*')->from('state_localtax')->where('employee', $employee)->where('tax', $tax_data[0]['tax'])->where($employee_tax, $range)->where('created_by', $user_id)->count_all_results();
                     
                         $employee_tax_key = "'employee_" . $tax_data[0]['tax'] . "'";
@@ -1107,9 +1108,7 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                                 $overall_state_tax[$employee_tax_key] = $overall_amount;
                             }
 
-                            // if (empty($this_period_statetax) && empty($overall_state_tax)) {
-                            //     return null; 
-                            // }
+                          
 
                         }
                     }
@@ -1182,25 +1181,25 @@ return $data;
            $living_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$living_state_tax,$user_id,$thisPeriodAmount,'living_state_tax',$timesheet_id);
  
 
-$data=array(
-  'working_state' => $working_state_tax,
-  'living_state'  => $living_state_tax,
-  'this_federal'  => $f,
-  'overall_federal' =>  $overall_federal,
-  'this_social'  => $s,
-  'overall_social' =>  $overall_social,
-  'this_medicare'  => $m,
-  'overall_medicare' =>  $overall_medicare,
-  'this_unemp'  => $u,
-  'overall_unemp' =>  $overall_unemp,
-  'company_info' => $company_info,
-  'employee_info' => $employeedata,
-  'timesheet_info' => $timesheetdata,
-  'overtime_hour' => $overtime_hour,
-  'setting'    =>$default_setting,
-  'admin'   =>  $admin_name,
-  'ytd' => $f['ytd'],
-  );
+                $data=array(
+                'working_state' => $working_state_tax,
+                'living_state'  => $living_state_tax,
+                'this_federal'  => $f,
+                'overall_federal' =>  $overall_federal,
+                'this_social'  => $s,
+                'overall_social' =>  $overall_social,
+                'this_medicare'  => $m,
+                'overall_medicare' =>  $overall_medicare,
+                'this_unemp'  => $u,
+                'overall_unemp' =>  $overall_unemp,
+                'company_info' => $company_info,
+                'employee_info' => $employeedata,
+                'timesheet_info' => $timesheetdata,
+                'overtime_hour' => $overtime_hour,
+                'setting'    =>$default_setting,
+                'admin'   =>  $admin_name,
+                'ytd' => $f['ytd'],
+                );
 
 
 
@@ -1222,7 +1221,7 @@ $data=array(
                 $tx_n = $result['tx_n'];
                 $code = $result['code'];
 
-                // Check for existing record if needed
+             
                 if ($checkExisting) {
                     $existingRecord = $this->db->select('*')->from('tax_history_employer')
                         ->where('time_sheet_id', $timesheetdata[0]['timesheet_id'])
@@ -1230,12 +1229,12 @@ $data=array(
                         ->where('tax', str_replace("'", "", explode('-', $k)[1]))
                         ->where('tax_type', $taxType)->get()->row();
                     if ($existingRecord) {
-                        continue; // Skip if record exists
+                        continue; 
                     }
 
-                    // Special condition for living_state_tax
+                  
                     if ($taxType === 'living_state_tax' && (trim(strtolower($tx_n)) === 'unemployment' || stripos($tx_n, 'unemployment') !== false)) {
-                        continue; // Skip unemployment tax
+                        continue; 
                     }
                 }
 
@@ -1291,10 +1290,10 @@ private function insertTaxHistory($taxData, $taxType, $timesheetdata, $checkExis
                     'created_by' => $this->session->userdata('user_id'),
                 );
 
-                // print_r($data1); die;
+            
 
                 $this->db->insert('tax_history', $data1); $total_deduction += round($v,3);
-                // echo $this->db->last_query(); die;
+             
             }
         }
     }
@@ -1333,7 +1332,7 @@ public function add_taxname_data(){
         $this->load->model('Hrm_model');
         $postData = $this->input->post('value');
         $data = $this->Hrm_model->insert_taxesname($postData);
-       // echo json_encode($data);
+     
     }
 
 public function payslip_setting() {
@@ -1357,12 +1356,10 @@ public function payslip_setting() {
         'cname'=>(!empty($datacontent[0]['business_name']) ? $datacontent[0]['business_name'] : '') ,
         'mobile'=>(!empty($datacontent[0]['phone']) ? $datacontent[0]['phone'] : '') ,
         'email'=>(!empty($datacontent[0]['email']) ? $datacontent[0]['email'] : '') ,
-        // 'reg_number'=>(!empty($datacontent[0]['reg_number']) ? $datacontent[0]['reg_number'] : '') ,
-        // 'website'=>(!empty($datacontent[0]['website']) ? $datacontent[0]['website'] : '') ,
-        // 'address'=>(!empty($datacontent[0]['address']) ? $datacontent[0]['address'] : '') ,
+    
         'template'=> (!empty($dataw[0]['template']) ? $dataw[0]['template'] : '')
    );
-    // print_r($data);
+  
         $content = $this->parser->parse('hr/payslip_view', $data, true);
         $this->template->full_admin_html_view($content);
         }
@@ -1422,7 +1419,7 @@ public function officeloan_edit($transaction_id) {
            $data['payment_typ']  =$paytype;
            $data['bank_name']  =$bank_name;
           
-        //    print_r( $data['bank_name']);
+        
         $person_listdaa =  $CI->Settings->office_loan_person();
 
            $data=array(
@@ -1457,16 +1454,16 @@ public function officeloan_edit($transaction_id) {
 
 
 
-// Delete Expense
+
     public function delete_expense($id = null)
     {
-        // echo $id; .;
+      
         $this->db->where('id', $id);
         $this->db->delete('expense');
         redirect('Chrm/expense_list');
         $this->template->full_admin_html_view($content);
     }
-    // Edit Expense Data
+   
     public function edit_expense($id)
     {
        $this->load->library('lsettings');
@@ -1499,9 +1496,7 @@ public function employee_update_form() {
         $data["state_tx"]            = $this->Hrm_model->state_tax($decodedId);
         $data["cty_tax"]             = $this->Hrm_model->state_tax($decodedId);
         $data["designation"]         = $this->Hrm_model->getdesignation($data["employee_data"][0]["designation"], $decodedId);
-        // $data["payroll_data"]        = $this->Hrm_model->payroll_editdata($employee_id, $decodedId);
-        // $data["employeetype_data"]   = $this->Hrm_model->employeestype_editdata($employee_id, $decodedId);
-        // $data["bank_data"]           = $this->Hrm_model->getbankinfo($decodedId);
+      
         $data["desig"]               = $this->Hrm_model->designation_dropdown($decodedId);
         $content                     = $this->parser->parse("hr/employee_updateform", $data, true);
         $this->template->full_admin_html_view($content);
@@ -1548,8 +1543,7 @@ public function employee_update_form() {
                     }
                 }
                 $old_images = isset($_POST['old_image']) ? $_POST['old_image'] : [];
-           //     $all_images = array_merge($old_images, $images);
-             //   $insertImages = implode(", ", $all_images);
+       
             } else {
                 echo "No files uploaded or invalid file structure.";
             }
@@ -1716,12 +1710,12 @@ public function employee_update_form() {
             
         ];
         $this->db->insert('expense',$postData);
-     //   echo $this->db->last_query(); .;
+    
         redirect(base_url('Chrm/expense_list'));
     }
 
     private function processTaxData($key, $value) {
-        // print_r($value); die;
+     
         if (trim(round($value, 3)) > 0) {
             $split = explode('-', $key);
             $tx_n = str_replace("'", "", $split[1]);
@@ -1762,8 +1756,7 @@ public function employee_update_form() {
                  $setting=  $CI->Web_settings->retrieve_setting_editdata();
 
                  $data=array(
-                //     'curn_info_default' =>$curn_info_default[0]['currency_name'],
-                //     'currency'  =>$currency_details[0]['currency'],
+                
                     'header'=> $dataw[0]['header'],
                     'logo'=>(!empty($setting[0]['invoice_logo'])?$setting[0]['invoice_logo']:$company_info[0]['logo']),  
                     'color'=> $dataw[0]['color'],
@@ -1784,7 +1777,7 @@ public function employee_update_form() {
                     'company'=>(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']),   
                     'phone'=>(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']),   
                     'email'=>(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']),   
-                    // 'reg_number'=>(!empty($datacontent[0]['reg_number'])?$datacontent[0]['reg_number']:$company_info[0]['reg_number']),  
+                   
                     'website'=>(!empty($datacontent[0]['website'])?$datacontent[0]['website']:$company_info[0]['website']),   
                     'address'=>(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']),
 
@@ -1792,7 +1785,7 @@ public function employee_update_form() {
                     'office_loan_datas' => $office_loan_datas
                 );
 
-            //    print_r($office_loan_datas); .;
+
 
                 print_r($dataw[0]['color']);
 
@@ -1813,7 +1806,7 @@ public function employee_update_form() {
            
                       $w = & get_instance();
                       $w->load->model('Ppurchases');
-                    //  $CI->load->model('Invoices');
+                  
                       $CI->load->model('Web_settings');
                     
                       $CC->load->model('invoice_content');
@@ -1824,7 +1817,7 @@ public function employee_update_form() {
                          $company_info = $w->Ppurchases->retrieve_company();
 
                           $employee_data = $this->db->select('first_name,last_name,designation,id')->from('employee_history')->where('id',$pdf[0]['templ_name'])->get()->row();
-                        //  print_r($employee_data);.;
+                      
                          $setting=  $CI->Web_settings->retrieve_setting_editdata();
                          $dataw = $CA->Invoice_content->retrieve_data();
                          $datacontent = $CC->invoice_content->retrieve_data();
@@ -1842,7 +1835,7 @@ public function employee_update_form() {
                           'company'=>(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']),   
                           'phone'=>(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']),   
                           'email'=>(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']),   
-                          // 'reg_number'=>(!empty($datacontent[0]['reg_number'])?$datacontent[0]['reg_number']:$company_info[0]['reg_number']),  
+                         
                           'website'=>(!empty($datacontent[0]['website'])?$datacontent[0]['website']:$company_info[0]['website']),   
                           'address'=>(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']),
       
@@ -1850,7 +1843,7 @@ public function employee_update_form() {
                           'time_sheet' =>$pdf
            
                            );
-                           // print_r($data);
+                          
                            print_r($dataw[0]['color']);
            
                          $content = $this->load->view('hr/timesheet_pdf', $data, true);
@@ -1864,7 +1857,7 @@ public function employee_update_form() {
 
 
 public function timesheed_inserted_data() {
-  //    echo $id; .;
+
   $CI = & get_instance();
   $CC = & get_instance();
   $CA = & get_instance();
@@ -1889,7 +1882,7 @@ public function timesheed_inserted_data() {
   if($type == 'emp_data') {
     $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]); 
   } else {
-    /* return timesheet_info and employee history datas */
+    
     $timesheet_data = $CI->Hrm_model->timesheet_data($id);
     $timesheet_details = $CI->Hrm_model->getDatas('timesheet_info_details', '*', ['timesheet_id' => $id]);
     $admin_name = $this->Hrm_model->getDatas('administrator', '*', ['adm_id'=> $timesheet_data[0]['admin_name']]);
@@ -1983,7 +1976,7 @@ public function manageTimesheetListData()
     $edit           = "";
     $delete         = "";
 
-    foreach ($items as $item) { //echo "<pre>"; print_r($item); echo "</pre>"; die;
+    foreach ($items as $item) { 
 
       $user = '<a href="' . base_url("Chrm/employee_payslip_permission?id=" . $encodedId . "&admin_id=" . $admin_id . "&timesheet_id=" . $item['timesheet_id']) . '" class="btnclr btn btn-sm"> <i class="fa fa-user" aria-hidden="true"></i> </a>';
 
@@ -2371,7 +2364,7 @@ public function adminApprove()
     
     // Sales Partner
     $employee_id = $data['employee_data'][0]['id'];
-    $payperiod = $payperiod;
+  
     $timesheet_id = $data_timesheet['timesheet_id'];
     $scAmount = $this->saleCommission($employee_id, $payperiod, $user_id, $company_id);
 
@@ -2461,7 +2454,7 @@ public function adminApprove()
             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'Date1 array is empty or invalid', 'Error', date('m-d-Y'));
         }
         
-        // This Period Final Amount
+      
         $payroll_type = $data['timesheet_data'][0]['payroll_type'];
         $total_hours = $total_hours;
         $hrate = $hrate;
@@ -2471,13 +2464,13 @@ public function adminApprove()
 
         $s = ''; $u = ''; $m = ''; $f = ''; 
 
-        // Federal tax
+      
         $f = $this->countryTax('Federal Income tax', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 'f_tax', $user_id, $endDate, $employee_id, $timesheet_id);
 
-        // Social Security tax
+       
         $s = $this->countryTax('Social Security', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 's_tax', $user_id, $endDate, $employee_id, $timesheet_id);
 
-        // Medicare tax
+       
         $m = $this->countryTax('Medicare', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 'm_tax', $user_id, $endDate, $employee_id, $timesheet_id);
 
         // Unemployment tax
@@ -2551,15 +2544,14 @@ public function  payroll_reports() {
 
       $datainfo = $this->Hrm_model->get_data_payslip();
       $emplinfo = $this->Hrm_model->empl_data_info();
-   //  print_r($emplinfo);
+
       $data=array(
           'dataforpayslip' => $datainfo,
           'employee_info' => $emplinfo,
           'setting_detail' => $setting_detail
 
      );
-  // print_r($emplinfo); 
-  // .;
+
       $content                  = $this->parser->parse('hr/payroll_manage_list', $data, true);
       $this->template->full_admin_html_view($content);
       }
