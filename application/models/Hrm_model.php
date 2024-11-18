@@ -4889,4 +4889,21 @@ public function get_tax_history_basedon_employee($find,$tax,$start,$employee,$ta
     $query = $this->db->get();
     return $query->num_rows();
 }
+
+// All Federal Taxes - Madhu
+public function allFederaltaxes($taxType, $user_id)
+{
+    $this->db->select('*');
+    $this->db->from('federal_tax');
+    $this->db->where('tax', $taxType);
+    $this->db->where('created_by', $user_id);
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+    return [];
+}
+
+
 }
