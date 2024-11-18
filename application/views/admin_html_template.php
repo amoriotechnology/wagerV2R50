@@ -50,15 +50,12 @@
         <!-- themify icon css -->
         <link href="<?php echo base_url('assets/css/themify-icons.css') ?>" rel="stylesheet" type="text/css"/> 
         <!-- Pace css -->
-        <link href="<?php echo base_url('assets/plugins/toastr/toastr.css'); ?>" rel=stylesheet type="text/css"/>
-   
+       
         <link href="<?php echo base_url('assets/css/bootstrap-toggle.min.css') ?>" rel="stylesheet" type="text/css"/>
         <!-- Theme style -->
         <link href="<?php echo base_url('assets/css/custom.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?php echo base_url('assets/css/style.css') ?>" rel="stylesheet" type="text/css"/>
         
-        <link href="<?php echo base_url('assets/js/sweetalert/sweetalert.css') ?>" rel="stylesheet" type="text/css"/>
-        <!-- summernote css -->
        
         <?php if (!empty($Web_settings[0]['rtr']) && $Web_settings[0]['rtr'] == 1) {  ?>
             <!-- THEME RTL -->
@@ -137,15 +134,11 @@
         <!-- ChartJs JavaScript -->
         <script src="<?php echo base_url('assets/js/Chart.min.js?v=2.5') ?>" type="text/javascript"></script>
 
-        <!-- DataTables JavaScript -->
-        <script src="<?php echo base_url("assets/datatables/dataTables.min.js") ?>"></script>
         <!-- Table Head Fixer -->
         <script src="<?php echo base_url() ?>assets/js/tableHeadFixer.js" type="text/javascript"></script> 
         <!-- Admin Script -->
         <script src="<?php echo base_url('assets/js/frame.js') ?>" type="text/javascript"></script> 
         <script src="<?php echo base_url('assets/js/bootstrap-toggle.min.js') ?>" type="text/javascript"></script> 
-        <script src="<?php echo base_url('assets/plugins/toastr/toastr.min.js'); ?>"></script>
-        <script src="<?php echo base_url() ?>assets/js/sweetalert/sweetalert.min.js" type="text/javascript"></script>
         <!-- Custom Theme JavaScript -->
         <script src="<?php echo base_url() ?>assets/js/custom.js" type="text/javascript"></script>
         <!-- summernote js -->

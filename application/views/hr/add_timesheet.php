@@ -267,15 +267,15 @@ td{
                         </div>
 
                         <div class="table-responsive work_table col-md-12">
-		                    <table class=" table table-striped table-bordered" cellspacing="0" width="100%" id="PurList"> 
-								<thead class="btnclr" id='tHead'>
-								</thead>
-								<tbody id="tBody">
-								</tbody>
+                            <table class=" table table-striped table-bordered" cellspacing="0" width="100%" id="PurList"> 
+                                <thead class="btnclr" id='tHead'>
+                                </thead>
+                                <tbody id="tBody">
+                                </tbody>
                                 <tfoot id="tFoot">
                                 </tfoot>
-		                    </table>
-		                </div>
+                            </table>
+                        </div>
 
                         <input type="submit" value="Submit" class="sub_btn btnclr btn text-center"/> 
                     </div>               

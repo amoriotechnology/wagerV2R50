@@ -1776,17 +1776,15 @@ public function get_info_county_tax(){
             return $query->result_array();
          }
           return true;
- }
-  public function checkTimesheetInfo($employeeId, $selectedDate) {
-        // Query the timesheet_info table to check if the month field contains the selected date for the employee
-        $this->db->where('templ_name', $employeeId);
-        $this->db->like('month', $selectedDate, 'both'); // Modify this condition according to your database schema
+}
 
-        $query = $this->db->get('timesheet_info');
-//echo $this->db->last_query();
-        // Check if there are any rows found
-        return $query->num_rows() > 0;
-    }
+public function checkTimesheetInfo($employeeId, $selectedDate) 
+{
+    $this->db->where('templ_name', $employeeId);
+    $this->db->like('month', $selectedDate, 'both');
+    $query = $this->db->get('timesheet_info');
+    return $query->num_rows() > 0;
+}
     
    public function employee_bankDetails()
    {
@@ -2246,7 +2244,6 @@ public function sc_info_count($templ_name, $payperiod) {
     $this->db->group_end();
 
     $query = $this->db->get();
-  
     $result['sc'] = $query->result_array();
 
     // Remove duplicates
@@ -4819,13 +4816,17 @@ if ($query->num_rows() > 0) {
 return [];
 }
 
+
 // To get the state tax details - Used in payslip and time_list functions
+
 public function get_state_details($find, $table, $where, $state, $user_id)
 {
     $this->db->select($find)->from($table)->where($where, $state)->where('created_by', $user_id);
     $query = $this->db->get();
     if ($query->num_rows() > 0) {
+
         $result = $query->result_array();
+
         return $result;
     }
     return [];
@@ -4864,6 +4865,7 @@ public function get_tax_history($tax_type,$tax,$timesheet){
    return null;
    }
 }
+
 //To get the cumulative state tax amount of specific employee
 public function get_cumulative_tax_amount($tax, $end, $employee, $tax_type) {
     $this->db->select('SUM(tax_history.amount) as total_amount')
@@ -4881,7 +4883,7 @@ public function get_cumulative_tax_amount($tax, $end, $employee, $tax_type) {
     } else {
         return null;
     }
-}
+        }
 //To get the cumulative country tax amount of specific employee
 public function sum_of_country_tax($end_date = null, $empid, $timesheetid , $user_id)
 {
