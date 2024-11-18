@@ -4825,7 +4825,7 @@ public function get_state_details($find, $table, $where, $state, $user_id)
 // To get the state tax details - Used in state_tax function
 public function working_state_tax($employee_status,$final,$local_tax_range, $stateTax="",$user_id)
 {
-    $this->db->select('employee,employer');
+    $this->db->select('employee,employer,tax');
     $this->db->from('state_localtax');
     $this->db->where($employee_status,$local_tax_range);
     if($stateTax !=""){
