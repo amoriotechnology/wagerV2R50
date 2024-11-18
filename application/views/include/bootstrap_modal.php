@@ -389,7 +389,13 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
                      <i class="text-danger"></i>
                      </label>
                      <div class="col-sm-6">
-                        <select class="selectpicker countrypicker form-control"  data-live-search="true" data-default="United States"  name="country" id="country" style="width:100%"></select>
+                        <!-- <select class="selectpicker countrypicker form-control"  data-live-search="true" data-default="United States"  name="country" id="country" style="width:100%"></select> -->
+                         <select name="country" id="country" class="selectpicker countrypicker form-control">
+                         <option value="">Select Country</option>
+                           <?php foreach($country_data as $value) { ?>
+                              <option value="<?= $value['name']; ?>"> <?= $value['name']; ?> </option>
+                           <?php } ?>
+                         </select>
                      </div>
                   </div>
                   <div class="form-group row">
@@ -701,7 +707,8 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
             <div id="customeMessage" class="alert hide"></div>
             <form id="add_employee_type" method="post">
                <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
+               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+
                   <div class="form-group row">
                      <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">New Employee Type <i class="text-danger">*</i></label>
                      <div class="col-sm-6">

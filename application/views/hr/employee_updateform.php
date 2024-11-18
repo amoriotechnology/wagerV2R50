@@ -1,6 +1,9 @@
 
 <input type="hidden" name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/toastr.min.css')?>" />
+<script src="<?php echo base_url('assets/js/toastr.min.js')?>" ></script>
+
 <style>
    input::-webkit-outer-spin-button,
    input::-webkit-inner-spin-button {
@@ -91,29 +94,23 @@
       </div>
    </section>
    <section class="content">
+      
       <!-- Alert Message -->
       <?php
-         $message = $this->session->userdata('message');
-         if (isset($message)) {
-             ?>
-      <div class="alert alert-info alert-dismissable" style="background-color: #006400 !important;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?= $message ?>                    
-      </div>
-      <?php
-         $this->session->unset_userdata('message');
-         }
-         $error_message = $this->session->userdata('error_message');
-         if (isset($error_message)) {
-         ?>
-      <div class="alert alert-danger alert-dismissable">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?= $error_message ?>                    
-      </div>
-      <?php
-         $this->session->unset_userdata('error_message');
-         }
-         ?>
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
+
       <!-- New Employee Type -->
       <div class="row">
          <div class="col-sm-12">
@@ -711,7 +708,7 @@
                                  <br>
                                  <div class="form-group fg" >
                                     <label for="stateTaxDropdown">State Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_state_tax" name="state_tax" id="stateTaxDropdown"  value="<?= html_escape($employee_data[0]['edit_working_state'])?>"   class="form-control">
+                                    <input list="magic_state_tax" name="state_tax" id="stateTaxDropdown"  value="<?= html_escape($employee_data[0]['working_state_tax'])?>"   class="form-control">
                                     <datalist id="magic_state_tax">
                                        <?php foreach ($state_tx as $st) { ?>
                                        <option value="<?= $st['state']; ?>"><?= $st['state']; ?></option>
@@ -721,7 +718,7 @@
                                  </div>
                                  <div class="form-group fg">
                                     <label for="localTaxDropdown">City Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_local_tax" name="city_tax" id="localTaxDropdown"  value="<?= html_escape($employee_data[0]['edit_working_city'])?>"    class="form-control">
+                                    <input list="magic_local_tax" name="city_tax" id="localTaxDropdown"  value="<?= html_escape($employee_data[0]['working_city_tax'])?>"    class="form-control">
                                     <datalist id="magic_local_tax">
                                        <?php foreach ($get_info_city_tax as $gtct) { ?>
                                        <option value="<?= $gtct['state']; ?>"><?= $gtct['state']; ?></option>
@@ -731,7 +728,7 @@
                                  </div>
                                  <div class="form-group fg">
                                     <label for="stateLocalTaxDropdown">County Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_state_local_tax" name="county_tax" id="stateLocalTaxDropdown"  value="<?= html_escape($employee_data[0]['edit_working_county'])?>"   class="form-control">
+                                    <input list="magic_state_local_tax" name="county_tax" id="stateLocalTaxDropdown"  value="<?= html_escape($employee_data[0]['working_county_tax'])?>"   class="form-control">
                                     <datalist id="magic_state_local_tax">
                                        <?php foreach ($get_info_county_tax as $gtcty) { ?>
                                        <option value="<?= $gtcty['state']; ?>"><?= $gtcty['state']; ?></option>
@@ -741,7 +738,7 @@
                                  </div>
                                  <div class="form-group fg">
                                     <label for="stateTax2Dropdown">Other Working Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_state_tax_2" name="other_working_tax" id="stateTax2Dropdown"   value="<?= html_escape($employee_data[0]['edit_working_other'])?>"  class="form-control">
+                                    <input list="magic_state_tax_2" name="other_working_tax" id="stateTax2Dropdown"   value="<?= html_escape($employee_data[0]['working_other_tax'])?>"  class="form-control">
                                     <!--<datalist id="magic_state_tax_2">-->
                                     <!--    <?php //foreach ($state_tx as $st) { ?>-->
                                     <!--        <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
@@ -756,7 +753,7 @@
                                  <br>
                                  <div class="form-group fg">
                                     <label for="livingStateTax">State Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_state_tax" name="living_state_tax"  value="<?= html_escape($employee_data[0]['edit_living_state'])?>"    id="livingStateTax" class="form-control">
+                                    <input list="magic_living_state_tax" name="living_state_tax"  value="<?= html_escape($employee_data[0]['living_state_tax'])?>"    id="livingStateTax" class="form-control">
                                     <datalist id="magic_living_state_tax">
                                        <?php foreach ($state_tx as $st) { ?>
                                        <option value="<?= $st['state']; ?>"><?= $st['state']; ?></option>
@@ -766,7 +763,7 @@
                                  </div>
                                  <div class="form-group fg">
                                     <label for="livingCityTax">City Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_city_tax" name="living_city_tax" id="livingCityTax"  value="<?= html_escape($employee_data[0]['edit_living_city'])?>"   class="form-control">
+                                    <input list="magic_living_city_tax" name="living_city_tax" id="livingCityTax"  value="<?= html_escape($employee_data[0]['living_city_tax'])?>"   class="form-control">
                                     <datalist id="magic_living_city_tax">
                                        <?php foreach ($get_info_city_tax as $gtct) { ?>
                                        <option value="<?= $gtct['state']; ?>"><?= $gtct['state']; ?></option>
@@ -776,7 +773,7 @@
                                  </div>
                                  <div class="form-group fg">
                                     <label for="livingCountyTax">County Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_county_tax" name="living_county_tax" id="livingCountyTax"   value="<?= html_escape($employee_data[0]['edit_living_county'])?>"      class="form-control">
+                                    <input list="magic_living_county_tax" name="living_county_tax" id="livingCountyTax"   value="<?= html_escape($employee_data[0]['living_county_tax'])?>"      class="form-control">
                                     <datalist id="magic_living_county_tax">
                                        <?php foreach ($get_info_county_tax as $gtcty) { ?>
                                        <option value="<?= $gtcty['state']; ?>"><?= $gtcty['state']; ?></option>
@@ -786,7 +783,7 @@
                                  </div>
                                  <div class="form-group fg">
                                     <label for="livingOtherTax">Other Living Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_other_tax" name="other_living_tax" id="livingOtherTax"  value="<?= html_escape($employee_data[0]['edit_living_other'])?>"   class="form-control">
+                                    <input list="magic_living_other_tax" name="other_living_tax" id="livingOtherTax"  value="<?= html_escape($employee_data[0]['living_other_tax'])?>"   class="form-control">
                                     <!--<datalist id="magic_living_other_tax">-->
                                     <!--    <?php //foreach ($state_tx as $st) { ?>-->
                                     <!--        <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
@@ -812,7 +809,7 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="ETA" class="col-sm-4 col-form-label"><?= display('Attachments ') ?></label>
+                           <label for="ETA" class="col-sm-4 col-form-label"><?= display('Attachments') ?></label>
                               <div class="col-sm-6">
                                  <p>
                                     <label for="attachment">
@@ -833,7 +830,11 @@
                                            $Final_files = explode(",", $attachment['files']);
                                            foreach ($Final_files as $file) {
                                                $encoded_file = rawurlencode(trim($file));
-                                               echo '<p><a href="' . base_url() . 'uploads/employeedetails/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
+                                               if(empty($employee_data[0]['sales_partner'])) {
+                                                echo '<p><a href="' . base_url() . 'assets/uploads/employeedetails/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
+                                               } else {
+                                                   echo '<p><a href="' . base_url() . 'assets/uploads/salespartner/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
+                                               }
                                            }
                                        }
                                        echo '</div>';
@@ -854,7 +855,7 @@
                                         $Final_files = explode(",", $attachment['files']);
                                         foreach ($Final_files as $file) {
                                             $encoded_file = rawurlencode(trim($file));
-                                            echo '<p><a href="' . base_url() . 'uploads/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
+                                            echo '<p><a href="' . base_url() . 'assets/uploads/salespartner/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
                                         }
                                     }
                                     echo '</div>';
@@ -869,7 +870,11 @@
                               <input type="file" name="profile_image" class="form-control">
                               <input type="hidden" name="old_profileimage" value="<?= html_escape($employee_data[0]['profile_image']);?>">
                               <br>
-                              <img src="<?= base_url('assets/uploads/profile/').$employee_data[0]['profile_image']; ?>" height="80px" width="80px">
+                              <?php if(empty($employee_data[0]['sales_partner'])) { ?>
+                                 <img src="<?= base_url('assets/uploads/profile/').$employee_data[0]['profile_image']; ?>" height="80px" width="80px">
+                              <?php } else { ?>
+                                 <img src="<?= base_url('assets/uploads/profile/salespartner/').$employee_data[0]['profile_image']; ?>" height="80px" width="80px">
+                              <?php } ?>
                            </div>
                         </div>
                      </div>
