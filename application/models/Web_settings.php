@@ -1011,24 +1011,14 @@ public function roadtransport_remarks(){
 
     public function retrieve_companysetting_editdata() {
 
-        $this->db->select('*');
-
-        $this->db->from('company_information');
-
+        $this->db->select('*')->from('company_information');
         $this->db->where('company_id',$this->session->userdata('user_id'));
-
         $query = $this->db->get();
 
-        // echo $this->db->last_query(); die();
-
         if ($query->num_rows() > 0) {
-
             return $query->result_array();
-
         }
-
         return false;
-
     }
     
     

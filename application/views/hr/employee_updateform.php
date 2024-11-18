@@ -1,9 +1,6 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>my-assets/css/css.css" />
-<input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+
+<input type="hidden" name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
 <style>
    input::-webkit-outer-spin-button,
    input::-webkit-inner-spin-button {
@@ -18,7 +15,7 @@
    display:none;
    }
    .btnclr{
-   background-color:<?php echo $setting_detail[0]['button_color']; ?>;
+   background-color:<?= $setting_detail[0]['button_color']; ?>;
    color: white;
    }
    .popup label{
@@ -58,7 +55,7 @@
    display:none;
    }
    .btnclr{
-   background-color:<?php echo $setting_detail[0]['button_color']; ?>;
+   background-color:<?= $setting_detail[0]['button_color']; ?>;
    color: white;
    }
    .ui-selectmenu-text{
@@ -84,12 +81,12 @@
          <i class="pe-7s-note2"></i>
       </div>
       <div class="header-title">
-         <h1><?php echo ('Edit Employee') ?></h1>
+         <h1><?= ('Edit Employee') ?></h1>
          <small></small>
          <ol class="breadcrumb">
-            <li><a href="#"><i class="pe-7s-home"></i> <?php echo display('home') ?></a></li>
-            <li><a href="#"><?php echo display('hrm') ?></a></li>
-            <li class="active" style="color:orange;"><?php echo ('Edit Employee') ?></li>
+            <li><a href="#"><i class="pe-7s-home"></i> <?= display('home') ?></a></li>
+            <li><a href="#"><?= display('hrm') ?></a></li>
+            <li class="active" style="color:orange;"><?= ('Edit Employee') ?></li>
          </ol>
       </div>
    </section>
@@ -99,9 +96,9 @@
          $message = $this->session->userdata('message');
          if (isset($message)) {
              ?>
-      <div class="alert alert-info alert-dismissable">
+      <div class="alert alert-info alert-dismissable" style="background-color: #006400 !important;">
          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $message ?>                    
+         <?= $message ?>                    
       </div>
       <?php
          $this->session->unset_userdata('message');
@@ -111,7 +108,7 @@
          ?>
       <div class="alert alert-danger alert-dismissable">
          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $error_message ?>                    
+         <?= $error_message ?>                    
       </div>
       <?php
          $this->session->unset_userdata('error_message');
@@ -123,7 +120,7 @@
             <div class="panel panel-bd lobidrag">
                <div class="panel-heading" style="height: 50px;">
                   <div class="panel-title">
-                     <a style="float:right;color:white;" href="<?php echo base_url('Chrm/manage_employee') ?>?id=<?php echo $_GET['id']; ?>" class="btnclr btn  m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo ('Manage Employee')?> </a>
+                     <a style="float:right;color:white;" href="<?= base_url('Chrm/manage_employee') ?>?id=<?= $_GET['id']; ?>" class="btnclr btn  m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?= ('Manage Employee')?> </a>
                   </div>
                </div>
                <div class="panel-title">
@@ -132,55 +129,55 @@
                <div class="panel-body">
                   <div class="errormessage"></div>
                   <form id="update_employee" name="update_employee" method="post" enctype="multipart/form-data">
-                     <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+                     <input type="hidden" name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
                   <div class="row">
                      <!-- Left Side -->
                      <div class="col-sm-6">
                         <div class="form-group row">
-                           <label for="first_name" class="col-sm-4 col-form-div"><?php echo display('first_name') ?> <i class="text-danger">*</i></label>
+                           <label for="first_name" class="col-sm-4 col-form-div"><?= display('first_name') ?> <i class="text-danger">*</i></label>
                            <div class="col-sm-8">
-                              <input name="first_name" class="form-control" type="text" placeholder="<?php echo display('first_name') ?>" id="first_name" value="<?php echo html_escape($employee_data[0]['first_name'])?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
-                              <input type="hidden" name="employee_id" value="<?php echo html_escape($employee_data[0]['id']);?>">
-                              <input type="hidden" name="old_first_name" value="<?php echo html_escape($employee_data[0]['first_name'])?>">
-                                   <input type="hidden" name="company_id" value="<?php echo html_escape($_GET['id']);?>">
-                                        <input type="hidden" name="admin_id" value="<?php echo html_escape($_GET['admin_id']);?>">
+                              <input name="first_name" class="form-control" type="text" placeholder="<?= display('first_name') ?>" id="first_name" value="<?= html_escape($employee_data[0]['first_name'])?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
+                              <input type="hidden" name="employee_id" value="<?= html_escape($employee_data[0]['id']);?>">
+                              <input type="hidden" name="old_first_name" value="<?= html_escape($employee_data[0]['first_name'])?>">
+                              <input type="hidden" name="company_id" value="<?= html_escape($_GET['id']);?>">
+                              <input type="hidden" name="admin_id" value="<?= html_escape($_GET['admin_id']);?>">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="middle_name" class="col-sm-4 col-form-div"><?php echo "Middle Name"; ?></label>
+                           <label for="middle_name" class="col-sm-4 col-form-div"><?= "Middle Name"; ?></label>
                            <div class="col-sm-8">
-                              <input name="middle_name" class="form-control" type="text" placeholder="<?php echo "Middle Name"; ?>" value="<?php echo html_escape($employee_data[0]['middle_name'])?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
-                              <input type="hidden" name="old_middle_name" value="<?php echo html_escape($employee_data[0]['middle_name'])?>">
+                              <input name="middle_name" class="form-control" type="text" placeholder="<?= "Middle Name"; ?>" value="<?= html_escape($employee_data[0]['middle_name'])?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
+                              <input type="hidden" name="old_middle_name" value="<?= html_escape($employee_data[0]['middle_name'])?>">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="last_name" class="col-sm-4 col-form-div"><?php echo display('last_name') ?><i class="text-danger">*</i></label>
+                           <label for="last_name" class="col-sm-4 col-form-div"><?= display('last_name') ?><i class="text-danger">*</i></label>
                            <div class="col-sm-8">
-                              <input name="last_name" class="form-control" type="text" placeholder="<?php echo display('last_name') ?>" id="last_name" value="<?php echo html_escape($employee_data[0]['last_name'])?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
-                              <input type="hidden" name="old_last_name" value="<?php echo html_escape($employee_data[0]['last_name'])?>">
+                              <input name="last_name" class="form-control" type="text" placeholder="<?= display('last_name') ?>" id="last_name" value="<?= html_escape($employee_data[0]['last_name'])?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
+                              <input type="hidden" name="old_last_name" value="<?= html_escape($employee_data[0]['last_name'])?>">
                            </div>
                         </div>
                         <div class="form-group row" id="payment_from_1">
-                           <label for="designation" class="col-sm-4 col-form-label"> <?php echo display('designation') ?> <i class="text-danger">*</i> </label>
+                           <label for="designation" class="col-sm-4 col-form-label"> <?= display('designation') ?> <i class="text-danger">*</i> </label>
                            <div class="col-sm-8">
                               <select name="designation" id="designation" class="form-control"  required>
-                                 <option value="<?php echo html_escape($employee_data[0]['designation'])?>"><?php echo html_escape($employee_data[0]['designation'])?></option>
+                                 <option value="<?= html_escape($employee_data[0]['designation'])?>"><?= html_escape($employee_data[0]['designation'])?></option>
                                  <?php  foreach($desig as $ds){ ?>
-                                 <option value="<?php  echo $ds['designation'] ;?>"><?php  echo $ds['designation'] ;?></option>
+                                 <option value="<?= $ds['designation'] ;?>"><?= $ds['designation'] ;?></option>
                                  <?php  } ?>
                               </select>
                            </div>
                         </div>
                         <!-- <div class="form-group row" id="payment_from">
-                           <label for="blood_group" class="col-sm-4 col-form-div"><?php echo display('blood_group') ?> </label>
+                           <label for="blood_group" class="col-sm-4 col-form-div"><?= display('blood_group') ?> </label>
                            <div class="col-sm-8">
-                           <input name="blood_group" class="form-control" type="text" placeholder="<?php echo display('blood_group') ?>" id="blood_group" value="<?php echo html_escape($employee_data[0]['blood_group'])?>">
+                           <input name="blood_group" class="form-control" type="text" placeholder="<?= display('blood_group') ?>" id="blood_group" value="<?= html_escape($employee_data[0]['blood_group'])?>">
                            </div>
                            </div> -->
                         <div class="form-group row">
-                           <label for="phone" class="col-sm-4 col-form-div"><?php echo display('phone') ?> <i class="text-danger">*</i></label>
+                           <label for="phone" class="col-sm-4 col-form-div"><?= display('phone') ?> <i class="text-danger">*</i></label>
                            <div class="col-sm-8">
-                              <input name="phone" class="form-control" type="text" placeholder="<?php echo display('phone') ?>" id="phone" value="<?php echo html_escape($employee_data[0]['phone'])?>">
+                              <input name="phone" class="form-control" type="text" placeholder="<?= display('phone') ?>" id="phone" value="<?= html_escape($employee_data[0]['phone'])?>">
                            </div>
                         </div>
                         <div class="form-group row">
@@ -188,45 +185,45 @@
                            Email 
                            </label>
                            <div class="col-sm-8">
-                              <input name="email" class="form-control" type="email" placeholder="<?php echo display('email') ?>" id="email" value="<?php echo html_escape($employee_data[0]['email'])?>" oninput="validateEmail(this)">
+                              <input name="email" class="form-control" type="email" placeholder="<?= display('email') ?>" id="email" value="<?= html_escape($employee_data[0]['email'])?>" oninput="validateEmail(this)">
                               <span id="validateemails" style="margin-top: 10px;"></span>
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="address_line_1" class="col-sm-4 col-form-div"><?php echo display('address_line_1') ?></label>
+                           <label for="address_line_1" class="col-sm-4 col-form-div"><?= display('address_line_1') ?></label>
                            <div class="col-sm-8">
-                              <textarea name="address_line_1" rows='1' class="form-control" placeholder="<?php echo display('address_line_1') ?>" id="address_line_1"><?php echo html_escape($employee_data[0]['address_line_1'])?></textarea> 
+                              <textarea name="address_line_1" rows='1' class="form-control" placeholder="<?= display('address_line_1') ?>" id="address_line_1"><?= html_escape($employee_data[0]['address_line_1'])?></textarea> 
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="address_line_2" class="col-sm-4 col-form-div"><?php echo display('address_line_2') ?></label>
+                           <label for="address_line_2" class="col-sm-4 col-form-div"><?= display('address_line_2') ?></label>
                            <div class="col-sm-8">
-                              <textarea name="address_line_2" rows='1' class="form-control" placeholder="<?php echo display('address_line_2') ?>" id="address_line_2"><?php echo html_escape($employee_data[0]['address_line_2'])?></textarea> 
+                              <textarea name="address_line_2" rows='1' class="form-control" placeholder="<?= display('address_line_2') ?>" id="address_line_2"><?= html_escape($employee_data[0]['address_line_2'])?></textarea> 
                            </div>
                         </div>
                         <div class="form-group row" id="payment_from">
-                           <label for="city" class="col-sm-4 col-form-div"><?php echo display('city') ?></label>
+                           <label for="city" class="col-sm-4 col-form-div"><?= display('city') ?></label>
                            <div class="col-sm-8">
-                              <input name="city" class="form-control" type="text" placeholder="<?php echo display('city') ?>" id="city" value="<?php echo html_escape($employee_data[0]['city']);?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
+                              <input name="city" class="form-control" type="text" placeholder="<?= display('city') ?>" id="city" value="<?= html_escape($employee_data[0]['city']);?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="state" class="col-sm-4 col-form-label"><?php  echo  display('state');?> <i class="text-danger"></i></label>
+                           <label for="state" class="col-sm-4 col-form-label"><?=  display('state');?> <i class="text-danger"></i></label>
                            <div class="col-sm-8">
-                              <input name="state" class="form-control" type="text" placeholder="<?php echo display('state') ?>" id="state" value="<?php echo html_escape($employee_data[0]['state']);?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
+                              <input name="state" class="form-control" type="text" placeholder="<?= display('state') ?>" id="state" value="<?= html_escape($employee_data[0]['state']);?>" oninput="this.value = this.value.replace(/[^A-Za-z]/g, '')">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="zip" class="col-sm-4 col-form-div"><?php echo display('zip') ?></label>
+                           <label for="zip" class="col-sm-4 col-form-div"><?= display('zip') ?></label>
                            <div class="col-sm-8">
-                              <input name="zip" class="form-control" type="text" placeholder="<?php echo display('zip') ?>" id="zip" value="<?php echo html_escape($employee_data[0]['zip']);?>" oninput="exitnumbers(this, 10)">
+                              <input name="zip" class="form-control" type="text" placeholder="<?= display('zip') ?>" id="zip" value="<?= html_escape($employee_data[0]['zip']);?>" oninput="exitnumbers(this, 10)">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="country" class="col-sm-4 col-form-div"><?php echo display('country') ?></label>
+                           <label for="country" class="col-sm-4 col-form-div"><?= display('country') ?></label>
                            <div class="col-sm-8">
                               <select name="country" class="form-control">
-                                 <option value="<?php echo $employee_data[0]['country'];?>" selected><?php echo html_escape($employee_data[0]['country']);?></option>
+                                 <option value="<?= $employee_data[0]['country'];?>" selected><?= html_escape($employee_data[0]['country']);?></option>
                                  <option value="Afganistan" rel="">Afghanistan</option>
                                  <option value="Albania" rel="">Albania</option>
                                  <option value="Algeria" rel="">Algeria</option>
@@ -482,42 +479,42 @@
                            </label>
                            <div class="col-sm-8">
                               <select  name="employee_type" id="emp_type" class="required form-control" required>
-                                 <option value="<?php echo html_escape($employee_data[0]['employee_type'])?>"><?php echo html_escape($employee_data[0]['employee_type'])?></option>
+                                 <option value="<?= html_escape($employee_data[0]['employee_type'])?>"><?= html_escape($employee_data[0]['employee_type'])?></option>
                                  <option value="Full Time (W4)">Full Time (W4)</option>
                                  <option value="Contractor (W9)">Contractor (W9)</option>
                                  <option value="Part time">Part time</option>
                                  <?php foreach($emp_data as $emp_type){ ?>
-                                 <option value="<?php  echo $emp_type['employee_type'] ;?>"><?php  echo $emp_type['employee_type'] ;?></option>
+                                 <option value="<?= $emp_type['employee_type'] ;?>"><?= $emp_type['employee_type'] ;?></option>
                                  <?php  } ?>
                               </select>
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="emergencycontact" class="col-sm-4 col-form-label"> <?php echo "Emergency Contact Person" ?> </label>
+                           <label for="emergencycontact" class="col-sm-4 col-form-label"> <?= "Emergency Contact Person" ?> </label>
                            <div class="col-sm-8">
-                              <input class="form-control" name="emergencycontact" id="emergencycontact" type="text"  style="border:2px solid #D7D4D6;"   placeholder="Emergency Contact person" value="<?php echo html_escape($employee_data[0]['emergencycontact'])?>"  oninput="limitAlphabetical(this, 20)">
+                              <input class="form-control" name="emergencycontact" id="emergencycontact" type="text"  style="border:2px solid #D7D4D6;"   placeholder="Emergency Contact person" value="<?= html_escape($employee_data[0]['emergencycontact'])?>"  oninput="limitAlphabetical(this, 20)">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="emergencycontactnum" class="col-sm-4 col-form-label"> <?php echo "Emergency Contact  number" ?> </label>
+                           <label for="emergencycontactnum" class="col-sm-4 col-form-label"> <?= "Emergency Contact  number" ?> </label>
                            <div class="col-sm-8">
-                              <input class="form-control" name="emergencycontactnum" id="emergencycontactnum" type="number"  style="border:2px solid #D7D4D6;"   placeholder="Emergency Contact  number" value="<?php echo html_escape($employee_data[0]['emergencycontactnum'])?>"  oninput="exitnumbers(this, 10)">
+                              <input class="form-control" name="emergencycontactnum" id="emergencycontactnum" type="number"  style="border:2px solid #D7D4D6;"   placeholder="Emergency Contact  number" value="<?= html_escape($employee_data[0]['emergencycontactnum'])?>"  oninput="exitnumbers(this, 10)">
                            </div>
                         </div>
                      </div>
                      <!-- Right Side -->
                      <div class="col-sm-6">
                         <div class="form-group row" id="payment_from">
-                           <label for="city" class="col-sm-4 col-form-div"><?php echo  ('Sales Commission') ?></label>
+                           <label for="city" class="col-sm-4 col-form-div"><?=  ('Sales Commission') ?></label>
                            <div class="col-sm-8">
-                              <input name="sc" class="form-control" type="text" value="<?php echo html_escape($employee_data[0]['sc']);?>" placeholder="<?php echo 'sales commission' ?>"  oninput="exitsalecommission(this, 2)">
+                              <input name="sc" class="form-control" type="text" value="<?= html_escape($employee_data[0]['sc']);?>" placeholder="<?= 'sales commission' ?>"  oninput="exitsalecommission(this, 2)">
                            </div>
                         </div>
                      <div class="form-group row" id="payment_from">
                            <label for="payroll_type" class="col-sm-4 col-form-label"> Payroll Type <i class="text-danger">*</i></label>
                            <div class="col-sm-8">
                               <select  name="payroll_type" id="payroll_type"  requried class="form-control" >
-                                 <option value="<?php echo html_escape($employee_data[0]['payroll_type'])?>"><?php echo html_escape($employee_data[0]['payroll_type'])?></option>
+                                 <option value="<?= html_escape($employee_data[0]['payroll_type'])?>"><?= html_escape($employee_data[0]['payroll_type'])?></option>
                                  <option value="Hourly">Hourly</option>
                                  <!--<option value="Salaried-weekly">Salaried-Weekly</option>-->
                                  <!--<option value="Salaried-BiWeekly">Salaried-BiWeekly</option>-->
@@ -525,27 +522,27 @@
                                  <!--<option value="Salaried-BiMonthly">Salaried-BiMonthly</option>-->
                                  <!--<option value="SalesCommission">SalesCommission</option>-->
                                  <!--<?php foreach($payroll_data as $prolltype){ ?>-->
-                                 <!--<option value="<?php  echo $prolltype['payroll_type'] ;?>"><?php  echo $prolltype['payroll_type'] ;?></option>-->
+                                 <!--<option value="<?= $prolltype['payroll_type'] ;?>"><?= $prolltype['payroll_type'] ;?></option>-->
                                  <!--<?php  } ?>-->
                               </select>
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="hour_rate_or_salary"  id="cost" class="col-sm-4 col-form-div">Pay rate(<?php echo $currency; ?>)  <i class="text-danger">*</i></label>
+                           <label for="hour_rate_or_salary"  id="cost" class="col-sm-4 col-form-div">Pay rate(<?= $currency; ?>)  <i class="text-danger">*</i></label>
                            <div class="col-sm-8">
-                              <input name="hrate" class="form-control" type="text" placeholder="<?php echo "Pay rate" ?>" id="hrate" value="<?php echo html_escape($employee_data[0]['hrate'])?>" oninput="validateInput(this)">
+                              <input name="hrate" class="form-control" type="text" placeholder="<?= "Pay rate" ?>" id="hrate" value="<?= html_escape($employee_data[0]['hrate'])?>" oninput="validateInput(this)">
                            </div>
                         </div>
                         <div class="form-group row" id="payment_from">
                            <label for="paytype" class="col-sm-4 col-form-label"> Payment Type </label>
                            <div class="col-sm-8">
                               <select name="paytype"  id="paytype" class="form-control" style="width: 100%;" >
-                                 <option value="<?php echo html_escape($employee_data[0]['rate_type'])?>"><?php echo html_escape($employee_data[0]['rate_type'])?></option>
+                                 <option value="<?= html_escape($employee_data[0]['rate_type'])?>"><?= html_escape($employee_data[0]['rate_type'])?></option>
                                  <option value="Cheque">Cheque</option>
                                  <option value="Direct Deposit">Direct Deposit</option>
                                  <option value="Cash">Cash</option>
                                  <?php  foreach($paytype as $ptype){ ?>
-                                 <option value="<?php  echo $ptype['payment_type'] ;?>"><?php  echo $ptype['payment_type'] ;?></option>
+                                 <option value="<?= $ptype['payment_type'] ;?>"><?= $ptype['payment_type'] ;?></option>
                                  <?php  } ?>
                               </select>
                            </div>
@@ -561,15 +558,15 @@
     $hiddenDigits = str_repeat("*", strlen($employee_data[0]['social_security_number']));
 }
                                ?>
-                              <input name="ssn" class="form-control" type="text" placeholder="Social security number" value="<?php echo $hiddenDigits;?>" required oninput="exitsocialsecurity(this, 9)">
+                              <input name="ssn" class="form-control" type="text" placeholder="Social security number" value="<?= $hiddenDigits;?>" required oninput="exitsocialsecurity(this, 9)">
                            </div>
                         </div>
                         <div class="form-group row" id="bank_name">
-                           <label for="bank_name" class="col-sm-4 col-form-label"> <?php echo display('Bank') ?> <i class="text-danger"></i> </label>
+                           <label for="bank_name" class="col-sm-4 col-form-label"> <?= display('Bank') ?> <i class="text-danger"></i> </label>
                            <div class="col-sm-8">
                               <select name="bank_name" id="bank_name"  class="form-control">
-                                 <option value="<?php echo $employee_data[0]['bank_name']; ?>" <?php if($employee_data[0]['bank_name']) { echo 'selected'; } ?>>
-                                    <?php echo $employee_data[0]['bank_name']; ?>
+                                 <option value="<?= $employee_data[0]['bank_name']; ?>" <?php if($employee_data[0]['bank_name']) { echo 'selected'; } ?>>
+                                    <?= $employee_data[0]['bank_name']; ?>
                                  </option>
                                  <option value="NA">NA (Not Applicable)</option>
                                  <option value="JPMorgan Chase">JPMorgan Chase</option>
@@ -675,7 +672,7 @@
                                  <option value="Hope Bancorp">Hope Bancorp</option>
                                  <option value="SoFi">SoFi</option>
                                  <?php foreach($bank_data as $bank){  ?>
-                                 <option value="<?php  echo $bank['bank_name'] ;?>"><?php  echo $bank['bank_name'] ;?></option>
+                                 <option value="<?= $bank['bank_name'] ;?>"><?= $bank['bank_name'] ;?></option>
                                  <?php  } ?>
                               </select>
                            </div>
@@ -683,20 +680,20 @@
                         <div class="form-group row">
                            <label for="blood_group" class="col-sm-4 col-form-div">Routing number </label>
                            <div class="col-sm-8">
-                              <input name="routing_number" class="form-control" type="text" placeholder="Routing number" value="<?php echo html_escape($employee_data[0]['routing_number'])?>" oninput="routingrestrict(this, 15)">
+                              <input name="routing_number" class="form-control" type="text" placeholder="Routing number" value="<?= html_escape($employee_data[0]['routing_number'])?>" oninput="routingrestrict(this, 15)">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="zip" class="col-sm-4 col-form-div"><?php echo 'Account Number' ?></label>
+                           <label for="zip" class="col-sm-4 col-form-div"><?= 'Account Number' ?></label>
                            <div class="col-sm-8">
-                              <input type="text" name="account_number" class="form-control" value="<?php echo $employee_data[0]['account_number']; ?>" oninput="routingrestrict(this, 15)">
+                              <input type="text" name="account_number" class="form-control" value="<?= $employee_data[0]['account_number']; ?>" oninput="routingrestrict(this, 15)">
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="zip" class="col-sm-4 col-form-div"><?php echo ('Employee Tax') ?><i class="text-danger">*</i></label>
+                           <label for="zip" class="col-sm-4 col-form-div"><?= ('Employee Tax') ?><i class="text-danger">*</i></label>
                            <div class="col-sm-8">
                               <select  name="emp_tax_detail" id="emp_tax_detail" class="form-control" required>
-                                 <option value="<?php echo html_escape($employee_data[0]['employee_tax'])?>"><?php echo html_escape($employee_data[0]['employee_tax'])?></option>
+                                 <option value="<?= html_escape($employee_data[0]['employee_tax'])?>"><?= html_escape($employee_data[0]['employee_tax'])?></option>
                                  <option value="">Select Tax</option>
                                  <option value="single">Single</option>
                                  <option value="tax_filling">Tax Filling</option>
@@ -714,37 +711,37 @@
                                  <br>
                                  <div class="form-group fg" >
                                     <label for="stateTaxDropdown">State Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_state_tax" name="state_tax" id="stateTaxDropdown"  value="<?php echo html_escape($employee_data[0]['edit_working_state'])?>"   class="form-control">
+                                    <input list="magic_state_tax" name="state_tax" id="stateTaxDropdown"  value="<?= html_escape($employee_data[0]['edit_working_state'])?>"   class="form-control">
                                     <datalist id="magic_state_tax">
                                        <?php foreach ($state_tx as $st) { ?>
-                                       <option value="<?php echo $st['state']; ?>"><?php echo $st['state']; ?></option>
+                                       <option value="<?= $st['state']; ?>"><?= $st['state']; ?></option>
                                        <?php } ?>
                                        <option value="Not Applicable">Not Applicable</option>
                                     </datalist>
                                  </div>
                                  <div class="form-group fg">
                                     <label for="localTaxDropdown">City Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_local_tax" name="city_tax" id="localTaxDropdown"  value="<?php echo html_escape($employee_data[0]['edit_working_city'])?>"    class="form-control">
+                                    <input list="magic_local_tax" name="city_tax" id="localTaxDropdown"  value="<?= html_escape($employee_data[0]['edit_working_city'])?>"    class="form-control">
                                     <datalist id="magic_local_tax">
                                        <?php foreach ($get_info_city_tax as $gtct) { ?>
-                                       <option value="<?php echo $gtct['state']; ?>"><?php echo $gtct['state']; ?></option>
+                                       <option value="<?= $gtct['state']; ?>"><?= $gtct['state']; ?></option>
                                        <?php } ?>
                                        <option value="Not Applicable">Not Applicable</option>
                                     </datalist>
                                  </div>
                                  <div class="form-group fg">
                                     <label for="stateLocalTaxDropdown">County Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_state_local_tax" name="county_tax" id="stateLocalTaxDropdown"  value="<?php echo html_escape($employee_data[0]['edit_working_county'])?>"   class="form-control">
+                                    <input list="magic_state_local_tax" name="county_tax" id="stateLocalTaxDropdown"  value="<?= html_escape($employee_data[0]['edit_working_county'])?>"   class="form-control">
                                     <datalist id="magic_state_local_tax">
                                        <?php foreach ($get_info_county_tax as $gtcty) { ?>
-                                       <option value="<?php echo $gtcty['state']; ?>"><?php echo $gtcty['state']; ?></option>
+                                       <option value="<?= $gtcty['state']; ?>"><?= $gtcty['state']; ?></option>
                                        <?php } ?>
                                        <option value="Not Applicable">Not Applicable</option>
                                     </datalist>
                                  </div>
                                  <div class="form-group fg">
                                     <label for="stateTax2Dropdown">Other Working Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_state_tax_2" name="other_working_tax" id="stateTax2Dropdown"   value="<?php echo html_escape($employee_data[0]['edit_working_other'])?>"  class="form-control">
+                                    <input list="magic_state_tax_2" name="other_working_tax" id="stateTax2Dropdown"   value="<?= html_escape($employee_data[0]['edit_working_other'])?>"  class="form-control">
                                     <!--<datalist id="magic_state_tax_2">-->
                                     <!--    <?php //foreach ($state_tx as $st) { ?>-->
                                     <!--        <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
@@ -759,37 +756,37 @@
                                  <br>
                                  <div class="form-group fg">
                                     <label for="livingStateTax">State Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_state_tax" name="living_state_tax"  value="<?php echo html_escape($employee_data[0]['edit_living_state'])?>"    id="livingStateTax" class="form-control">
+                                    <input list="magic_living_state_tax" name="living_state_tax"  value="<?= html_escape($employee_data[0]['edit_living_state'])?>"    id="livingStateTax" class="form-control">
                                     <datalist id="magic_living_state_tax">
                                        <?php foreach ($state_tx as $st) { ?>
-                                       <option value="<?php echo $st['state']; ?>"><?php echo $st['state']; ?></option>
+                                       <option value="<?= $st['state']; ?>"><?= $st['state']; ?></option>
                                        <?php } ?>
                                        <option value="Not Applicable">Not Applicable</option>
                                     </datalist>
                                  </div>
                                  <div class="form-group fg">
                                     <label for="livingCityTax">City Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_city_tax" name="living_city_tax" id="livingCityTax"  value="<?php echo html_escape($employee_data[0]['edit_living_city'])?>"   class="form-control">
+                                    <input list="magic_living_city_tax" name="living_city_tax" id="livingCityTax"  value="<?= html_escape($employee_data[0]['edit_living_city'])?>"   class="form-control">
                                     <datalist id="magic_living_city_tax">
                                        <?php foreach ($get_info_city_tax as $gtct) { ?>
-                                       <option value="<?php echo $gtct['state']; ?>"><?php echo $gtct['state']; ?></option>
+                                       <option value="<?= $gtct['state']; ?>"><?= $gtct['state']; ?></option>
                                        <?php } ?>
                                        <option value="Not Applicable">Not Applicable</option>
                                     </datalist>
                                  </div>
                                  <div class="form-group fg">
                                     <label for="livingCountyTax">County Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_county_tax" name="living_county_tax" id="livingCountyTax"   value="<?php echo html_escape($employee_data[0]['edit_living_county'])?>"      class="form-control">
+                                    <input list="magic_living_county_tax" name="living_county_tax" id="livingCountyTax"   value="<?= html_escape($employee_data[0]['edit_living_county'])?>"      class="form-control">
                                     <datalist id="magic_living_county_tax">
                                        <?php foreach ($get_info_county_tax as $gtcty) { ?>
-                                       <option value="<?php echo $gtcty['state']; ?>"><?php echo $gtcty['state']; ?></option>
+                                       <option value="<?= $gtcty['state']; ?>"><?= $gtcty['state']; ?></option>
                                        <?php } ?>
                                        <option value="Not Applicable">Not Applicable</option>
                                     </datalist>
                                  </div>
                                  <div class="form-group fg">
                                     <label for="livingOtherTax">Other Living Tax<i class="text-danger">*</i></label>
-                                    <input list="magic_living_other_tax" name="other_living_tax" id="livingOtherTax"  value="<?php echo html_escape($employee_data[0]['edit_living_other'])?>"   class="form-control">
+                                    <input list="magic_living_other_tax" name="other_living_tax" id="livingOtherTax"  value="<?= html_escape($employee_data[0]['edit_living_other'])?>"   class="form-control">
                                     <!--<datalist id="magic_living_other_tax">-->
                                     <!--    <?php //foreach ($state_tx as $st) { ?>-->
                                     <!--        <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
@@ -815,14 +812,14 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                           <label for="ETA" class="col-sm-4 col-form-label"><?php echo display('Attachments ') ?></label>
+                           <label for="ETA" class="col-sm-4 col-form-label"><?= display('Attachments ') ?></label>
                               <div class="col-sm-6">
                                  <p>
                                     <label for="attachment">
                                     <a class="btnclr btn   text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
                                     </label>
                                     <input type="file" name="files[]" class="upload" id="attachment" style="visibility: hidden; position: absolute;" multiple/>
-                                    <input type="hidden" name="old_image" value="<?php echo html_escape($employee_data[0]['files']);?>">
+                                    <input type="hidden" name="old_image" value="<?= html_escape($employee_data[0]['files']);?>">
                                  </p>
                                  <p id="files-area">
                                     <span id="filesList">
@@ -848,8 +845,8 @@
                            Attachments <i class="text-danger">*</i>
                            </label>
                            <div class="col-sm-8">
-                              <input type="file" name="files[]" class="form-control" placeholder="<?php echo display('picture') ?>" id="image" multiple>
-                              <input type="hidden" name="old_image" value="<?php echo html_escape($employee_data[0]['files']);?>">
+                              <input type="file" name="files[]" class="form-control" placeholder="<?= display('picture') ?>" id="image" multiple>
+                              <input type="hidden" name="old_image" value="<?= html_escape($employee_data[0]['files']);?>">
                               <br>
                               <?php
                                  echo '<div class="file-container">';
@@ -870,16 +867,16 @@
                            </label>
                            <div class="col-sm-8">
                               <input type="file" name="profile_image" class="form-control">
-                              <input type="hidden" name="old_profileimage" value="<?php echo html_escape($employee_data[0]['profile_image']);?>">
+                              <input type="hidden" name="old_profileimage" value="<?= html_escape($employee_data[0]['profile_image']);?>">
                               <br>
-                              <img src="<?php  echo base_url(); ?>uploads/profile/<?php echo $employee_data[0]['profile_image']; ?>" height="40px" width="40px">
+                              <img src="<?= base_url('assets/uploads/profile/').$employee_data[0]['profile_image']; ?>" height="80px" width="80px">
                            </div>
                         </div>
                      </div>
                   </div>
                   <br>
-                  <button type="submit" style="float:center;color:white;" id="checkSubmit" class="btnclr btn  w-md m-b-5"><?php echo display('save') ?></button>
-                  <?php echo form_close() ?>
+                  <button type="submit" style="float:center;color:white;" id="checkSubmit" class="btnclr btn  w-md m-b-5"><?= display('save') ?></button>
+                  <?= form_close() ?>
                </div>
             </form>
             </div>
@@ -887,9 +884,10 @@
       </div>
    </section>
 </div>
-<script>
 
-   const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+
+<script>
+   // const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
       
       $("#attachment").on('change', function(e){
           // alert('hi');
@@ -926,7 +924,7 @@
       });
 
 
-   document.getElementById("showPopup").addEventListener("click", function() {
+      document.getElementById("showPopup").addEventListener("click", function() {
        document.getElementById("popup").style.display = "block";
        });
    
@@ -939,29 +937,18 @@
        });
       
       function closeModal() {
-           document.getElementById("popup").style.display = "none";
-       }
+         document.getElementById("popup").style.display = "none";
+      }
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   const stateTaxCheckbox = document.getElementById('stateTaxCheckbox');
-       const localTaxCheckbox = document.getElementById('localTaxCheckbox');
-       const stateLocalTaxCheckbox = document.getElementById('stateLocalTaxCheckbox');
-       const stateTaxDropdown = document.getElementById('stateTaxDropdown');
-       const stateTaxDropdown1 = document.getElementById('stateTaxDropdown1');
-       const localTaxDropdown = document.getElementById('localTaxDropdown');
-       const stateLocalTaxDropdown = document.getElementById('stateLocalTaxDropdown');
-       stateTaxCheckbox.addEventListener('change', function () {
+      const stateTaxCheckbox = document.getElementById('stateTaxCheckbox');
+      const localTaxCheckbox = document.getElementById('localTaxCheckbox');
+      const stateLocalTaxCheckbox = document.getElementById('stateLocalTaxCheckbox');
+      const stateTaxDropdown = document.getElementById('stateTaxDropdown');
+      const stateTaxDropdown1 = document.getElementById('stateTaxDropdown1');
+      const localTaxDropdown = document.getElementById('localTaxDropdown');
+      const stateLocalTaxDropdown = document.getElementById('stateLocalTaxDropdown');
+
+      stateTaxCheckbox.addEventListener('change', function () {
            if (this.checked) {
                stateLocalTaxCheckbox.disabled = false;
               // localTaxCheckbox.disabled = false;
@@ -976,6 +963,7 @@
            stateTaxDropdown.style.display = this.checked ? 'block' : 'none';
            stateTaxDropdown1.style.display = this.checked ? 'block' : 'none';
        });
+       
        localTaxCheckbox.addEventListener('change', function () {
            if (this.checked) {
                stateLocalTaxCheckbox.disabled = false;
@@ -1005,6 +993,7 @@
            }
            stateLocalTaxDropdown.style.display = this.checked ? 'block' : 'none';
        });
+
     function toggleDropdown(checkboxId, dropdownId) {
            var checkbox = document.getElementById(checkboxId);
            var dropdown = document.getElementById(dropdownId);
@@ -1067,8 +1056,6 @@
    // });
    
    
-   
-   
     
    var payrollTypeSelect = document.getElementById('payroll_type');
        var asteriskSpan = document.getElementById('asterisk');
@@ -1100,8 +1087,7 @@
            $('#cost').text('Pay rate (Daily)').show(); // Show the label
            $('#hrate').show(); // Show the input field
        }
-   });
-   
+   });   
    
    
    // Validate Email
@@ -1191,10 +1177,10 @@
 </script>
 
 <script type="text/javascript">
-   var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
-   var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+   var csrfName = '<?= $this->security->get_csrf_token_name();?>';
+   var csrfHash = '<?= $this->security->get_csrf_hash();?>';
    $(document).ready(function(){
-   var succalert = '<div class="alert alert-success alert-dismissible" role="alert">';
+   var succalert = '<div style="color: #fff; background-color: #006400 !important;" class="alert alert-success alert-dismissible" role="alert">';
    var failalert = '<div class="alert alert-danger alert-dismissible" role="alert">';
    $("#update_employee").validate({
  
@@ -1228,7 +1214,7 @@
     $.ajax({
       type: "POST",
       dataType: "json",
-      url: "<?php echo base_url('Chrm/update_employee?id='); ?>" +encodeURIComponent('<?php echo $_GET['id']; ?>'),
+      url: "<?= base_url('Chrm/update_employee?id='); ?>" +encodeURIComponent('<?= $_GET['id']; ?>'),
       data: formData,
       contentType: false,
       processData: false,
@@ -1239,7 +1225,7 @@
           $('.errormessage').html(succalert+response.msg+'</div>');
             console.log(response.msg, "Success");
             window.setTimeout(function(){
-            window.location.href = "<?php echo base_url('Chrm/manage_employee'); ?>?id=" + encodeURIComponent('<?php echo $_GET['id']; ?>');
+            window.location.href = "<?= base_url('Chrm/manage_employee'); ?>?id=" + encodeURIComponent('<?= $_GET['id']; ?>');
 
          },500);
          }else{

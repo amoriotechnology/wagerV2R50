@@ -1,10 +1,7 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>my-assets/css/css.css" />
+
 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-<script src="<?php echo base_url() ?>my-assets/js/countrypicker.js" type="text/javascript"></script>
+
 <div class="content-wrapper">
    <section class="content-header">
       <div class="header-icon">
@@ -21,6 +18,7 @@
          </ol>
       </div>
    </section>
+
    <style>
       .popup label{
       color:white;
@@ -94,6 +92,7 @@
       }
    </style>
    <!-- New Employee Type -->
+
    <!-- <div class="row"> -->
    <div class="col-sm-12">
       <div class="panel panel-bd lobidrag">
@@ -120,6 +119,7 @@
                </div>
             </div>
          </div>
+
          <!-- Create Employee -->
          <div class="panel-body" id="employeeForms" style="display: none;">
             <?php //echo form_open('Chrm/employee_create', array('onsubmit' => 'return validateForm()')); ?>
@@ -1480,7 +1480,7 @@
                               <datalist id="magic_state_tax_2">
                                  <!--<?php //foreach ($state_tx as $st) { ?>-->
                                  <!--    <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
-                                 <!--<?php// } ?>-->
+                                 <!--<?php // } ?>-->
                                  <option value="Not Applicable">Not Applicable</option>
                               </datalist>
                            </div>
@@ -1590,6 +1590,8 @@
    </div>
    </section>
 </div>
+
+
 <div class="modal fade" id="myModal1" role="dialog" >
    <div class="modal-dialog">
       <!-- Modal content-->
@@ -1605,404 +1607,16 @@
       </div>
    </div>
 </div>
-<!------ add new Payment Type -->  
-<div class="modal fade" id="payment_type" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?php echo display('Add New Payment Type') ?></h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_pay_type" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo display('New Payment Type') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="new_payment_type" id="new_payment_type" type="text" placeholder="New Payment Type"  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr "  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new Payment Type -->  
-<div class="modal fade" id="employees_type" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title">Add Employee Type</h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_employee_type" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">New Employee Type <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="employee_type" id="emps_type" type="text" placeholder="New Employee Type"  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr"  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new payroll Type -->
-<div class="modal fade" id="proll_type" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title">Add Payroll Type</h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_payroll_type" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">New Payroll Type <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="new_payroll_type" id="new_payroll_type" type="text" placeholder="New Payroll Type"  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr"  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new city tax -->
-<div class="modal fade" id="city_tax" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?php echo 'Add New City ' ?></h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_city_tax" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo 'New City ' ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="new_city_tax" id="new_city_tax" type="text" placeholder="New City "  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr "  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new designation_modal -->  
-<div class="modal fade" id="designation_modal" role="dialog">
-   <div class="modal-dialog" role="document">
-      <!-- <div class="modal-dialog" role="document"> -->
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?php echo ('Add New Designation ') ?></h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_designation" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo ('New Designation') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="designation" id="designation" type="text" placeholder=""  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"   data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr"   value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<div class="modal fade" id="add_bank_info">
-   <div class="modal-dialog">
-      <div class="modal-content" style="text-align:center;" >
-         <div class="modal-header btnclr" >
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title"><?php echo display ('ADD BANK ') ?></h4>
-         </div>
-         <div class="container"></div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_bank"  method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="bank_name" class="col-sm-4 col-form-label"><?php echo display('bank_name') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="bank_name" id="bank_name" required="" placeholder="<?php echo display('bank_name') ?>" tabindex="1"/>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="ac_name" class="col-sm-4 col-form-label"><?php echo display('ac_name') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="ac_name" id="ac_name" required="" placeholder="<?php echo display('ac_name') ?>" tabindex="2"/>
-                     </div>
-                  </div>
-                  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="ac_no" class="col-sm-4 col-form-label"><?php echo display('ac_no') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="ac_no" id="ac_no" required="" placeholder="<?php echo display('ac_no') ?>" tabindex="3"/>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="branch" class="col-sm-4 col-form-label"><?php echo display('branch') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="branch" id="branch" required="" placeholder="<?php echo display('branch') ?>" tabindex="4"/>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="shipping_line" class="col-sm-4 col-form-label"><?php echo display('Country') ?>
-                     <i class="text-danger"></i>
-                     </label>
-                     <div class="col-sm-6">
-                        <select class="selectpicker countrypicker form-control"  data-live-search="true" data-default="United States"  name="country" id="country" style="width:100%"></select>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="previous_balance" class="col-sm-4 col-form-label"><?php echo display('Currency') ?></label>
-                     <div class="col-sm-6">
-                        <select  class="form-control" id="currency" name="currency1" class="form-control"  style="width: 100%;" required=""  style="max-width: -webkit-fill-available;">
-                           <option>Select currency</option>
-                           <option value="AFN">AFN - Afghan Afghani</option>
-                           <option value="ALL">ALL - Albanian Lek</option>
-                           <option value="DZD">DZD - Algerian Dinar</option>
-                           <option value="AOA">AOA - Angolan Kwanza</option>
-                           <option value="ARS">ARS - Argentine Peso</option>
-                           <option value="AMD">AMD - Armenian Dram</option>
-                           <option value="AWG">AWG - Aruban Florin</option>
-                           <option value="AUD">AUD - Australian Dollar</option>
-                           <option value="AZN">AZN - Azerbaijani Manat</option>
-                           <option value="BSD">BSD - Bahamian Dollar</option>
-                           <option value="BHD">BHD - Bahraini Dinar</option>
-                           <option value="BDT">BDT - Bangladeshi Taka</option>
-                           <option value="BBD">BBD - Barbadian Dollar</option>
-                           <option value="BYR">BYR - Belarusian Ruble</option>
-                           <option value="BEF">BEF - Belgian Franc</option>
-                           <option value="BZD">BZD - Belize Dollar</option>
-                           <option value="BMD">BMD - Bermudan Dollar</option>
-                           <option value="BTN">BTN - Bhutanese Ngultrum</option>
-                           <option value="BTC">BTC - Bitcoin</option>
-                           <option value="BOB">BOB - Bolivian Boliviano</option>
-                           <option value="BAM">BAM - Bosnia-Herzegovina Convertible Mark</option>
-                           <option value="BWP">BWP - Botswanan Pula</option>
-                           <option value="BRL">BRL - Brazilian Real</option>
-                           <option value="GBP">GBP - British Pound Sterling</option>
-                           <option value="BND">BND - Brunei Dollar</option>
-                           <option value="BGN">BGN - Bulgarian Lev</option>
-                           <option value="BIF">BIF - Burundian Franc</option>
-                           <option value="KHR">KHR - Cambodian Riel</option>
-                           <option value="CAD">CAD - Canadian Dollar</option>
-                           <option value="CVE">CVE - Cape Verdean Escudo</option>
-                           <option value="KYD">KYD - Cayman Islands Dollar</option>
-                           <option value="XOF">XOF - CFA Franc BCEAO</option>
-                           <option value="XAF">XAF - CFA Franc BEAC</option>
-                           <option value="XPF">XPF - CFP Franc</option>
-                           <option value="CLP">CLP - Chilean Peso</option>
-                           <option value="CNY">CNY - Chinese Yuan</option>
-                           <option value="COP">COP - Colombian Peso</option>
-                           <option value="KMF">KMF - Comorian Franc</option>
-                           <option value="CDF">CDF - Congolese Franc</option>
-                           <option value="CRC">CRC - Costa Rican ColÃ³n</option>
-                           <option value="HRK">HRK - Croatian Kuna</option>
-                           <option value="CUC">CUC - Cuban Convertible Peso</option>
-                           <option value="CZK">CZK - Czech Republic Koruna</option>
-                           <option value="DKK">DKK - Danish Krone</option>
-                           <option value="DJF">DJF - Djiboutian Franc</option>
-                           <option value="DOP">DOP - Dominican Peso</option>
-                           <option value="XCD">XCD - East Caribbean Dollar</option>
-                           <option value="EGP">EGP - Egyptian Pound</option>
-                           <option value="ERN">ERN - Eritrean Nakfa</option>
-                           <option value="EEK">EEK - Estonian Kroon</option>
-                           <option value="ETB">ETB - Ethiopian Birr</option>
-                           <option value="EUR">EUR - Euro</option>
-                           <option value="FKP">FKP - Falkland Islands Pound</option>
-                           <option value="FJD">FJD - Fijian Dollar</option>
-                           <option value="GMD">GMD - Gambian Dalasi</option>
-                           <option value="GEL">GEL - Georgian Lari</option>
-                           <option value="DEM">DEM - German Mark</option>
-                           <option value="GHS">GHS - Ghanaian Cedi</option>
-                           <option value="GIP">GIP - Gibraltar Pound</option>
-                           <option value="GRD">GRD - Greek Drachma</option>
-                           <option value="GTQ">GTQ - Guatemalan Quetzal</option>
-                           <option value="GNF">GNF - Guinean Franc</option>
-                           <option value="GYD">GYD - Guyanaese Dollar</option>
-                           <option value="HTG">HTG - Haitian Gourde</option>
-                           <option value="HNL">HNL - Honduran Lempira</option>
-                           <option value="HKD">HKD - Hong Kong Dollar</option>
-                           <option value="HUF">HUF - Hungarian Forint</option>
-                           <option value="ISK">ISK - Icelandic KrÃ³na</option>
-                           <option value="INR">INR - Indian Rupee</option>
-                           <option value="IDR">IDR - Indonesian Rupiah</option>
-                           <option value="IRR">IRR - Iranian Rial</option>
-                           <option value="IQD">IQD - Iraqi Dinar</option>
-                           <option value="ILS">ILS - Israeli New Sheqel</option>
-                           <option value="ITL">ITL - Italian Lira</option>
-                           <option value="JMD">JMD - Jamaican Dollar</option>
-                           <option value="JPY">JPY - Japanese Yen</option>
-                           <option value="JOD">JOD - Jordanian Dinar</option>
-                           <option value="KZT">KZT - Kazakhstani Tenge</option>
-                           <option value="KES">KES - Kenyan Shilling</option>
-                           <option value="KWD">KWD - Kuwaiti Dinar</option>
-                           <option value="KGS">KGS - Kyrgystani Som</option>
-                           <option value="LAK">LAK - Laotian Kip</option>
-                           <option value="LVL">LVL - Latvian Lats</option>
-                           <option value="LBP">LBP - Lebanese Pound</option>
-                           <option value="LSL">LSL - Lesotho Loti</option>
-                           <option value="LRD">LRD - Liberian Dollar</option>
-                           <option value="LYD">LYD - Libyan Dinar</option>
-                           <option value="LTL">LTL - Lithuanian Litas</option>
-                           <option value="MOP">MOP - Macanese Pataca</option>
-                           <option value="MKD">MKD - Macedonian Denar</option>
-                           <option value="MGA">MGA - Malagasy Ariary</option>
-                           <option value="MWK">MWK - Malawian Kwacha</option>
-                           <option value="MYR">MYR - Malaysian Ringgit</option>
-                           <option value="MVR">MVR - Maldivian Rufiyaa</option>
-                           <option value="MRO">MRO - Mauritanian Ouguiya</option>
-                           <option value="MUR">MUR - Mauritian Rupee</option>
-                           <option value="MXN">MXN - Mexican Peso</option>
-                           <option value="MDL">MDL - Moldovan Leu</option>
-                           <option value="MNT">MNT - Mongolian Tugrik</option>
-                           <option value="MAD">MAD - Moroccan Dirham</option>
-                           <option value="MZM">MZM - Mozambican Metical</option>
-                           <option value="MMK">MMK - Myanmar Kyat</option>
-                           <option value="NAD">NAD - Namibian Dollar</option>
-                           <option value="NPR">NPR - Nepalese Rupee</option>
-                           <option value="ANG">ANG - Netherlands Antillean Guilder</option>
-                           <option value="TWD">TWD - New Taiwan Dollar</option>
-                           <option value="NZD">NZD - New Zealand Dollar</option>
-                           <option value="NIO">NIO - Nicaraguan CÃ³rdoba</option>
-                           <option value="NGN">NGN - Nigerian Naira</option>
-                           <option value="KPW">KPW - North Korean Won</option>
-                           <option value="NOK">NOK - Norwegian Krone</option>
-                           <option value="OMR">OMR - Omani Rial</option>
-                           <option value="PKR">PKR - Pakistani Rupee</option>
-                           <option value="PAB">PAB - Panamanian Balboa</option>
-                           <option value="PGK">PGK - Papua New Guinean Kina</option>
-                           <option value="PYG">PYG - Paraguayan Guarani</option>
-                           <option value="PEN">PEN - Peruvian Nuevo Sol</option>
-                           <option value="PHP">PHP - Philippine Peso</option>
-                           <option value="PLN">PLN - Polish Zloty</option>
-                           <option value="QAR">QAR - Qatari Rial</option>
-                           <option value="RON">RON - Romanian Leu</option>
-                           <option value="RUB">RUB - Russian Ruble</option>
-                           <option value="RWF">RWF - Rwandan Franc</option>
-                           <option value="SVC">SVC - Salvadoran ColÃ³n</option>
-                           <option value="WST">WST - Samoan Tala</option>
-                           <option value="SAR">SAR - Saudi Riyal</option>
-                           <option value="RSD">RSD - Serbian Dinar</option>
-                           <option value="SCR">SCR - Seychellois Rupee</option>
-                           <option value="SLL">SLL - Sierra Leonean Leone</option>
-                           <option value="SGD">SGD - Singapore Dollar</option>
-                           <option value="SKK">SKK - Slovak Koruna</option>
-                           <option value="SBD">SBD - Solomon Islands Dollar</option>
-                           <option value="SOS">SOS - Somali Shilling</option>
-                           <option value="ZAR">ZAR - South African Rand</option>
-                           <option value="KRW">KRW - South Korean Won</option>
-                           <option value="XDR">XDR - Special Drawing Rights</option>
-                           <option value="LKR">LKR - Sri Lankan Rupee</option>
-                           <option value="SHP">SHP - St. Helena Pound</option>
-                           <option value="SDG">SDG - Sudanese Pound</option>
-                           <option value="SRD">SRD - Surinamese Dollar</option>
-                           <option value="SZL">SZL - Swazi Lilangeni</option>
-                           <option value="SEK">SEK - Swedish Krona</option>
-                           <option value="CHF">CHF - Swiss Franc</option>
-                           <option value="SYP">SYP - Syrian Pound</option>
-                           <option value="STD">STD - São Tomé and Príncipe Dobra</option>
-                           <option value="TJS">TJS - Tajikistani Somoni</option>
-                           <option value="TZS">TZS - Tanzanian Shilling</option>
-                           <option value="THB">THB - Thai Baht</option>
-                           <option value="TOP">TOP - Tongan pa'anga</option>
-                           <option value="TTD">TTD - Trinidad & Tobago Dollar</option>
-                           <option value="TND">TND - Tunisian Dinar</option>
-                           <option value="TRY">TRY - Turkish Lira</option>
-                           <option value="TMT">TMT - Turkmenistani Manat</option>
-                           <option value="UGX">UGX - Ugandan Shilling</option>
-                           <option value="UAH">UAH - Ukrainian Hryvnia</option>
-                           <option value="AED">AED - United Arab Emirates Dirham</option>
-                           <option value="UYU">UYU - Uruguayan Peso</option>
-                           <option selected value="USD">USD - US Dollar</option>
-                           <option value="UZS">UZS - Uzbekistan Som</option>
-                           <option value="VUV">VUV - Vanuatu Vatu</option>
-                           <option value="VEF">VEF - Venezuelan BolÃ­var</option>
-                           <option value="VND">VND - Vietnamese Dong</option>
-                           <option value="YER">YER - Yemeni Rial</option>
-                           <option value="ZMK">ZMK - Zambian Kwacha</option>
-                        </select>
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <div class="row">
-         <div class="col-sm-8">
-         </div>
-         <div class="col-sm-4">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?></a>
-         <input type="submit" id="addBank"    class="btn btnclr" name="addBank" value="<?php echo display('save') ?>"/>
-         </div>
-         </div>  </div>
-         </form>
-      </div>
-   </div>
-</div>
+
+<?php 
+   $modaldata['bootstrap_modals'] = array('bank_info_modal', 'designation', 'city_tax_modal', 'payroll_type_modal', 'emp_type_modal', 'pay_type_modal');
+   $this->load->view('include/bootstrap_modal', $modaldata);
+?>
 
 <script>
    var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
    var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+   
    $(document).ready(function () {
         $('#add_city_tax').submit(function (e) {
             e.preventDefault();
@@ -2233,52 +1847,39 @@
      $('#add_designation').submit(function(e){
        e.preventDefault();
          var data = {
-           
-           
            data : $("#add_designation").serialize()
-         
          };
          data[csrfName] = csrfHash;
      
          $.ajax({
-             type:'POST',
-             data: $("#add_designation").serialize(),
+            type:'POST',
+            data: $("#add_designation").serialize(),
             dataType:"json",
-             url:'<?php echo base_url();?>Chrm/add_designation_data',
-             success: function(data1, statut) {
-        
-          var $select = $('select#desig');
-      
+            url:'<?php echo base_url();?>Chrm/add_designation_data',
+            success: function(data1, statut) {
+               var $select = $('select#desig');      
                $select.empty();
-               console.log(data);
-                 for(var i = 0; i < data1.length; i++) {
-           var option = $('<option/>').attr('value', data1[i].id).text(data1[i].designation);
-           $select.append(option); // append new options
-       }
-        $('#designation').val('');
-       //    $('#desig').append(result).selectmenu('refresh',true);
-         $("#bodyModal1").html("Designation  Added Successfully");
-         $('#designation_modal').modal('hide');
-         
-         $('#desig').show();
-          $('#myModal1').modal('show');
-         window.setTimeout(function(){
-           $('#designation_modal').modal('hide');
-        
-          $('#myModal1').modal('hide');
-      
-       }, 2000);
-       
-        }
+               for(var i = 0; i < data1.length; i++) {
+                  var option = $('<option/>').attr('value', data1[i].id).text(data1[i].designation);
+                  $select.append(option); // append new options
+               }
+               $('#designation').val('');
+               //    $('#desig').append(result).selectmenu('refresh',true);
+               $("#bodyModal1").html("Designation  Added Successfully");
+               $('#designation_modal').modal('hide');
+               $('#desig').show();
+               $('#myModal1').modal('show');
+               window.setTimeout(function(){
+               $('#designation_modal').modal('hide');
+               $('#myModal1').modal('hide');            
+            }, 2000);
+            
+            }
          });
      });
    
    
-   
-   
-   
-   
-     $('#add_bank').submit(function (event) {
+   $('#add_bank').submit(function (event) {
    var dataString = {
       dataString : $("#add_bank").serialize()
    };
@@ -2523,54 +2124,52 @@
               }
           });
       });
-
-
-   
 </script>
+
 <style>
    #files-area{
-   /*  width: 30%;*/
-   margin: 0 auto;
+      /*  width: 30%;*/
+      margin: 0 auto;
    }
    .file-block{
-   border-radius: 10px;
-   background-color: #38469f;
-   margin: 5px;
-   color: #fff;
-   display: inline-flex;
-   padding: 4px 10px 4px 4px;
+      border-radius: 10px;
+      background-color: #38469f;
+      margin: 5px;
+      color: #fff;
+      display: inline-flex;
+      padding: 4px 10px 4px 4px;
    }
    .file-delete{
-   display: flex;
-   width: 24px;
-   color: initial;
-   background-color: #38469f;
-   font-size: large;
-   justify-content: center;
-   margin-right: 3px;
-   cursor: pointer;
-   color: #fff;
+      display: flex;
+      width: 24px;
+      color: initial;
+      background-color: #38469f;
+      font-size: large;
+      justify-content: center;
+      margin-right: 3px;
+      cursor: pointer;
+      color: #fff;
    }
    span.name{
-   position: relative;
-   top: 2px;
+      position: relative;
+      top: 2px;
    }
    .btn-primary {
-   color: #fff;
-   background-color: #38469f !important;
-   border-color: #38469f !important;
+      color: #fff;
+      background-color: #38469f !important;
+      border-color: #38469f !important;
    }
    .fg {
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-   align-items: center;
-   margin-bottom: 15px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
    }
    .fg label {
-   width: 40%; /* Adjust the width as needed */
+      width: 40%; /* Adjust the width as needed */
    }
    .fg input {
-   width: 60%; /* Adjust the width as needed */
+      width: 60%; /* Adjust the width as needed */
    }
 </style>

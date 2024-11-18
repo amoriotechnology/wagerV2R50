@@ -3450,7 +3450,7 @@ public function getTaxdetailsdata($tax){
       public function employee_detl($id){
         $this->db->select('*');
         $this->db->from('employee_history a');
-         $this->db->join('designation b','a.designation = b.id');
+         $this->db->join('designation b','a.designation = b.designation');
         $this->db->where('a.id', $id);
            $this->db->where('a.create_by',$this->session->userdata('user_id'));
         $query = $this->db->get();

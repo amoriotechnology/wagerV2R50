@@ -2,32 +2,27 @@
 <?php
    $CI = & get_instance();
    $CI->load->model('Web_settings');
-
    $CI->load->model('Users');
-     $CI->load->model('Hrm_model');
+   $CI->load->model('Hrm_model');
    $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
    
    // print_r($Web_settings); 
    
    $retrieve_user_data = $CI->Web_settings->retrieve_user_data();
-   
    $retrieve_admin_data = $CI->Web_settings->retrieve_admin_data();
     $state_tax_list = $CI->Hrm_model->state_tax_list();
     $state_tax_list_employer = $CI->Hrm_model->state_tax_list_employer();
-$state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
+   $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
    $state_tax_list_employer = is_array($state_tax_list_employer) ? $state_tax_list_employer : [];
    function compare_tax($a, $b) {
-       return strcmp($a['tax'], $b['tax']);
+      return strcmp($a['tax'], $b['tax']);
    }
    $unique_taxes = array_udiff($state_tax_list_employer, $state_tax_list, 'compare_tax');
    
-   
    $retrieve_company_data = $CI->Web_settings->retrieve_companyall_data();
    $users = $CI->Users->profile_edit_data();
-   
-   
-   
-   ?>
+?>
+
 <style>
    .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
    position: absolute;
