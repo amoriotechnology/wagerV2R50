@@ -84,3 +84,12 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 define('COMPANY_ENCRYPT_KEY','amorio@2024');
+
+define('BOOTSTRAP_MODALS', array(
+    'add_states' => 'add_states',
+    'add_state_tax' => 'add_state_tax',
+    'add_city_info' => 'add_city_info',
+    'add_city_tax' => 'add_city_tax',
+    'add_county_info' => 'add_county_info',
+    'add_county_tax' => 'add_county_tax'
+));
