@@ -4895,11 +4895,21 @@ $this->db->where('info_payslip.create_by', $user_id);
 if($end_date){
 $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE(' $end_date', '%m/%d/%Y')", NULL, FALSE);
 }
-$query = $this->db->get();
+
+
+// All Federal Taxes - Madhu
+public function allFederaltaxes($taxType, $user_id)
+{
+    $this->db->select('*');
+    $this->db->from('federal_tax');
+    $this->db->where('tax', $taxType);
+    $this->db->where('created_by', $user_id);
+    $query = $this->db->get();
+
     if ($query->num_rows() > 0) {
         return $query->result_array();
     }
-    return false;
+    return [];
 
 }
 

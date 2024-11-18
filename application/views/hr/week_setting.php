@@ -89,7 +89,7 @@ tr.noBorder td {
    <section class="content-header">
       <div class="header-icon">
         <figure class="one">
-            <img src="<?= base_url()  ?>asset/images/taxes.png"  class="headshotphoto" style="height:50px;" />
+            <img src="<?= base_url()  ?>assets/images/taxes.png"  class="headshotphoto" style="height:50px;" />
         </figure>
       </div>
       

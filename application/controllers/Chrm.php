@@ -1060,6 +1060,8 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
 {
     $state_tax = $this->Hrm_model->get_state_details('state', 'state_and_tax', 'state', $working_state_tax, $user_id);
 
+
+
     $state = $this->Hrm_model->get_state_details('tax', 'state_and_tax', 'state', $state_tax[0]['state'], $user_id);
  
     $tax_split = explode(',', $state[0]['tax']);
@@ -1116,6 +1118,7 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
     }
 
 
+
   
  $data=array(
     'this_perid_state_tax' => $this_period_statetax,
@@ -1123,12 +1126,14 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
  );
 return $data;
 
+
 }
 
 
             public function time_list()
             {
             list($user_id, $admin_id) = array_map('decodeBase64UrlParameter', [$_GET['id'],$_GET['admin_id']]);    
+
 
            
             $timesheet_id = $this->input->get('timesheet_id');
@@ -1149,6 +1154,7 @@ return $data;
             $end_date = $get_date[1]; 
             $scAmount = $this->saleCommission($employee_id, $payperiod, $user_id, $admin_id);
             $thisPeriodAmount = $this->thisPeriodAmount($timesheetdata[0]['payroll_type'], $total_hours, $hrate, $scAmount, $timesheetdata[0]['extra_thisrate'], $timesheetdata[0]['above_extra_sum'], $user_id, $admin_id);
+
           
 
            // Country Tax Starts //
@@ -1355,30 +1361,22 @@ public function payslip_setting() {
 
 
 
-public function employee_payslip_permission() {
-  $this->load->model('Hrm_model');
-  $CI = & get_instance();
-  $CI->load->model('Web_settings');
-  $data['title']            = display('Payment_Administration');
+public function employee_payslip_permission() 
+{
+  $data['title'] = display('Payment_Administration');
   $id = $this->input->get('timesheet_id');
   $data['time_sheet_data'] = $this->Hrm_model->time_sheet_data($id);
-  // var_dump($data['time_sheet_data']);
   $data['employee_name'] = $this->Hrm_model->employee_name($data['time_sheet_data'][0]['templ_name']);
 
   $data['designation'] = $this->db->select('designation')->from('employee_history')->where('id',$data['employee_name'][0]['id'])->get()->row()->designation;
-  //if(empty($data['employee_name'])){
   $data['employee'] = $this->Hrm_model->employee_partner($data['time_sheet_data'][0]['templ_name']);
-  //  }
   $data['payment_terms'] = $this->Hrm_model->get_payment_terms();
   $setting_detail = $this->Web_settings->retrieve_setting_editdata(decodeBase64UrlParameter($_GET['id']));
   $data['dailybreak'] = $this->Hrm_model->get_dailybreak();  
   $data['duration'] = $this->Hrm_model->get_duration_data();
   $data['setting_detail'] =$setting_detail;
   $data['administrator'] = $this->Hrm_model->administrator_data();
-  
   $data['extratime_info'] = $this->Hrm_model->get_overtime_data();
-  // print_r($data['employee']); die();
-
   $content = $this->parser->parse('hr/emp_payslip_permission', $data, true);
   $this->template->full_admin_html_view($content);
 }
@@ -2509,7 +2507,7 @@ public function countryTax($tax_type, $employee_tax_column, $final, $templ_name,
         $tax_employee = $data[$tax_type][0]['employee'];
         $tax_value = round(($tax_employee / 100) * $final, 3);
     }
-<<<<<<< HEAD
+
    
     // YTD Sum Amount
     $sum_of_country_tax = $this->Hrm_model->sum_of_country_tax($endDate, $templ_name, $timesheet_id,$user_id);
@@ -2518,16 +2516,7 @@ public function countryTax($tax_type, $employee_tax_column, $final, $templ_name,
     $data['t_m_tax'] = $sum_of_country_tax[0]['t_m_tax'];
     $data['t_f_tax'] = $sum_of_country_tax[0]['t_f_tax'];
     $data['t_u_tax'] = $sum_of_country_tax[0]['t_u_tax'];
-=======
-    
-    // // YTD Sum Amount
-    // $sc_info_datapay = $this->Hrm_model->sc_get_data_pay($endDate, $employee_id, $timesheet_id);
-    // echo $this->db->last_query(); die;
-    // $data['t_s_tax'] = $sc_info_datapay[0]['s_s_tax'];
-    // $data['t_m_tax'] = $sc_info_datapay[0]['s_m_tax'];
-    // $data['t_f_tax'] = $sc_info_datapay[0]['s_f_tax'];
-    // $data['t_u_tax'] = $sc_info_datapay[0]['s_u_tax'];
->>>>>>> c32de8da90c1267d910e15fde79e27bb2eb36989
+
 
     return $tax_value;
 }
@@ -2841,92 +2830,73 @@ public function add_state_taxes_detail($tax=null)
     $this->template->full_admin_html_view($content);
 }
 
+   
+   // Federal Tax - Madhu
+    public function add_taxes_detail() 
+    {   
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
 
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+        $data['setting_detail'] = $setting_detail;
+        $tax = $this->input->post('tax');
 
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Federal Income tax', $decodedId);
 
-
-
-
-   public function add_taxes_detail() {
-       $CI = & get_instance();
-    $CI->load->model('Web_settings');
-    $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-$data['setting_detail'] = $setting_detail;
-     $tax = $this->input->post('tax');
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Federal Income tax')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-    // $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax',$tax)->get()->result_array();
-    // print_r($data['taxinfo']); .;
-    // echo $this->db->last_query(); .;
-    $data['title'] = display('add_taxes_detail');
-    $content = $this->parser->parse('hr/add_taxes_detail', $data, true);
-    $this->template->full_admin_html_view($content);
-    // echo json_encode($data);
+        $data['title'] = display('add_taxes_detail');
+        $content = $this->parser->parse('hr/add_taxes_detail', $data, true);
+        $this->template->full_admin_html_view($content);
     }
-    public function socialsecurity_detail() {
-    $CI = & get_instance();
-      $CI->load->model('Web_settings');
-      $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-      $data['setting_detail'] = $setting_detail;
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Social Security')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
- //   echo $this->db->last_query();
-    $data['title'] = display('add_taxes_detail');
-    $content = $this->parser->parse('hr/social_security_list', $data, true);
-    $this->template->full_admin_html_view($content);
+
+    // Social Security Tax - Madhu
+    public function socialsecurity_detail() 
+    {   
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+        $data['setting_detail'] = $setting_detail;
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Social Security', $decodedId);
+        $data['title'] = display('add_taxes_detail');
+        $content = $this->parser->parse('hr/social_security_list', $data, true);
+        $this->template->full_admin_html_view($content);
     }
-    public function medicare_detail() {
-         $CI = & get_instance();
-      $CI->load->model('Web_settings');
-      $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-      $data['setting_detail'] = $setting_detail;
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Medicare')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-    $data['title'] = display('add_taxes_detail');
-    $content = $this->parser->parse('hr/medicare_list', $data, true);
-    $this->template->full_admin_html_view($content);
+
+    // Medicare Tax - Madhu
+    public function medicare_detail() 
+    {  
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
+
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+        $data['setting_detail'] = $setting_detail;
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Medicare', $decodedId);
+        $data['title'] = display('add_taxes_detail');
+        $content = $this->parser->parse('hr/medicare_list', $data, true);
+        $this->template->full_admin_html_view($content);
     }
     
-    
-    
-    
-    
-    
-    public function federalunemployment_detail() {
+    // Federal Unemployment Tax - Madhu
+    public function federalunemployment_detail() 
+    {   
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
 
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
 
-      $CI = & get_instance();
-
-      $CI->load->model('Web_settings');
-
-      $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-
-
-
-
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Federal unemployment')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-    $data['title'] = display('add_taxes_detail');
-
-    $data['setting_detail'] = $setting_detail;
-
-
-    $content = $this->parser->parse('hr/federalunemployment_list', $data, true);
-    $this->template->full_admin_html_view($content);
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Federal unemployment', $decodedId);
+        $data['title'] = display('add_taxes_detail');
+        $data['setting_detail'] = $setting_detail;
+        $content = $this->parser->parse('hr/federalunemployment_list', $data, true);
+        $this->template->full_admin_html_view($content);
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- public function add_timesheet() {
+ public function add_timesheet() 
+ {
 
   $data['title'] = display('add_timesheet');
   $CI = & get_instance();
@@ -2944,73 +2914,61 @@ $data['setting_detail'] = $setting_detail;
   $this->template->full_admin_html_view($content);
 }
     
-    
-    
-    
-    
-    
-    
-    
+ 
+public function add_durat_info()
+{
+    $CI = & get_instance();
+    $CI->auth->check_admin_auth();
+    $CI->load->model('Hrm_model');
+    $postData = $this->input->post('duration_name');
+    $data = $this->Hrm_model->insert_duration_data($postData);
+    echo json_encode($data);
+}
 
-        public function add_durat_info(){
-            $CI = & get_instance();
-            $CI->auth->check_admin_auth();
-            $CI->load->model('Hrm_model');
-            $postData = $this->input->post('duration_name');
-            $data = $this->Hrm_model->insert_duration_data($postData);
-            echo json_encode($data);
-        }
-    // $content = $this->parser->parse('hr/add_timesheet', $data, true);
-    // $this->template->full_admin_html_view($content);
-    // }
-
-    public function add_adm_data(){
-        $CI = & get_instance();
-        $CI->auth->check_admin_auth();
-        $CI->load->model('Hrm_model');
-        $postData = $this->input->post('data_name');
-        $postData = $this->input->post('data_adres');
-
-        //  print_r($postData); .;
-
-        $data = $this->Hrm_model->insert_adsrs_data($postData);
-        echo json_encode($data);
-    }
+public function add_adm_data()
+{
+    $CI = & get_instance();
+    $CI->auth->check_admin_auth();
+    $CI->load->model('Hrm_model');
+    $postData = $this->input->post('data_name');
+    $postData = $this->input->post('data_adres');
+    $data = $this->Hrm_model->insert_adsrs_data($postData);
+    echo json_encode($data);
+}
 
 
-
-    public function insert_data_adsr(){
-        $CI = & get_instance();
-        $CI->auth->check_admin_auth();
-        $CI->load->model('Hrm_model');
+public function insert_data_adsr()
+{
+    $CI = & get_instance();
+    $CI->auth->check_admin_auth();
+    $CI->load->model('Hrm_model');
     $data = array(
         'adm_name'   => $this->input->post('adms_name',TRUE),
         'adm_address'=> $this->input->post('address',TRUE),
         'create_by'       => $this->session->userdata('user_id'),
-  );
-  // print_r($data); .;
-    // $result = $this->Customers->customer_entry($data);
+    );
     $data = $this->Hrm_model->insert_adsrs_data($data);
     echo json_encode($data);
-    }
+}
 
 
-public function add_city(){
-$CI = & get_instance();
-$city_name = $this->input->post('city_name');
-$userId = $this->input->post('admin_company_id');
-$decodedId = decodeBase64UrlParameter($userId);
-$companyId = $this->input->post('adminId');
+public function add_city()
+{
+    $city_name = $this->input->post('city_name');
+    $userId = $this->input->post('admin_company_id');
+    $decodedId = decodeBase64UrlParameter($userId);
+    $companyId = $this->input->post('adminId');
 
     $data=array(
-         'state' => $city_name,
-         'Type' =>'City',
-         'created_by' => $decodedId
+        'state' => $city_name,
+        'Type' =>'City',
+        'created_by' => $decodedId
     );
-  $this->db->insert('state_and_tax', $data);
-  $this->session->set_userdata(array('message' => 'New City Added Successfully'));
- redirect(base_url('Chrm/payroll_setting?id=' . $userId . '&admin_id=' . $companyId));
+    $this->db->insert('state_and_tax', $data);
+    $this->session->set_userdata(array('message' => 'New City Added Successfully'));
+    redirect(base_url('Chrm/payroll_setting?id=' . $userId . '&admin_id=' . $companyId));
 }
+
   public function add_city_state_tax(){
   $CI = & get_instance();
   $selected_city = $this->input->post('selected_city');

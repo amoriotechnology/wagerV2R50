@@ -1,14 +1,7 @@
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/toastr.min.css" />
+<script src="<?php echo base_url()?>assets/js/toastr.min.js" /></script>
 
-<style>
-.btnclr{
-       background-color:<?php echo $setting_detail[0]['button_color']; ?>;
-       color: white;
-
-   }</style>
-
-<!-- Add new tax start -->
 <?php error_reporting(1); ?>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <div class="content-wrapper">
    <section class="content-header" style="height:70px;">
       <div class="header-icon">
@@ -24,40 +17,21 @@
       </div>
    </section>
    <section class="content">
-      <!-- Alert Message -->
-      <?php
-         $message = $this->session->userdata('message');
-         
-         if (isset($message)) {
-         
-         ?>
-      <div class="alert alert-info alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $message ?>                    
-      </div>
-      <script>
-         $('.alert').delay(1000).fadeOut('slow');
-      </script>
-      <?php 
-         $this->session->unset_userdata('message');
-         
-         }
-         
-         $error_message = $this->session->userdata('error_message');
-         
-         if (isset($error_message)) {
-         
-         ?>
-      <div class="alert alert-danger alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $error_message ?>                    
-      </div>
-      <?php 
-         $this->session->unset_userdata('error_message');
-         
-         }
-         
-         ?>
+     <?php
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
+
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
       <style>
          td,th{
          text-align:center;
@@ -715,170 +689,196 @@
 </section>
 </div>
 
-
-
-
-
-
- 
-
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+
+var csrfName = $('.txt_csrfname').attr('name'); 
+var csrfHash = $('.txt_csrfname').val();
+
 $(document).ready(function() {
-    // Function to add a new row
-    $('body').on('click', '#addmorePOIbutton11', function() {
+   $('body').on('click', '#addmorePOIbutton11', function() {
         var $lastRow = $('#POITable11 tbody>tr:last');
         var $newRow = $lastRow.clone(true);
-        $newRow.find('input').val(''); // Clear the values in the inputs
-        $newRow.find('input[type="hidden"]').val('0'); // Reset hidden input (row_id) value if needed
-        $('#POITable11 tbody').append($newRow); // Add the new row to the table
+        $newRow.find('input').val(''); 
+        $newRow.find('input[type="hidden"]').val('0'); 
+        $('#POITable11 tbody').append($newRow); 
     });
-
-    // Function to delete a row
     $('body').on('click', '.getDataRow11', function() {
-        if ($('#POITable11 tbody>tr').length > 1) { // Ensure at least one row remains
-            $(this).closest('tr').remove(); // Remove the row
-        } else {
-            alert('At least one row must remain.');
-        }
-    });
+      if ($('#POITable11 tbody>tr').length > 1) { 
+         $(this).closest('tr').remove(); 
+      } else {
+         toastr.error('At least one row must remain.', "Error", { 
+            closeButton: false,
+            timeOut: 1000
+         });
+      }
+   });
 });
-
-
- 
 
 
 
 $(document).ready(function() {
-    // Function to add a new row
-    $('body').on('click', '#addmorePOIbutton22', function() {
-        var $lastRow = $('#POITable22 tbody>tr:last');
-        var $newRow = $lastRow.clone(true);
-        $newRow.find('input').val(''); // Clear the values in the inputs
-        $newRow.find('input[type="hidden"]').val('0'); // Reset hidden input (row_id) value if needed
-        $('#POITable22 tbody').append($newRow); // Add the new row to the table
-    });
+   $('body').on('click', '#addmorePOIbutton22', function() {
+      var $lastRow = $('#POITable22 tbody>tr:last');
+      var $newRow = $lastRow.clone(true);
+      $newRow.find('input').val(''); 
+      $newRow.find('input[type="hidden"]').val('0'); 
+      $('#POITable22 tbody').append($newRow); 
+   });
+
+   // Function to delete a row
+   $('body').on('click', '.getDataRow22', function() {
+      if ($('#POITable22 tbody>tr').length > 1) { 
+         $(this).closest('tr').remove(); 
+      } else {
+         alert('At least one row must remain.');
+      }
+   });
+});
+
+$('.getDataRow').on('click', function() {
+   var rowId = $(this).closest('tr').find('#row_id').val();
+   var confirmDelete = confirm("Are you sure you want to delete this?");
+   if (confirmDelete) {
+      $.ajax({
+         url:"<?php echo base_url(); ?>Caccounts/delete_row",
+         type: 'POST',
+         data: {[csrfName]: csrfHash,rowId:rowId},
+         success: function(data){
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
+         },
+         error: function(xhr, status, error) {
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+         }
+      });
+   }
+  
+});
+
+ 
+$('.getDataRow11').on('click', function() {
+   var rowId = $(this).closest('tr').find('#row_id11').val();
+   var confirmDelete = confirm("Are you sure you want to delete this?");
+      if (confirmDelete) {
+        $.ajax({
+        url:"<?php echo base_url(); ?>Caccounts/weekly_delete_row",
+        type: 'POST',
+        data: {[csrfName]: csrfHash,rowId:rowId},
+         success: function(data){
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
+         },
+         error: function(xhr, status, error) {
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+         }
+      });
+   }
+});
+
+ 
+$('.getDataRow22').on('click', function() {
+   var rowId = $(this).closest('tr').find('#row_id22').val();
+   var confirmDelete = confirm("Are you sure you want to delete this?");
+   if (confirmDelete) {
+      $.ajax({
+         url:"<?php echo base_url(); ?>Caccounts/bi_weekly_delete_row",
+         type: 'POST',
+         data: {[csrfName]: csrfHash,rowId:rowId},
+         success: function(data){
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
+         },
+         error: function(xhr, status, error) {
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+         }
+      });
+   }
+});
+
+
+$('.getDataRow33').on('click', function() {
+   var rowId = $(this).closest('tr').find('#row_id33').val();
+   var confirmDelete = confirm("Are you sure you want to delete this?");
+   if (confirmDelete) {
+      $.ajax({
+         url:"<?php echo base_url(); ?>Caccounts/monthly_delete_row",
+         type: 'POST',
+         data: {[csrfName]: csrfHash,rowId:rowId},
+         success: function(data){
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
+         },
+         error: function(xhr, status, error) {
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+         }
+      });
+   }
+});
+
+$(document).ready(function() {
+   $('body').on('click', '#addmorePOIbutton33', function() {
+      var $lastRow = $('#POITable33 tbody>tr:last');
+      var $newRow = $lastRow.clone(true);
+      $newRow.find('input').val(''); 
+      $newRow.find('input[type="hidden"]').val('0'); 
+      $('#POITable33 tbody').append($newRow); 
+   });
 
     // Function to delete a row
-    $('body').on('click', '.getDataRow22', function() {
-        if ($('#POITable22 tbody>tr').length > 1) { // Ensure at least one row remains
-            $(this).closest('tr').remove(); // Remove the row
-        } else {
-            alert('At least one row must remain.');
-        }
-    });
+   $('body').on('click', '.getDataRow33', function() {
+      if ($('#POITable33 tbody>tr').length > 1) { 
+         $(this).closest('tr').remove(); 
+      } else {
+         toastr.error('At least one row must remain', "Error", { 
+            closeButton: false,
+            timeOut: 1000
+         });
+      }
+   });
 });
 </script>
  
-
-
-
-
-
-
-<script>
-    var csrfName = $('.txt_csrfname').attr('name'); 
-    var csrfHash = $('.txt_csrfname').val();
             
-    $('.getDataRow').on('click', function() {
-        var rowId = $(this).closest('tr').find('#row_id').val();
-       $.ajax({
-           url:"<?php echo base_url(); ?>Caccounts/delete_row",
-           type: 'POST',
-           data: {[csrfName]: csrfHash,rowId:rowId},
-           success: function(data){
-               console.log(data);
-           }
-       });
-        
-    });
-
- 
-    $('.getDataRow11').on('click', function() {
-     alert('Are you sure ?');
-     var rowId = $(this).closest('tr').find('#row_id11').val();
-     $.ajax({
-     url:"<?php echo base_url(); ?>Caccounts/weekly_delete_row",
-     type: 'POST',
-     data: {[csrfName]: csrfHash,rowId:rowId},
-     success: function(data){
-         console.log(data);
-     }
- });
-});
-
- 
-    $('.getDataRow22').on('click', function() {
-      alert('Are you sure ?');
-      var rowId = $(this).closest('tr').find('#row_id22').val();
-      $.ajax({
-           url:"<?php echo base_url(); ?>Caccounts/bi_weekly_delete_row",
-           type: 'POST',
-           data: {[csrfName]: csrfHash,rowId:rowId},
-           success: function(data){
-               console.log(data);
-           }
-       });
-        
-    });
 
 
 
 
 
-
-    $('.getDataRow33').on('click', function() {
-      alert('Are you sure ?');
-      var rowId = $(this).closest('tr').find('#row_id33').val();
-      $.ajax({
-           url:"<?php echo base_url(); ?>Caccounts/monthly_delete_row",
-           type: 'POST',
-           data: {[csrfName]: csrfHash,rowId:rowId},
-           success: function(data){
-               console.log(data);
-           }
-       });
-        
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    $(document).ready(function() {
-    // Function to add a new row
-    $('body').on('click', '#addmorePOIbutton33', function() {
-        var $lastRow = $('#POITable33 tbody>tr:last');
-        var $newRow = $lastRow.clone(true);
-        $newRow.find('input').val(''); // Clear the values in the inputs
-        $newRow.find('input[type="hidden"]').val('0'); // Reset hidden input (row_id) value if needed
-        $('#POITable33 tbody').append($newRow); // Add the new row to the table
-    });
-
-    // Function to delete a row
-    $('body').on('click', '.getDataRow33', function() {
-        if ($('#POITable33 tbody>tr').length > 1) { // Ensure at least one row remains
-            $(this).closest('tr').remove(); // Remove the row
-        } else {
-            alert('At least one row must remain.');
-        }
-    });
-});
-
-
-
-
-
-</script>
 

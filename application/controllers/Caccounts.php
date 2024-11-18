@@ -349,8 +349,6 @@ if ($this->db->field_exists($txd, 'quotation_taxinfo')) {
 
     public function create_tax_federal()
     {
-      
-
         $tax_name= $this->input->post('tax_name',TRUE);
         $url= $this->input->post('url',TRUE);
         $year = date("Y"); 
@@ -371,15 +369,9 @@ if ($this->db->field_exists($txd, 'quotation_taxinfo')) {
         $head_household_from = $this->input->post('head_household_from',TRUE);
         $head_household_to = $this->input->post('head_household_to',TRUE);
 
-// print_r( $head_household_to); die();
+        $this->db->where('tax',$tax_name);
+        $this->db->delete('federal_tax');
 
-
-     //   echo count($slab_no);
-               $this->db->where('tax',$tax_name);
-                //   echo $this->db->last_query(); die();
-
-         $this->db->delete('federal_tax');
-    //     echo $this->db->last_query();
        for ($i = 0, $n = count($details); $i < $n; $i++) {
            
             $samount = $start_amount[$i];
@@ -394,7 +386,6 @@ if ($this->db->field_exists($txd, 'quotation_taxinfo')) {
             $hhfrom = $head_household_from[$i];
             $hhto = $head_household_to[$i];
 
-
             $data1 = array(
                 'year'  => $year,
                 'employer'    => $samount,
@@ -408,24 +399,11 @@ if ($this->db->field_exists($txd, 'quotation_taxinfo')) {
                'created_by'       => $decodedId 
              
         );
-
-        //   print_r($data1);  
-
-
-
-         $this->db->insert('federal_tax', $data1);
-
-         echo $this->db->last_query(); 
-
-      
-
-        
-
-
-
-            }
-            $this->session->set_flashdata('message', display('save_successfully'));
-            redirect(base_url('Chrm/payroll_setting?id=' . $user_id . '&admin_id=' . $companyId)); 
+            $this->db->insert('federal_tax', $data1);
+            echo $this->db->last_query(); 
+        }
+        $this->session->set_flashdata('message', display('save_successfully'));
+        redirect(base_url('Chrm/payroll_setting?id=' . $user_id . '&admin_id=' . $companyId)); 
     }
 
     #==============TAX Entry==============#
