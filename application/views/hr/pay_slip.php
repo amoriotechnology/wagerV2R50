@@ -146,7 +146,7 @@
                         
                        
                         <?php
-$fs=strtoupper($infoemployee[0]['first_name']);
+$fs=strtoupper($employee_info[0]['first_name']);
 
 
 ?>
@@ -155,7 +155,7 @@ $fs=strtoupper($infoemployee[0]['first_name']);
 
                        
                        <div class="r" style="height:23px;">
-    <p style="width: 385px;margin-top: 53px;  display: block;"><?php echo $fs .' '.strtoupper($infoemployee[0]['middle_name']).' '.  strtoupper($infoemployee[0]['last_name']); ?></p>
+    <p style="width: 385px;margin-top: 53px;  display: block;"><?php echo $fs .' '.strtoupper($employee_info[0]['middle_name']).' '.  strtoupper($employee_info[0]['last_name']); ?></p>
     
 </div>
         
@@ -175,7 +175,7 @@ $fs=strtoupper($infoemployee[0]['first_name']);
                   
                   
                   <br/>
-                  <?php // print_r($infoemployee); ?>
+                  <?php // print_r($employee_info); ?>
                   <div class="payTop_details row">
           
                      <div class="col-md-6">
@@ -219,35 +219,29 @@ $fs=strtoupper($infoemployee[0]['first_name']);
                            .table td{
                            padding:10px;
                            }
-                           table {       
+                           table {      
+                               
                            border: none;
                            text-align: center;
                            table-layout: fixed;
                            margin: 0 auto; /* or margin: 0 auto 0 auto */
                            }
                            table th {
-                           color:white;
-                           background-color: <?php  echo '#'.$color; ?>
+                         
+                           background-color: <?php  echo '#'.$setting[0]['color']; ?>
                            padding: 8px 14px;
                            text-align: center;
                            }
                            #forcolor{
-                           background-color: <?php  echo '#'.$color; ?>
+                           background-color: <?php  echo '#'.$setting[0]['color']; ?>
                            padding: 8px 14px;
                            text-align: center;  
                            }
                         </style>
                         <table class="table" style='margin-bottom:0px;' >
-                           <!-- <tr style="outline: thin solid" rowspan="6">
-                              <?php if ($sc) { ?>  
-                              <th colspan="7">Earnings</th>
-                              <?php } else { ?>  
-                              <th colspan="6">Earnings</th>
-                              <?php  }  ?> 
-                           </tr> -->
-                           <tr>
+                               <tr>
                               <th style='font-size:12px;'>EARNINGS</th>
-                              <!-- <th>HRS/ UNITS</th> -->
+                           
 
                               <th>
 
@@ -255,6 +249,7 @@ $fs=strtoupper($infoemployee[0]['first_name']);
 
                               <?php 
                               if (
+                                 $employee_info[0]['payroll_type'] == 'Hourly' || 
                                  $employee_info[0]['payroll_type'] == 'Salaried-weekly' || 
                                  $employee_info[0]['payroll_type'] == 'Salaried-BiWeekly' || 
                                  $employee_info[0]['payroll_type'] == 'Salaried-Monthly' || 
@@ -270,21 +265,11 @@ $fs=strtoupper($infoemployee[0]['first_name']);
  
 
                                <th>RATE</th>
- 
-                              
-                              <?php //if ($sc) { ?>  
-                              <!-- <th style='font-size:12px;'>SALES COMMISSION</th> -->
-                              <?php // }    ?>
-                              
-                              
-                              
-                              <th>THIS PERIOD(<?php  echo $currency; ?>)</th>
-                              <!--<th>YTD HOURS</th>-->
-                              
-                              
-                                          <th>
+                          <th>THIS PERIOD(<?php  echo $setting[0]['currency']; ?>)</th>
+                              <th>
                                  <?php 
                                  if (
+                                    $employee_info[0]['payroll_type'] == 'Hourly' || 
                                     $employee_info[0]['payroll_type'] == 'Salaried-weekly' || 
                                     $employee_info[0]['payroll_type'] == 'Salaried-BiWeekly' || 
                                     $employee_info[0]['payroll_type'] == 'Salaried-Monthly' || 
@@ -300,9 +285,19 @@ $fs=strtoupper($infoemployee[0]['first_name']);
                               
                               
                               
-                              <th>YTD(<?php  echo $currency; ?>)</th>
+                              <th>YTD(<?php  echo $setting[0]['currency']; ?>)</th>
                            </tr>
-                           
+                                <tr>
+                                 <td>Salary</td>
+                                 <td><?php echo $timesheet_info[0]['extra_hour']; ?></td>
+                                 <td><?php echo $timesheet_info[0]['extra_rate']; ?></td>
+                                
+                                 <td id="total_period"><?php echo round($timesheet_info[0]['extra_thisrate'],2) ; ?></td>
+                                    <td style="display:none;" id="total_period"><?php echo $ytd['ytd_salary']; ?></td>
+                                 <td><?php echo ($ytd['ytd_hours_excl_overtime_in_time']); ?></td>
+                                 <td  id="total_ytd"><?php echo $ytd['ytd_salary']; ?></td>
+                                 <td style="display:none;" id="total_ytd"><?php echo $ytd['ytd_salary']+$ytd['ytd_overtime_salary']; ?></td>
+                              </tr>
                          
 
  <?php if ($employee_info[0]['payroll_type'] == 'Hourly'  ) { ?>
@@ -311,8 +306,8 @@ $fs=strtoupper($infoemployee[0]['first_name']);
 <td>Over Time</td>
             <td>
             <?php 
-            if ($timesheet_info[0]['total_hours'] > $data_work_hour) {
-                echo $extra_hour;
+            if ($timesheet_info[0]['total_hours'] > $overtime_hour) {
+                echo $timesheet_info[0]['extra_hour'];
             } else {
                 echo '0';
             } 
@@ -320,20 +315,20 @@ $fs=strtoupper($infoemployee[0]['first_name']);
           </td>
 <td >
     <?php 
-            if ($timesheet_info[0]['total_hours'] > $data_work_hour) {
-                echo $extra_rate;
+            if ($timesheet_info[0]['total_hours'] > $overtime_hour) {
+                echo $timesheet_info[0]['extra_rate'];
             } else {
                 echo '0';
             } 
             ?>
 </td>
- <?php if ($sc): ?>
-         <td> </td>
-        <?php endif; ?>
+ <?php //if ($sc): ?>
+         <!-- <td> </td> -->
+        <?php //endif; ?>
 <td id="above_over_this_period" >
     <?php 
-            if ($timesheet_info[0]['total_hours'] > $data_work_hour) {
-                echo $extra_thisrate;
+            if ($timesheet_info[0]['total_hours'] > $overtime_hour) {
+                echo $timesheet_info[0]['extra_thisrate'];
             } else {
                 echo '0';
             } 
@@ -341,8 +336,8 @@ $fs=strtoupper($infoemployee[0]['first_name']);
 </td>
 <td >
     <?php 
-            if ($timesheet_info[0]['total_hours'] > $data_work_hour) {
-                echo $extra_eth;
+            if ($ytd['total_hours'] > $overtime_hour) {
+                echo $ytd['ytd_hours_only_overtime'];
             } else {
                 echo '0';
             } 
@@ -350,11 +345,13 @@ $fs=strtoupper($infoemployee[0]['first_name']);
 </td>
 <td id="final_over_ytd" >
     <?php 
-                 if ($extra_ytdeth) {
-                  echo $extra_ytdeth;
+     if ($ytd['total_hours'] > $overtime_hour) {
+                 if ($ytd['ytd_days']) {
+                  echo $ytd['ytd_days'];
               } else {
                   echo '0';
               } 
+            }
             ?>
 </td>
  </tr>
@@ -364,8 +361,8 @@ $fs=strtoupper($infoemployee[0]['first_name']);
             <tr>
          <th><strong>TOTAL :</strong></td>
          <th> <?php 
-         list($hours1, $minutes1) = explode(':', $above_extra_beforehours);
-list($hours2, $minutes2) = explode(':', $extra_hour);
+         list($hours1, $minutes1) = explode(':', $timesheet_info[0]['above_extra_beforehours']);
+list($hours2, $minutes2) = explode(':', $timesheet_info[0]['extra_hour']);
 
 $totalMinutes = ($hours1 * 60 + $minutes1) + ($hours2 * 60 + $minutes2);
 $finalHours = floor($totalMinutes / 60);
@@ -374,19 +371,19 @@ $finalMinutes = $totalMinutes % 60;
 $result = sprintf('%02d:%02d', $finalHours, $finalMinutes);
          echo $result ; ?>  </th>
          <th></th>
-         <?php if ($sc): ?>
+         <!-- <?php// if ($sc): ?>
             <th>  </th>
-         <?php endif; ?>
+         <?php //endif; ?> -->
  
 
-         <th><?php echo $above_extra_sum + $extra_thisrate + $sc; ?></th>
+         <th><?php echo $timesheet_info[0]['above_extra_sum'] + $timesheet_info[0]['extra_thisrate'] ; ?></th>
        <th><?php 
-      list($hours1, $minutes1) = explode(':', $above_eth);
-$totalMinutes1 = ($hours1 * 60) + $minutes1;
-
-list($hours2, $minutes2) = explode(':', $extra_eth);
+      list($hours1, $minutes1) = explode(':', $ytd['ytd_hours_excl_overtime_in_time']);
+$totalMinutes1 = ($hours1 * 60) + $minutes1;$totalMinutes2 =0;
+if($ytd['ytd_hours_only_overtime']){
+list($hours2, $minutes2) = explode(':', $ytd['ytd_hours_only_overtime']);
 $totalMinutes2 = ($hours2 * 60) + $minutes2;
-
+}
 // Sum the total minutes
 $totalMinutes = $totalMinutes1 + $totalMinutes2;
 
@@ -397,7 +394,7 @@ $minutes = $totalMinutes % 60;
 // Format the result as hours:minutes
 $total_time = sprintf('%d:%02d', $hours, $minutes);
       echo $total_time ; ?></th>
-         <th><?php echo round ($above_ytdeth, 3) + $extra_ytdeth ; ?></th>
+         <th><?php echo round ($ytd['ytd_salary'], 3) + $ytd['ytd_overtime_salary'] ; ?></th>
       
          </tr>
          
@@ -423,47 +420,51 @@ $total_time = sprintf('%d:%02d', $hours, $minutes);
                               <tr>
                                  <th style="text-align:left;">DESCRIPTION</th>
                                  <th>FILING STATUS</th>
-                                 <th>THIS PERIOD(<?php  echo $currency; ?>)</th>
-                                 <th>YTD(<?php  echo $currency; ?>)</th>
+                                 <th>THIS PERIOD(<?php  echo $setting[0]['currency']; ?>)</th>
+                                 <th>YTD(<?php  echo $setting[0]['currency']; ?>)</th>
                               </tr>
 
                        
 
-                         <?php if ($infoemployee[0]['payroll_type'] == 'Hourly'  ||  $infoemployee[0]['payroll_type'] == 'Salaried-weekly'  ||  $infoemployee[0]['payroll_type'] == 'Salaried-BiWeekly'  || $infoemployee[0]['payroll_type'] == 'Salaried-Monthly'  ||  $infoemployee[0]['payroll_type'] == 'SalesCommission' ) { ?>
+                         <?php if ($employee_info[0]['payroll_type'] == 'Hourly'  ||  $employee_info[0]['payroll_type'] == 'Salaried-weekly'  ||  $employee_info[0]['payroll_type'] == 'Salaried-BiWeekly'  || $employee_info[0]['payroll_type'] == 'Salaried-Monthly'  ||  $employee_info[0]['payroll_type'] == 'SalesCommission' ) { ?>
                             
                              
                         
-                           <?php if($s){?>
+                           <?php if($this_social['tax_data']['t_s_tax']){?>
                               <tr>
                                  <td style="text-align:left;"> Social Security</td>
                                  <td>S O</td>
-                                 <td class="current"><?php if($s){ echo "-".round($s,3);  } ?></td>
-                                 <td class="ytd"><?php if($t_s_tax){ echo round($t_s_tax,3); } ?></td>
+                                
+                                 <td class="current"><?php if($this_social['tax_value']){ echo round($this_social['tax_value'],3); } ?></td>
+                              <td class="ytd"><?php if($this_social['tax_data']['t_s_tax']){ echo "-".round($this_social['tax_data']['t_s_tax'],3);  } ?></td>
                               </tr>
                               <?php  } ?>
-                              <?php if($m){ ?>
+                              <?php if($this_medicare['tax_data']['t_m_tax']){ ?>
                               <tr>
                                  <td style="text-align:left;">Medicare</td>
                                  <td>SMCU O</td>
-                                 <td class="current"><?php if($m){echo  "-".round($m,3); }  ?></td>
-                                 <td class="ytd"><?php if($t_m_tax){echo round($t_m_tax,3);  } ?></td>
+                          
+                                 <td class="current"><?php if($overall_medicare){echo round($overall_medicare,3);  } ?></td>
+                                     <td class="ytd"><?php if($this_medicare['tax_value']){echo  "-".round($this_medicare['tax_value'],3); }  ?></td>
                               </tr>
                               <?php  } ?>
                               <?php  }    ?>
-                              <?php if($f){ ?>
+                              <?php if($this_federal['tax_data']['t_f_tax']){ ?>
                               <tr>
                                  <td style="text-align:left;">Fed Income Tax</td>
                                  <td></td>
-                                 <td class="current"><?php if($f){echo "-".round($f,3); } ?></td>
-                                 <td class="ytd"><?php if($t_f_tax){echo round($t_f_tax,3);  } ?></td>
+                                
+                                 <td class="current"><?php if($overall_federal){echo round($overall_federal,3);  } ?></td>
+                                  <td class="ytd"><?php if($this_federal['tax_data']['t_f_tax']){echo "-".round($this_federal['tax_data']['t_f_tax'],3); } ?></td>
                               </tr>
                               <?php  } ?>
-                              <?php if($u){ ?>
+                              <?php if($this_unemp['tax_data']['t_u_tax']){ ?>
                               <tr>
                                  <td style="text-align:left;">Unemployment Tax</td>
                                  <td></td>
-                                 <td class="current"><?php if($u){echo "-".round($u,3); } ?></td>
-                                 <td class="ytd"><?php if($t_u_tax){echo round($t_u_tax,3); } ?></td>
+                              
+                                 <td class="current"><?php if($overall_unemp){echo round($overall_unemp,3); } ?></td>
+                                    <td class="ytd"><?php if($this_unemp['tax_data']['t_u_tax']){echo "-".round($this_unemp['tax_data']['t_u_tax'],3); } ?></td>
                               </tr>
 
 
@@ -475,144 +476,36 @@ $total_time = sprintf('%d:%02d', $hours, $minutes);
  
 
 
-<?php foreach($selected_state_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                   $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
+<?php foreach($working_state['this_perid_state_tax'] as $k=>$v){
+                                 if($v){ 
+                                     $split=explode('-',$k);
+                                     $title=str_replace("'employee_",'',$split[0]);
+                                     $rep=str_replace("'",'',$split[1]);
+                                    ?>
                               <tr>
-                                 <td title="<?php   echo "Working State Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($selected_state_sum[$rep],3); ?></td>
+                              
+                                  <td title="<?php   echo "Working State Tax - ".$title; ?>" style="text-align:left;"><?php if($rep){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
+                                       <td></td>
+                                  <td class="current">  <?php echo "-".round($v,3); ?></td>
+                                 <td class="ytd"><?php echo round($working_state['overall_state_tax'][$k],3); ?></td>
                               </tr>
                               <?php  } }?>   
 
 
-                              <?php foreach($selected_local_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                 $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
+                              <?php foreach($living_state['this_perid_state_tax'] as $k=>$v){
+                                 if($v){ 
+                                     $split=explode('-',$k);
+                                     $title=str_replace("'employee_",'',$split[0]);
+                                     $rep=str_replace("'",'',$split[1]);
+                                    ?>
                               <tr>
-                                 <td title="<?php   echo "Working Local Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
+                                 <td title="<?php   echo "Living State Tax - ".$title; ?>" style="text-align:left;"><?php if($rep){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
                                  <td></td>
                                  <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($selected_local_sum[$rep],3); ?></td>
+                                 <td class="ytd"><?php echo round($living_state['overall_state_tax'][$k],3); ?></td>
                               </tr>
                               <?php  } } ?> 
-                               <?php foreach($working_county_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                   $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
-                              <tr>
-                                 <td title="<?php   echo "Working County Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($working_county_sum[$rep],3); ?></td>
-                              </tr>
-                              <?php  } } ?> 
-                               <?php foreach($other_working_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                   $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
-                              <tr>
-                                 <td title="<?php   echo "Other Working Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($other_working_sum[$rep],3); ?></td>
-                              </tr>
-                              <?php  } } ?> 
-                                 <?php foreach($selected_living_state_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                   $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
-                              <tr>
-                                 <td title="<?php   echo "Living State Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($selected_living_state_sum[$rep],3); ?></td>
-                              </tr>
-                              <?php  } } ?> 
-                                    <?php foreach($living_local_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                   $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
-                              <tr>
-                                 <td title="<?php   echo "Living Local Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($living_local_sum[$rep],3); ?></td>
-                              </tr>
-                              <?php  } } ?>
-                                         <?php foreach($living_county_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                   $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
-                              <tr>
-                                 <td title="<?php   echo "Living County Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($living_county_sum[$rep],3); ?></td>
-                              </tr>
-                              <?php  } } ?>
-                                <?php foreach($other_tax as $k=>$v){
-                                 if($v){
-                                 $split=explode('-',$k);
-                                  $title=str_replace("'employee_",'',$split[0]);
-                                 $rep=str_replace("'",'',$split[1]);
-                                 $rep2='';
-                                 if($split[2]){
-                                 $rep2=str_replace("'",'',$split[2]);
-                                 }
-                                 ?>
-                              <tr>
-                                 <td title="<?php   echo "Other Tax - ".$title; ?>" style="text-align:left;"><?php if($rep2){echo $title.'-'.$rep;}else {echo $rep;}  ?></td>
-                                 <td></td>
-                                 <td class="current">  <?php echo "-".round($v,3); ?></td>
-                                 <td class="ytd"><?php echo round($other_tax_sum[$rep],3); ?></td>
-                              </tr>
-                              <?php  } } ?> 
+                             
                               <tr class="avoid-page-break">
                                  <td></td>
                                  <td></td>
@@ -630,7 +523,7 @@ $total_time = sprintf('%d:%02d', $hours, $minutes);
      <td colspan="2">
             <span style="font-weight: bold; display: inline-block;">SOCIAL SECURITY NUM : </span>
             <?php
-           $phone_number = $infoemployee[0]['social_security_number'];
+           $phone_number = $employee_info[0]['social_security_number'];
 
 // Check if the phone number is at least 4 digits long
 if (strlen($phone_number) >= 4) {
@@ -643,7 +536,7 @@ if (strlen($phone_number) >= 4) {
   
     echo $masked_number;
 }
-            // $new =substr_replace($infoemployee[0]['social_security_number'], 'XXXX', 0, 4) ;
+            // $new =substr_replace($employee_info[0]['social_security_number'], 'XXXX', 0, 4) ;
             // echo $new;
             ?>
         </td>
@@ -673,7 +566,7 @@ if (strlen($phone_number) >= 4) {
                               </tr>
                               <tr style="text-align:left;">
                                  <td style="font-weight:bold;width:20%;">Authorized Name</td>
-                                 <td style="width: 60%;"><?php echo $adm_name[0]['adm_name']; ?></td>
+                                 <td style="width: 60%;"><?php echo $admin[0]['adm_name']; ?></td>
                               </tr>
                               <tr style="text-align:left;">
                                  <td style="font-weight:bold;width:20%;">Title</td>
@@ -681,7 +574,7 @@ if (strlen($phone_number) >= 4) {
                               </tr>
                               <tr style="text-align:left;">
                                  <td style="font-weight:bold;width:20%;">Admin ID</td>
-                                 <td style="width: 60%;"><?php echo $adm_name[0]['adm_id']; ?></td>
+                                 <td style="width: 60%;"><?php echo $admin[0]['adm_id']; ?></td>
                               </tr>
                               <?php if(!empty($timesheet_info[0]['cheque_date'])) { ?>
                               <tr style="text-align:left;">
@@ -717,8 +610,8 @@ if (strlen($phone_number) >= 4) {
                               </tr>
                               <tr>
                                  <th style="text-align:left;"><strong>DESCRIPTION</strong></th>
-                                 <th><strong>THIS PERIOD(<?php  echo $currency; ?>)</strong></th>
-                                 <th><strong>YTD(<?php  echo $currency; ?>)</strong></th>
+                                 <th><strong>THIS PERIOD(<?php  echo $setting[0]['currency']; ?>)</strong></th>
+                                 <th><strong>YTD(<?php  echo $setting[0]['currency']; ?>)</strong></th>
                               </tr>
                               <tr>
                                  <td style="text-align:left;"><strong>Check Amount</strong></td>
@@ -763,7 +656,7 @@ if (strlen($phone_number) >= 4) {
                      debugger;
 
                   var sum=0;
-                   var currency = '<?php echo $currency; ?>';
+                   var currency = '<?php echo $setting[0]['currency']; ?>';
                   
                   $('.table').find('.current').each(function() {
                   var v=$(this).html();
@@ -882,7 +775,7 @@ formattedAmount = formattedAmount.charAt(0).toUpperCase() + formattedAmount.slic
                   
                     });
                        $(document).ready(function(){
-                       var currency = '<?php echo $currency; ?>'
+                       var currency = '<?php echo $setting[0]['currency']; ?>'
                 //  debugger;
                     
 

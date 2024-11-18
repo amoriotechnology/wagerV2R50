@@ -1529,8 +1529,16 @@ else
         return false;
 
     }
-
-
-
+//To get the default setting for specific company - Surya
+public function default_company_setting($id){
+$this->db->select('*');
+$this->db->from('web_setting');
+$this->db->where('create_by', $id);
+$query = $this->db->get();
+if ($query->num_rows() > 0) {
+    return $query->result_array();
+}
+return false;
+}
 }
 

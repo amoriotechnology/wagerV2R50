@@ -2048,17 +2048,7 @@ $this->db->update('state_and_tax', $data1);
         }
 }
 
-public function get_overtime_data(){
-    $this->db->select('*');
-    $this->db->from('working_time');
-    $this->db->where('created_by',$this->session->userdata('user_id'));
-    $query = $this->db->get();
-  //  echo $this->db->last_query(); die();
-   if ($query->num_rows() > 0) {
-     return $query->result_array();
-   }
-   return false;
-}
+
 
 public function get_data_pay($d1 = null, $empid, $timesheetid) {
     $this->db->select('timesheet_info.*, 
@@ -4857,9 +4847,10 @@ public function get_tax_history($tax_type,$tax,$timesheet){
     ->where('tax', $tax)
     ->where('time_sheet_id', $timesheet);
    $query= $this->db->get();
-  
+  // echo $this->db->last_query();
    if ($query->num_rows() > 0) {
  $result = $query->row_array();
+
  return $result['amount'];
    }else{
    return null;
@@ -4887,13 +4878,26 @@ public function get_cumulative_tax_amount($tax, $end, $employee, $tax_type) {
 //To get the cumulative country tax amount of specific employee
 public function sum_of_country_tax($end_date = null, $empid, $timesheetid , $user_id)
 {
-$query_row_count = $this->db->select('SUM(info_payslip.s_tax) as t_s_tax, SUM(info_payslip.m_tax) as t_m_tax, SUM(info_payslip.f_tax) as t_f_tax, SUM(info_payslip.u_tax) as t_u_tax, SUM(info_payslip.total_amount) as t_amount, SUM(timesheet_info.total_hours) as t_hours');
+$query_row_count = $this->db->select('SUM(info_payslip.s_tax) as t_s_tax, SUM(info_payslip.m_tax) as t_m_tax, 
+SUM(info_payslip.f_tax) as t_f_tax, SUM(info_payslip.u_tax) as t_u_tax, SUM(info_payslip.total_amount) as t_amount, 
+SUM(timesheet_info.above_extra_ytd) as ytd_salary,SUM(timesheet_info.extra_ytd) as ytd_overtime_salary,
+SUM(info_payslip.sc) as sc,SUM(timesheet_info.total_hours) as ytd_days,
+SUM(timesheet_info.above_this_hours) as ytd_hours_excl_overtime,SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_hours,
+SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_this_hour))) as ytd_hours_only_overtime,
+SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.above_this_hours))) as ytd_hours_excl_overtime_in_time');
 $this->db->from('timesheet_info');
 $this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
 $this->db->where('info_payslip.templ_name',$empid);
 $this->db->where('info_payslip.create_by', $user_id);
 if($end_date){
 $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE(' $end_date', '%m/%d/%Y')", NULL, FALSE);
+}
+$query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+    return false;
+
 }
 
 
@@ -4912,6 +4916,15 @@ public function allFederaltaxes($taxType, $user_id)
     return [];
 
 }
-
-
+//Get Overall Working hour
+public function get_overtime_data($id){
+    $this->db->select('*');
+    $this->db->from('working_time');
+    $this->db->where('created_by',$id);
+    $query = $this->db->get();
+   if ($query->num_rows() > 0) {
+     return $query->result_array();
+   }
+   return false;
+}
 }

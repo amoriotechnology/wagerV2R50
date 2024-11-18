@@ -1087,11 +1087,14 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                        
                         $employer_contribution = ($employer / 100) * $this_period;
                         $row = $this->db->select('*')->from('state_localtax')->where('employee', $employee)->where('tax', $tax_data[0]['tax'])->where($employee_tax, $range)->where('created_by', $user_id)->count_all_results();
-                      
+                    
                         $employee_tax_key = "'employee_" . $tax_data[0]['tax'] . "'";
                         $search_tax = explode('-', $tax_data[0]['tax']);
+                     
                         if ($row == 1) {
+                          
                         $result = $this->Hrm_model->get_tax_history($tax_type, $search_tax[1], $timesheet_id);
+                     
                             $amount = $result ? $result : 0;
 
                             $sum_of_state_tax = $this->Hrm_model->get_cumulative_tax_amount($search_tax[1], $endDate, $employee_id, $tax_type);
@@ -1104,9 +1107,9 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                                 $overall_state_tax[$employee_tax_key] = $overall_amount;
                             }
 
-                            if (empty($this_period_statetax) && empty($overall_state_tax)) {
-                                return null; 
-                            }
+                            // if (empty($this_period_statetax) && empty($overall_state_tax)) {
+                            //     return null; 
+                            // }
 
                         }
                     }
@@ -1139,10 +1142,10 @@ return $data;
             $timesheet_id = $this->input->get('timesheet_id');
             $employee_id = $this->input->get('templ_name');
             $company_info = $this->Hrm_model->retrieve_companyinformation($user_id);
-           
+            $default_setting =$this->Web_settings->default_company_setting($user_id);
             $employeedata  = $this->Hrm_model->employee_info($employee_id,$user_id);
             $timesheetdata = $this->Hrm_model->timesheet_info_data($timesheet_id,$user_id);
-            
+            $overtime_hour = $this->Hrm_model->get_overtime_data($user_id);
             
           
             $working_state_tax=  $employeedata[0]['state_tx'];
@@ -1155,7 +1158,8 @@ return $data;
             $scAmount = $this->saleCommission($employee_id, $payperiod, $user_id, $admin_id);
             $thisPeriodAmount = $this->thisPeriodAmount($timesheetdata[0]['payroll_type'], $total_hours, $hrate, $scAmount, $timesheetdata[0]['extra_thisrate'], $timesheetdata[0]['above_extra_sum'], $user_id, $admin_id);
 
-          
+            $admin_name = $this->Hrm_model->getDatas('administrator', '*', ['adm_id'=> $timesheetdata[0]['admin_name']]);
+
 
            // Country Tax Starts //
             $f = $this->countryTax('Federal Income tax', $employeedata[0]['employee_tax'], $thisPeriodAmount, $employee_id, 'f_tax', $user_id, $end_date,  $timesheet_id);
@@ -1174,6 +1178,7 @@ return $data;
 
 
            $working_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$working_state_tax,$user_id,$thisPeriodAmount,'state_tax',$timesheet_id);
+         
            $living_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$living_state_tax,$user_id,$thisPeriodAmount,'living_state_tax',$timesheet_id);
  
 
@@ -1191,9 +1196,13 @@ $data=array(
   'company_info' => $company_info,
   'employee_info' => $employeedata,
   'timesheet_info' => $timesheetdata,
+  'overtime_hour' => $overtime_hour,
+  'setting'    =>$default_setting,
+  'admin'   =>  $admin_name,
+  'ytd' => $f['ytd'],
   );
 
-print_r($data);
+
 
 
        $content = $this->parser->parse('hr/pay_slip', $data, true);
@@ -2491,6 +2500,7 @@ public function countryTax($tax_type, $employee_tax_column, $final, $templ_name,
     $tax = $this->db->select('*')->from('federal_tax')->where('tax', $tax_type)->where('created_by', $user_id)->get()->result_array();
 
     $tax_range = '';
+    $ytd=[];
     $tax_value = '';
 
     foreach ($tax as $amt) {
@@ -2507,19 +2517,24 @@ public function countryTax($tax_type, $employee_tax_column, $final, $templ_name,
         $tax_employee = $data[$tax_type][0]['employee'];
         $tax_value = round(($tax_employee / 100) * $final, 3);
     }
-
    
     // YTD Sum Amount
     $sum_of_country_tax = $this->Hrm_model->sum_of_country_tax($endDate, $templ_name, $timesheet_id,$user_id);
- 
+    $ytd['ytd_days'] = $sum_of_country_tax[0]['ytd_days'];
+    $ytd['ytd_salary'] = $sum_of_country_tax[0]['ytd_salary'];
+    $ytd['ytd_overtime_salary'] = $sum_of_country_tax[0]['ytd_overtime_salary'];
+    $ytd['ytd_hours_only_overtime'] = $sum_of_country_tax[0]['ytd_hours_only_overtime'];
+    $ytd['ytd_hours_excl_overtime'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime'];
+    $ytd['total_hours'] = $sum_of_country_tax[0]['total_hours'];
+    $ytd['ytd_hours_excl_overtime_in_time'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime_in_time'];
     $data['t_s_tax'] = $sum_of_country_tax[0]['t_s_tax'];
     $data['t_m_tax'] = $sum_of_country_tax[0]['t_m_tax'];
     $data['t_f_tax'] = $sum_of_country_tax[0]['t_f_tax'];
     $data['t_u_tax'] = $sum_of_country_tax[0]['t_u_tax'];
 
-
-    return $tax_value;
+    return ['ytd' => $ytd ,'tax_data' => $data, 'tax_value' => $tax_value];
 }
+
 
 
 
