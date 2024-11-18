@@ -1,4 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/number-to-words"></script>
 <style>
    th,td{
       padding:2px;
@@ -9,105 +8,16 @@
 
 	padding: 35px;
 	position: relative;
-	/*width: 590px;*/
+
 }
-  .btn_upload {
-                  cursor: pointer;
-                  display: inline-block;
-                  overflow: hidden;
-                  position: relative;
-                  color: #fff;
-                  background-color: #2a72d4;
-                  border: 1px solid #166b8a;
-                  padding: 5px 10px;
-                  }
-                  .btn_upload:hover,
-                  .btn_upload:focus {
-                  background-color: #7ca9e6;
-                  }
-                  .yes {
-                  display: flex;
-                  align-items: flex-start;
-                  margin-top: 10px !important;
-                  }
-                  .btn_upload input {
-                  cursor: pointer;
-                  height: 100%;
-                  position: absolute;
-                  filter: alpha(opacity=1);
-                  -moz-opacity: 0;
-                  opacity: 0;
-                  }
-                  .it {
-                  /* height: 400px; */
-                  margin-left: 10px;
-                  /* width: 1000px; */
-                  height: 200px; /* Set the height of the checkbox */
-                  width: 800px; /* Set the width of the checkbox */
-                  }
-                  .btn-rmv1,
-                  .btn-rmv2,
-                  .btn-rmv3,
-                  .btn-rmv4,
-                  .btn-rmv5 {
-                  display: none;
-                  }
-                  .rmv {
-                  cursor: pointer;
-                  color: #fff;
-                  border-radius: 30px;
-                  border: 1px solid #fff;
-                  display: inline-block;
-                  /* background: rgba(255, 0, 0, 1); */
-                  margin: -5px -10px;
-                  }
-                  .rmv:hover {
-                  /* background: rgba(255, 0, 0, 0.5); */
-                  }
-  tr, .avoid-page-break {
-  page-break-inside: avoid;
-}
+ 
    #download{
    margin-left: 830px;
    }
    th{
    background-color:<?php echo '#'.$color; ?>;
    }
-   .payTop_details p{
-   display: inline-block;
-   }
-   .payTop_details span{
-   display: block;
-   }
-   .Employee_details {
-   text-align: center;
-   margin: auto;
-   }
-   .Employee_details p {
-   margin-bottom: 0;
-   }
-   .proposedWork.pay_table h3 {
-   font-size: 18px;
-   text-align: left;
-   font-weight: 600;
-   margin: 5px 0 0;
-   }
-   .proposedWork.pay_table p {
-   margin: 0;
-   height: 36px;
-   }
-   .proposedWork.pay_table hr {
-   margin: 5px;
-   border-top: 1px solid #4b4b4b;
-   }
-   .amount_word,
-.custom-row {
-    display: inline-block;
-}
-.r {
-
-   text-align:center;
-}
+   
 </style>
 <div class="content-wrapper">
 <section class="content-header" style="height:70px;">
@@ -126,8 +36,7 @@
 </section>
 <section class="content">
    <div class="row">
-      <!--  table area -->
-      <div class="col-sm-12">
+     <div class="col-sm-12">
          <div class="panel panel-default thumbnail">
             <?php
                $arr=preg_split("/\s+(?=\S*+$)/",$company_info[0]['address']);
@@ -175,7 +84,7 @@ $fs=strtoupper($employee_info[0]['first_name']);
                   
                   
                   <br/>
-                  <?php // print_r($employee_info); ?>
+             
                   <div class="payTop_details row">
           
                      <div class="col-md-6">
@@ -322,9 +231,7 @@ $fs=strtoupper($employee_info[0]['first_name']);
             } 
             ?>
 </td>
- <?php //if ($sc): ?>
-         <!-- <td> </td> -->
-        <?php //endif; ?>
+
 <td id="above_over_this_period" >
     <?php 
             if ($timesheet_info[0]['total_hours'] > $overtime_hour) {
@@ -362,7 +269,14 @@ $fs=strtoupper($employee_info[0]['first_name']);
          <th><strong>TOTAL :</strong></td>
          <th> <?php 
          list($hours1, $minutes1) = explode(':', $timesheet_info[0]['above_extra_beforehours']);
-list($hours2, $minutes2) = explode(':', $timesheet_info[0]['extra_hour']);
+     if (!empty($timesheet_info[0]['extra_this_hour']) && preg_match('/^\d{1,2}:\d{2}$/', $timesheet_info[0]['extra_this_hour'])) {
+
+    list($hours2, $minutes2) = explode(':', $timesheet_info[0]['extra_this_hour']);
+} else {
+   
+    $hours2 = 0;
+    $minutes2 = '00';
+}
 
 $totalMinutes = ($hours1 * 60 + $minutes1) + ($hours2 * 60 + $minutes2);
 $finalHours = floor($totalMinutes / 60);
@@ -371,12 +285,10 @@ $finalMinutes = $totalMinutes % 60;
 $result = sprintf('%02d:%02d', $finalHours, $finalMinutes);
          echo $result ; ?>  </th>
          <th></th>
-         <!-- <?php// if ($sc): ?>
-            <th>  </th>
-         <?php //endif; ?> -->
+      
  
 
-         <th><?php echo $timesheet_info[0]['above_extra_sum'] + $timesheet_info[0]['extra_thisrate'] ; ?></th>
+         <th><?php echo $timesheet_info[0]['above_extra_sum'] ; ?></th>
        <th><?php 
       list($hours1, $minutes1) = explode(':', $ytd['ytd_hours_excl_overtime_in_time']);
 $totalMinutes1 = ($hours1 * 60) + $minutes1;$totalMinutes2 =0;
@@ -384,14 +296,14 @@ if($ytd['ytd_hours_only_overtime']){
 list($hours2, $minutes2) = explode(':', $ytd['ytd_hours_only_overtime']);
 $totalMinutes2 = ($hours2 * 60) + $minutes2;
 }
-// Sum the total minutes
+
 $totalMinutes = $totalMinutes1 + $totalMinutes2;
 
-// Convert back to hours and minutes
+
 $hours = floor($totalMinutes / 60);
 $minutes = $totalMinutes % 60;
 
-// Format the result as hours:minutes
+
 $total_time = sprintf('%d:%02d', $hours, $minutes);
       echo $total_time ; ?></th>
          <th><?php echo round ($ytd['ytd_salary'], 3) + $ytd['ytd_overtime_salary'] ; ?></th>
@@ -401,7 +313,7 @@ $total_time = sprintf('%d:%02d', $hours, $minutes);
          
          
           
-         <?php //} ?>
+    
                            
                          
                         </table>
@@ -525,19 +437,18 @@ $total_time = sprintf('%d:%02d', $hours, $minutes);
             <?php
            $phone_number = $employee_info[0]['social_security_number'];
 
-// Check if the phone number is at least 4 digits long
+
 if (strlen($phone_number) >= 4) {
-    // Extract the last four digits
+
     $last_four_digits = substr($phone_number, -4);
 
-    // Replace the last four digits with "XXXX"
+   
     $masked_number = substr_replace($phone_number, str_repeat("X", 4), -4);
 
   
     echo $masked_number;
 }
-            // $new =substr_replace($employee_info[0]['social_security_number'], 'XXXX', 0, 4) ;
-            // echo $new;
+        
             ?>
         </td>
                               </tr>
@@ -552,12 +463,7 @@ if (strlen($phone_number) >= 4) {
         </td>
                               </tr>
       
-    <!-- <tr>
-        <td colspan="2">
-            <span style="font-weight: bold; display: inline-block; ">PAY PERIOD : </span>
-            <?php echo $timesheet_info[0]['month']; ?>
-        </td>
-    </tr> -->
+  
 </table>
 
                     <table class="proposedWork pay_table table" style='margin-top:-10px;' id="price">
@@ -680,7 +586,6 @@ if (strlen($phone_number) >= 4) {
                  var totalPeriodText = $('#total_period').text();
 var aboveOverThisPeriodText = $('#above_over_this_period').text();
 
-// Check if aboveOverThisPeriodText is not a valid number (NaN) and set it to zero
 if (isNaN(parseFloat(aboveOverThisPeriodText))) {
     aboveOverThisPeriodText = "0";
 }
@@ -714,7 +619,7 @@ var final_ab_ytd=parseFloat($('#final_over_ytd').text());
                    var period_wise_total=$('#total_period').text();
                    var tax_deduction_period_wise=$('#Total_current').text();
                    tax_deduction_period_wise = tax_deduction_period_wise.replace(/-/g, '');
-                   //var net_period=+period_wise_total-tax_deduction_period_wise;
+                 
                    $('.net_period').html("$"+net_period.toFixed(2));
                   
                   
@@ -734,9 +639,7 @@ var final_ab_ytd=parseFloat($('#final_over_ytd').text());
                     var currencyWords = currencyMap[currency] || 'Unknown';
                     var ytd_wise_total = parseFloat($('#total_ytd').html());
                     var tax_deduction_ytd_wise = parseFloat($('#Total_ytd').html());
-                   // var net_ytd = ytd_wise_total - tax_deduction_ytd_wise;
-                    
-                    // Keep only 2 decimal places for currency calculations
+                  
                     var amount = net_period.toFixed(2);
                     
                     var sanitizedAmount = amount.replace(/[,.]/g, '');
@@ -765,18 +668,18 @@ if (cents > 0) {
     formattedAmount += cents + '/100 ' + currencyWords + ' Only';
 }
 
-// Capitalize the first letter of formattedAmount after all modifications
+
 formattedAmount = formattedAmount.charAt(0).toUpperCase() + formattedAmount.slice(1);
 
 
-                    // $('.net_ytd').html(net_ytd.toFixed(2));
+                   
                      $('.amount_word').html(formattedAmount);
                   
                   
                     });
                        $(document).ready(function(){
                        var currency = '<?php echo $setting[0]['currency']; ?>'
-                //  debugger;
+              
                     
 
                     var currencyMap = {
@@ -790,7 +693,7 @@ formattedAmount = formattedAmount.charAt(0).toUpperCase() + formattedAmount.slic
                     var tax_deduction_ytd_wise = parseFloat($('#Total_ytd').html());
                     var net_ytd = ytd_wise_total - tax_deduction_ytd_wise;
                     
-                    // Keep only 2 decimal places for currency calculations
+                
                     var amount = net_period.toFixed(2);
                     
                     var sanitizedAmount = amount.replace(/[,.]/g, '');
@@ -824,10 +727,10 @@ formattedAmount = formattedAmount.charAt(0).toUpperCase() + formattedAmount.slic
                       $('.amount_word').html(formattedAmount);
                       const currentElement = document.querySelector('.current');
 
-// Get the current value without the minus sign
+
 const value = currentElement.textContent.trim();
 
-// Update the content of the element to visually show the minus sign
+
 currentElement.textContent = '-' + value;
                   });
                   
@@ -846,7 +749,7 @@ currentElement.textContent = '-' + value;
                   }
                   
                   $("#imag").change(function() {
-                    // add your logic to decide which image control you'll use
+              
                     var imgControlName = "#ImgPreview";
                     readURL(this, imgControlName);
                     $('.preview1').addClass('it');
@@ -869,12 +772,11 @@ currentElement.textContent = '-' + value;
    .top_section{
    width: 100%;
    height: 2.9in;
-   /*    background-color: #f0f0f0;*/
+
  
    filter: brightness(150%);
    background-position: center;
-   /*    filter: blur(1px);*/
-   /*    background-size: cover;*/
+  
    }    
    * {
    box-sizing: border-box;
@@ -890,13 +792,7 @@ currentElement.textContent = '-' + value;
    width: 100%;
    text-align: center;
    }
-   /*.custom-row {
-   background-image: url('<?php echo base_url('/assets/images/logo/logo-paychex.png'); ?>');
-   background-size: cover;
-   background-repeat: no-repeat;
-   background-position: center;
-   background-size: 100% 35px;
-   }*/
+
    .slanted-text p {
    transform: rotate(269deg); 
    margin: 0;
@@ -919,7 +815,7 @@ currentElement.textContent = '-' + value;
    }
    .separator .sep-line {
    height: 300px;
-   /*    border-bottom: 1px dotted; #000;*/
+
    display: block;
    position: relative;
    width: 100%;
