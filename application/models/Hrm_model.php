@@ -1800,17 +1800,15 @@ public function get_info_county_tax(){
             return $query->result_array();
          }
           return true;
- }
-  public function checkTimesheetInfo($employeeId, $selectedDate) {
-        // Query the timesheet_info table to check if the month field contains the selected date for the employee
-        $this->db->where('templ_name', $employeeId);
-        $this->db->like('month', $selectedDate, 'both'); // Modify this condition according to your database schema
+}
 
-        $query = $this->db->get('timesheet_info');
-//echo $this->db->last_query();
-        // Check if there are any rows found
-        return $query->num_rows() > 0;
-    }
+public function checkTimesheetInfo($employeeId, $selectedDate) 
+{
+    $this->db->where('templ_name', $employeeId);
+    $this->db->like('month', $selectedDate, 'both');
+    $query = $this->db->get('timesheet_info');
+    return $query->num_rows() > 0;
+}
     
    public function employee_bankDetails()
    {
@@ -2270,7 +2268,6 @@ public function sc_info_count($templ_name, $payperiod) {
     $this->db->group_end();
 
     $query = $this->db->get();
-    echo $this->db->last_query();
     $result['sc'] = $query->result_array();
 
     // Remove duplicates
@@ -4839,17 +4836,15 @@ if ($query->num_rows() > 0) {
 return [];
 }
 
-public function get_state_details($find,$table,$where,$state,$user_id){
-     $this->db->select($find)->from($table)->where($where, $state)->where('created_by', $user_id);
-     $query = $this->db->get();
-   
-if ($query->num_rows() > 0) {
-    $result = $query->row_array();
-    
-    return $result;
-}
-return [];
-   
+public function get_state_details($find, $table, $where, $state, $user_id)
+{
+    $this->db->select($find)->from($table)->where($where, $state)->where('created_by', $user_id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        $result = $query->row_array();
+        return $result;
+    }
+    return [];
 }
 
 public function working_state_tax($employee_status,$final,$local_tax_range, $stateTax="",$user_id)
@@ -4883,14 +4878,15 @@ public function get_tax_history($tax_type,$tax,$timesheet){
    return null;
    }
 }
-public function get_tax_history_basedon_employee($find,$tax,$start,$employee,$tax_type=null){
+public function get_tax_history_basedon_employee($find,$tax,$start,$employee,$tax_type=null)
+{
    $this->db->select($find)
     ->from("tax_history")
     ->where("timesheet_info.templ_name", $employee)
     ->where("tax_history.tax", $tax)
     ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
     ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$start', '%m/%d/%Y')", NULL, FALSE);
-$query = $this->db->get();
-return $query->num_rows();
+    $query = $this->db->get();
+    return $query->num_rows();
 }
 }
