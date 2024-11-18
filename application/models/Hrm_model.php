@@ -4899,6 +4899,23 @@ $query = $this->db->get();
     return false;
 
 }
+
+
+// All Federal Taxes - Madhu
+public function allFederaltaxes($taxType, $user_id)
+{
+    $this->db->select('*');
+    $this->db->from('federal_tax');
+    $this->db->where('tax', $taxType);
+    $this->db->where('created_by', $user_id);
+    $query = $this->db->get();
+
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+    return [];
+
+}
 //Get Overall Working hour
 public function get_overtime_data($id){
     $this->db->select('*');

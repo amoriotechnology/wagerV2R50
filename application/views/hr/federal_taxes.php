@@ -1,6 +1,5 @@
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>my-assets/css/css.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/toastr.min.css" />
+<script src="<?php echo base_url()?>assets/js/toastr.min.js" /></script>
 <?php  error_reporting(1); ?>
 <!-- Manage Invoice Start -->
 <style>
@@ -85,7 +84,7 @@ tr.noBorder td {
    <section class="content-header">
       <div class="header-icon">
          <figure class="one">
-            <img src="<?php echo base_url()  ?>asset/images/taxes.png"  class="headshotphoto" style="height:50px;" />
+            <img src="<?php echo base_url(); ?>assets/images/taxes.png"  class="headshotphoto" style="height:50px;" />
          </figure>
       </div>
       
@@ -103,26 +102,21 @@ tr.noBorder td {
 
  
    <section class="content">
-      <!-- Alert Message -->
       <?php
-         $message = $this->session->userdata('message');
-         if (isset($message)) { ?>
-      <div class="alert alert-info alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $message ?>                    
-      </div>
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
 
-      <?php
-         $this->session->unset_userdata('message'); }
-         $error_message = $this->session->userdata('error_message');
-         if (isset($error_message)) { ?>
-      <div class="alert alert-danger alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $error_message ?>                    
-      </div>
-      <?php $this->session->unset_userdata('error_message'); } ?>
-      <!-- date between search -->
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
 
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
       <div class="row">
          <div class="col-sm-12">
             <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
@@ -602,11 +596,21 @@ tr.noBorder td {
                     tax: tax,
                     state: state
                 },
-                success: function(data) {     
-                    location.reload();
+                success: function(data) {    
+                  toastr.success("Successfully Deleted", "Success", { 
+                       closeButton: false,
+                       timeOut: 1000
+                  });
+
+                  setTimeout(function() {
+                     location.reload();
+                  }, 1000);
                 },
                 error: function () {
-                    alert('Error occurred');
+                  toastr.error("Failed", "Error", { 
+                     closeButton: false,
+                     timeOut: 1000
+                  });
                 }
             });
 
@@ -692,11 +696,20 @@ tr.noBorder td {
          data: {[csrfName]: csrfHash, cityId: cityId},
          dataType:"json",
          success: function(response) {
-            console.log(response);
-            location.reload();
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
          },
          error: function(xhr, status, error) {
-            console.log(error);
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
          }
       })
   }
@@ -719,9 +732,20 @@ tr.noBorder td {
             url: '<?= base_url(); ?>Chrm/citydelete_tax',
             data: dataString,
             success: function (data) {
-               location.reload();
+               toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+               setTimeout(function() {
+                  location.reload();
+               }, 1000);
             },
-            error: function () {
+            error: function (error) {
+                  toastr.error(error, "Error", { 
+                  closeButton: false,
+                  timeOut: 1000
+               });
             }
         });
     }
@@ -748,10 +772,20 @@ $(".delete_itemcounty").click(function () {
         url: '<?= base_url(); ?>Chrm/countydelete_tax',
         data: dataString,
         success: function (data) {
-            location.reload();
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
         },
         error: function () {
-            // Handle error if needed
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
         }
     });
    }

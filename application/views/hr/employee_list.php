@@ -3,7 +3,7 @@
     <section class="content-header" style="height: 65px;">
         <div class="header-icon">
             <figure class="one">
-            <img src="<?php echo base_url() ?>asset/images/employee.png"  class="headshotphoto" style="height:50px;" />
+            <img src="<?php echo base_url() ?>assets/images/employee.png"  class="headshotphoto" style="height:50px;" />
          </div>
         <div class="header-title">
             <div class="logo-holder logo-9">
@@ -19,28 +19,21 @@
             </ol>
         </div>
     </section>
-      <?php
-$message = $this->session->userdata('message');
-if (isset($message)) {
-    ?>
-        <div class="alert alert-info alert-dismissable" style="background-color: #bfddc4;color:#185e1d;;font-weight:bold;margin-left:30px;width: 1631px;">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <?php echo $message ?>
-        </div>
-        <?php
-$this->session->unset_userdata('message');
-}
-$error_message = $this->session->userdata('error_message');
-if (isset($error_message)) {
-    ?>
-        <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <?php echo $error_message ?>
-        </div>
-        <?php
-$this->session->unset_userdata('error_message');
-}
-?>
+    <?php
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+
+      if (isset($message) || isset($error_message)) { ?>
+        <script type="text/javascript">
+            <?php if (isset($message)) { ?>
+                toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+            <?php $this->session->unset_userdata('message'); } ?>
+
+            <?php if (isset($error_message)) { ?>
+                toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+            <?php $this->session->unset_userdata('error_message'); } ?>
+        </script>
+    <?php } ?>
     <section class="content">
        <div class="panel panel-bd lobidrag">
             <div class="panel-heading" style="height: 60px;border: 3px solid #D7D4D6; ">
