@@ -86,6 +86,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 define('COMPANY_ENCRYPT_KEY','amorio@2024');
 
 define('BOOTSTRAP_MODALS', array(
+    'daily_break' => 'daily_break',
     'add_states' => 'add_states',
     'add_state_tax' => 'add_state_tax',
     'add_city_info' => 'add_city_info',
