@@ -3438,6 +3438,7 @@ public function employee_create()
     {
          $decodedId= decodeBase64UrlParameter($this->input->post('company_id'));
             $admin_id =decodeBase64UrlParameter($this->input->post('admin_id'));
+            
         if (isset($_FILES['files']) && !empty($_FILES['files']['name'][0])) {
         $no_files = count($_FILES["files"]['name']);
         for ($i = 0; $i < $no_files; $i++) {
