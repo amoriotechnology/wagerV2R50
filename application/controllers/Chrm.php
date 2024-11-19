@@ -17,7 +17,6 @@ class Chrm extends CI_Controller {
         $this->load->library('session');
         $this->load->model('Web_settings');
         $this->load->model('Hrm_model');
-     
         $this->load->model('invoice_content');
         $this->auth->check_admin_auth();
         $this->CI = & get_instance();
@@ -832,7 +831,7 @@ foreach ($items as $item) {
 }
 
 
-// Old Federal Overall Summary - Madhu
+// Federal Overall Summary - Madhu
 public function federal_summary()
 {
     $setting_detail = $this->Web_settings->retrieve_setting_editdata();
@@ -1060,1300 +1059,161 @@ public function edit_timesheet()
 }
 
 
-
-
-public function time_list()
+public function state_tax($endDate, $employee_id, $employee_tax, $working_state_tax, $user_id, $this_period, $tax_type, $timesheet_id)
 {
-           $CI = & get_instance();
-           $CC = & get_instance();
-            $CII = & get_instance();
-           $CI->load->model('invoice_content');
-           
-           $this->load->model('Hrm_model');
-           $w = & get_instance();
-           $w->load->model('Ppurchases');
-           $company_info = $w->Ppurchases->retrieve_company();
-           $datacontent = $CC->invoice_content->retrieve_data();
-            $timesheet_id = $this->input->get('timesheet_id');
-           $templ_name = $this->input->get('templ_name');
-           $data['employee_data'] = $this->Hrm_model->employee_info($templ_name);
-         
-          //  print_r($data['employee_data']);  die();
-         
-           $data['timesheet_data'] = $this->Hrm_model-> timesheet_info_data($timesheet_id);
-            $timesheetdata =$data['timesheet_data'];
-            $employeedata  =$data['employee_data'];
-            $data['selected_living_state_tax']= $data['employee_data'][0]['living_state_tax'];
-            $data['selected_local_tax']= $data['employee_data'][0]['local_tax'];
-            $data['selected_state_tax']= $data['employee_data'][0]['state_tx'];
+    $state_tax = $this->Hrm_model->get_state_details('state', 'state_and_tax', 'state', $working_state_tax, $user_id);
 
-            $data['other_tax']= $data['employee_data'][0]['state_tax_2'];
+
+
+    $state = $this->Hrm_model->get_state_details('tax', 'state_and_tax', 'state', $state_tax[0]['state'], $user_id);
  
-           $hrate= $data['timesheet_data'][0]['h_rate'];
-           $total_hours=  $data['timesheet_data'][0]['total_hours'];
-              $dataw = $CII->Invoice_content->retrieve_data($this->session->userdata('user_id'));
-               $payperiod =$data['timesheet_data'][0]['month'];
-                    $get_date = explode('-', $payperiod);
-         $d1 = $get_date[1];
-      $data['sc']=$this->Hrm_model->sc_info_count($templ_name,$payperiod);
-      $salesCommision = $data['sc'];
-    // print_r($data['sc']);
-       $scValue =  $salesCommision['sc']; // Accessing 'sc=12'
-       $sc_totalAmount1 = $salesCommision['total_gtotal']; // Accessing total amount
-       
-$sc_count = $salesCommision['count'];
-$scValue = $scValue / 100;
+    $tax_split = explode(',', $state[0]['tax']);
 
-
- $scValueAmount1 = 0;
-
-if (isset($data['employee_data']) && !empty($data['employee_data'])) {
-  if (isset($data['employee_data'][0]['choice'])) {
-    if ($data['employee_data'][0]['choice'] == 'No') {
-      $scValueAmount1 = 0;
-  } else {
-    $scValueAmount1 = $scValue * $sc_totalAmount1;
-  }
-  }
-}
-
-
-
-
-// Hourly Calculation
-
-if($data['timesheet_data'][0]['payroll_type']=='Hourly'){
-   $limit_hours = '40:00';
-   list($totalH, $totalM) = explode(':', $total_hours);
-   $totalMinutes = ($totalH * 60) + (int)$totalM;
-   list($limitH, $limitM) = explode(':', $limit_hours);
-   $limitMinutes = ($limitH * 60) + (int)$limitM;
-   list($hours, $minutes) = explode(':', $total_hours);
-   $decimal_hours = $hours + ($minutes / 60);
-
-// Calculate total cost
-$total_cost = $hrate * $decimal_hours;
-if ($total_hours <= $limit_hours) {
-  $final = ($total_cost) + $scValueAmount1;
-} else {
-  $final = $data['timesheet_data'][0]['extra_thisrate'] + $data['timesheet_data'][0]['above_extra_sum'];
-}
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-BiWeekly'){
-  $final = ($hrate * $total_hours) + $scValueAmount1;
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-weekly'){
-  $final = ($hrate * $total_hours) + $scValueAmount1;
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-Monthly'){
-  $final = ($hrate * $total_hours) + $scValueAmount1;
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-BiMonthly'){
-  $final = ($total_cost) + $scValueAmount1;
-}else if ($data['timesheet_data'][0]['payroll_type']=='SalesCommission'){
- $final = ($total_cost) + $scValueAmount1;
-}
-else if ($data['timesheet_data'][0]['payroll_type']=='Sales Partner'){
- $final = $scValueAmount1;
-}
- $fin=$final;      
-          $s='';$u='';$m='';$f='';
-           // Federal Income Tax
-           $federal_tax = $this->db->select('*')->from('federal_tax')->where('tax','Federal Income tax')->get()->result_array();
-           $federal_range='';
-           $f_tax='';
-           foreach($federal_tax as $amt){
-              $split=explode('-',$amt[$data['employee_data'][0]['employee_tax']]);
-               if($final >= $split[0] && $final <= $split[1]){
-                 $federal_range=$split[0]."-".$split[1];
-               }
-               }
-             $query_row_count = $this->db->select('timesheet_info.*, info_payslip.*, SUM(info_payslip.s_tax) as t_s_tax, SUM(info_payslip.m_tax) as t_m_tax, SUM(info_payslip.f_tax) as t_f_tax, SUM(info_payslip.u_tax) as t_u_tax, SUM(info_payslip.total_amount) as t_amount, SUM(timesheet_info.total_hours) as t_hours');
-$this->db->from('timesheet_info');
-$this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
-$this->db->where('info_payslip.templ_name',$data['employee_data'][0]['id']);
-$this->db->where('info_payslip.create_by', $this->session->userdata('user_id'));
-// $this->db->where('timesheet_info.month <=', $d1);
-$this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE(' $d1', '%m/%d/%Y')", NULL, FALSE);
-$query_row_count = $this->db->get();
-// echo $this->db->last_query(); die();
-
-                 //$query_row_count = $this->db->select('*')->from('info_payslip') ->where("templ_name",$data['employee_data'][0]['id'])->get();
-           $data['federal'] = $this->Hrm_model->federal_tax_info($data['employee_data'][0]['employee_tax'],$final,$federal_range);
-           if(!empty($data['federal'])){
-           $Federal_employee= $data['federal'][0]['employee'];
-            $f=($Federal_employee/100)*$final;
-        //   echo $f;echo "<br/>";
-              $f= round($f, 3);
-             if($query_row_count->num_rows() > 1){
-                 $ar = $this->db->select('f_tax')->from('info_payslip') ->where("templ_name",$data['employee_data'][0]['id'])->get()->row()->f_tax;
-         //  echo $ar;echo "<br/>";
-                $f_tax=round(($ar+$f),3);
-             //   echo $f_tax;echo "<br/>";
-              }else{
-               $f_tax=round($f,3);
-              }
-           }
-           //Social Security
-           $social_tax = $this->db->select('*')->from('federal_tax')->where('tax','Social Security')->get()->result_array();
-           $social_range='';
-           $s_tax='';
-              $split=explode('-',$social_tax[0][$data['employee_data'][0]['employee_tax']]);
-              
-              // print_r($final); die();
-
-              
-              if($final >= $split[0] && $final <= $split[1]){
-              $social_range=$split[0]."-".$split[1];
-               }
-             $data['social'] = $this->Hrm_model->social_tax_info($data['employee_data'][0]['employee_tax'],$final,$social_range);
-      //     print_r($data['social']);
-           if(!empty($data['social'][0]['employee'])){
-           $social_employee= $data['social'][0]['employee'];
-             $s=($social_employee/100)*$final;
-            //  echo "FFF :".$final;
-            //  echo "<br/>";
-               $s= round($s, 3);
-            //  $s= round($s, 2);
-            //echo "<br/>".$s.'/'.$social_employee.'/'.$final."<br/>";
-              //62.496
-           if($query_row_count->num_rows() > 1){
-                 $ar = $this->db->select('s_tax')->from('info_payslip') ->where("templ_name",$data['employee_data'][0]['id'])->get()->row()->s_tax;
-                  // echo $this->db->last_query();.;
-                //  echo "AR : "+$ar."<br/>";
-                //  echo "S : ".$s."<br/>";
-            $s_tax=round(($ar+$s),3);
-           //  echo "s_tax : ".$s."<br/>";
-             }else{
-               
-               $s_tax=round($s,3);
-                  //echo "S TESTING : ".$s."<br/>";
-             }
-     }
-
-
-
-
-
-              //Medicare
-           $Medicare = $this->db->select('*')->from('federal_tax')->where('tax','Medicare')->get()->result_array();
-           $Medicare_range='';
-           $m_tax='';
-           foreach($Medicare as $social_amt){
-              $split=explode('-',$social_amt[$data['employee_data'][0]['employee_tax']]);
-               if($final >= $split[0] && $final <= $split[1]){
-              $Medicare_range=$split[0]."-".$split[1];
-               }
-               }
-           $data['Medicare'] = $this->Hrm_model->Medicare_tax_info($data['employee_data'][0]['employee_tax'],$final,$Medicare_range);
-           if(!empty($data['Medicare'])){
-           $Medicare_employee= $data['Medicare'][0]['employee'];
-           $m=($Medicare_employee/100)*$final;
-           
-             $m= round($m, 3);
-             if($query_row_count->num_rows() > 1){
-                 $ar = $this->db->select('m_tax')->from('info_payslip') ->where("templ_name",$data['employee_data'][0]['id'])->get()->row()->m_tax;
-            $m_tax=round(($ar+$m),3);
-            
-              }else{
-               $m_tax=round($m,3);
-              }
-           }
-   
-           //Federal unemployment
-           $unemployment = $this->db->select('*')->from('federal_tax')->where('tax','Federal unemployment')->get()->result_array();
-           $unemployment_range='';
-           $u_tax='';
-           foreach($unemployment as $social_amt){
-              $split=explode('-',$social_amt[$data['employee_data'][0]['employee_tax']]);
-               if($final > $split[0] && $final < $split[1]){
-              $unemployment_range=$split[0]."-".$split[1];
-               }
-               }
+    $overall_state_tax = [];
+    $this_period_statetax =[];
+    foreach ($tax_split as $tax) {
+        $tax_data = $this->Hrm_model->get_state_details('*', 'state_localtax', 'tax', $state_tax[0]['state'] . "-" . $tax, $user_id);
+       foreach($tax_data as $tx){
+          $split = explode('-', $tx[$employee_tax]);
+        if (count($split) > 1 && $split[0] != '' && $split[1] != '') {
+            if ($this_period >= $split[0] && $this_period <= $split[1]) {
+                $range = $split[0] . "-" . $split[1];
+                $data['working_tax'] = $this->Hrm_model->working_state_tax($employee_tax, $this_period, $range, $state_tax[0]['state'], $user_id);
         
-               $data['unemployment'] = $this->Hrm_model->unemployment_tax_info($data['employee_data'][0]['employee_tax'],$final,$unemployment_range);
-         //  print_r($data['unemployment']);
-           if(!empty($data['unemployment'])){
-           $unemployment_employee= $data['unemployment'][0]['employee'];
-              $u=($unemployment_employee/100)*$final;
-               $u= round($u, 3);
-              if($query_row_count->num_rows() > 1){
-                 $ar = $this->db->select('u_tax')->from('info_payslip') ->where("templ_name",$data['employee_data'][0]['id'])->get()->row()->u_tax;
-          $u_tax=round(($ar+$u),3);
-              }else{
-               $u_tax=round($u,3);
-              }
-           }
-
-
-
-      $state='';
-      $local_sum=array();
-      $local_tax='';     
-      $local_tax=array();
-      $selected_local_sum=array();
-      $selected_local_tax='';
-      $selected_local_tax=array();
-    
-      $selected_state_sum=array();
-    
-    
-    
-      $selected_state_tax='';    $selected_state_tax=array();
-      $other_tax=''; $other_tax=array();
-      $other_tax_sum=array();
-     $get_date = explode('-', $payperiod);
-$d1 = $get_date[1];
-
-if(($data['selected_living_state_tax'] !='')  && ($data['selected_living_state_tax'] !=='Not Applicable')){
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['selected_living_state_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  $tax_split=explode(',',$state[0]['tax']);
-    $local_tax_range='';
-         
-          
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-
-    foreach($tax as $tx){
-      // echo "<br/>";
-      // echo "state/local"   .$tx['tax'];
-      // echo "<br/>";
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final >= $split[0] && $final <= $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range,$state_tax[0]['state']);
-      
-           if(!empty($data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-              $local_tax_er=($local_tax_employer/100)*$final;
-$row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-
-
-             $data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-          if($row==1){
-            $result = $this->db->select('amount') ->from('tax_history') ->where('tax_type', 'living_state_tax') ->where('tax', $search_tax[1]) ->where('time_sheet_id', $timesheetdata[0]['timesheet_id'])->get() ->row();
-            $ar = ($result) ? $result->amount : 0;  
-
-            if($ar){
-       $t_tx=$ar;
-       // print_r($t_tx); die;
-   }else{
-           $t_tx=0;
-        }
-    $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                    
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    
-   if($query->num_rows() >= 1){
-  $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                      ->where("tax_type","living_state_tax")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                          ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                    // echo $this->db->last_query(); die;
-                     $amt = $query;
-     $local_sum[$search_tax[1]]=$amt;
-   //  echo "<br/>";
-   }else{
-         $local_sum[$search_tax[1]]=$local_tax_ee;
-     //  echo "<br/>";   echo $local_sum[$search_tax[1]]; echo "<br/>";
-   }
-               $local_tax[$data_employee]=$t_tx;
-               // echo $local_tax[$data_employee]; echo "<br/>";
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-  }
-//print_r($local_tax);die();
-
-// State Tax
-if(!empty($data['selected_local_tax']) && ($data['selected_local_tax'] !=='Not Applicable')){ 
-
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['selected_local_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  $tax_split=explode(',',$state[0]['tax']);
-
-    $local_tax_range='';
-          
-         
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-    foreach($tax as $tx){
-
-      // echo "<br/>";
-      // echo "local"   .$state_tax[0]['state'];
-      // echo "<br/>";
-
-
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final >= $split[0] && $final <= $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range, $state_tax[0]['state']);
-           if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-        
-              $local_tax_er=($local_tax_employer/100)*$final;
-        $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-             $data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-          if($row==1){
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','state_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-//  echo $this->db->last_query();echo "<br/>";
-  $t_tx='';
-            if($ar){
-       $t_tx=$ar;
-   }else{
-           $t_tx=0;
-        }
-      }
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    // echo "<br/>";
-                   //  echo $this->db->last_query();  echo "<br/>";
-   if($query->num_rows() >= 1){
-     $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                      ->where("tax_type","local_tax")
-                          ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                      // echo "<br/>";//echo $this->db->last_query();
-                      
-                      // echo "<br/>";
-                      // echo " Local Tax EEE:".$local_tax_ee;
-                      
-                     // .;
-                     $amt = $query;
-     $selected_local_sum[$search_tax[1]]=$amt;
-//   echo "<br/>";
-//       print_r($selected_local_sum); echo "<br/>";.;
-   }else{
-         $selected_local_sum[$search_tax[1]]=$local_tax_ee;
-  //  echo "<br/>";
-  //                     echo " Local Tax EEE:".$local_tax_ee;
-    //   echo print_r($selected_local_sum); echo "<br/>";.;
-     // echo "<br/>";   echo $local_sum[$search_tax[1]]; echo "<br/>";
-   }
-               $selected_local_tax[$data_employee]=$t_tx;
-          //  }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-
-
-
-}
-
-
-if(!empty($data['selected_state_tax']) && ($data['selected_state_tax'] !=='Not Applicable') ) {
-
-  $state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['selected_state_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-// Fetch all records 
- 
-
-  // echo $this->db->last_query(); 
-
-
-  
-  $state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  
-
-  //  $tax_split=explode(',',$state[0]['tax']);
-
-
-
-// Assuming $tax_split contains the initial array of taxes
-$tax_split = explode(',', $state[0]['tax']);
-
-// Filter out "Income tax - NJ"
-// $filtered_tax_split = array_filter($tax_split, function($tax) {
-//     return strpos(trim($tax), 'Income tax') === false; // not contains
-// });
- 
-    
-   $local_tax_range='';
-           
-   foreach($tax_split as $tax){
-
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-      
-
-       foreach($tax as $tx){
-
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-               if($split[0]!='' && $split[1]!=''){
-               if($final >= $split[0] && $final <= $split[1]){
-               $local_tax_range=$split[0]."-".$split[1];
- $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range,$state_tax[0]['state']);
-     
-          
-    
-         if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-                $local_tax_employee=$lt['employee'];
-                $local_tax_employer=$lt['employer'];
-                $local_tax_ee=($local_tax_employee/100)*$final;
-                $local_tax_er=($local_tax_employer/100)*$final;
-
-$row = $this->db->select('*')
-                ->from('state_localtax')
-                ->where('employee', $local_tax_employee)
-                ->where('tax', $tx['tax'])
-                ->where("`single` BETWEEN {$split[0]} AND {$split[1]}", null, false) 
-                ->where('create_by', $this->session->userdata('user_id'))
-                ->count_all_results();
-
-
-$data_employee="'employee_".$tx['tax']."'";
-
-             $search_tax=explode('-',$tx['tax']);
-        
-        
-             if($row==1){
-
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','state_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-          
-
-            // echo  $this->db->last_query();echo "<br/>";  
-            //  echo  $this->db->last_query();echo "<br/>"; .;
-        if($ar){
-        $t_tx=$ar;
-        }else{
-           $t_tx=0;
-        }
-    
- 
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                     ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                     ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-                     ->get();
-                    // echo $this->db->last_query();
-   
-
-  if($query->num_rows() >= 1){
- 
-     $query = $this->db->select_sum("amount")
-                       ->from("tax_history")
-                       ->where("employee_id",$data['employee_data'][0]['id'])
-                       ->where("tax",$search_tax[1])
-                       ->where("tax_type","state_tax")
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                       ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-                       ->get()->row()->amount;
-                 
-                        $amt = $query;
+                if (!empty($data['working_tax'])) {
+                    foreach ($data['working_tax'] as $contribution) {
                      
-     $selected_state_sum[$search_tax[1]]=$amt;
+                        $employee = $contribution['employee'];
+                    
+                        $employer = $contribution['employer'];
+                        $employee_contribution = ($employee / 100) * $this_period;
+                       
+                        $employer_contribution = ($employer / 100) * $this_period;
+                     
+                        $row = $this->db->select('*')->from('state_localtax')->where('employee', $employee)->where('tax', $tax_data[0]['tax'])->where($employee_tax, $range)->where('created_by', $user_id)->count_all_results();
+                    
+                        $employee_tax_key = "'employee_" . $tax_data[0]['tax'] . "'";
+                        $search_tax = explode('-', $tax_data[0]['tax']);
+                     
+                        if ($row == 1) {
+                          
+                        $result = $this->Hrm_model->get_tax_history($tax_type, $search_tax[1], $timesheet_id);
+                     
+                            $amount = $result ? $result : 0;
+
+                            $sum_of_state_tax = $this->Hrm_model->get_cumulative_tax_amount($search_tax[1], $endDate, $employee_id, $tax_type);
+                            $overall_amount   = $sum_of_state_tax ? $sum_of_state_tax : 0;
+
+                        if ($amount > 0) {
+                                $this_period_statetax[$employee_tax_key] = $amount;
+                            }
+                            if ($overall_amount > 0) {
+                                $overall_state_tax[$employee_tax_key] = $overall_amount;
+                            }
+
+                          
+
+                        }
+                    }
+                }
+                }
+            }
+        }
+
+    }
+
+
+
   
-     }else{
-         $selected_state_sum[$search_tax[1]]=$local_tax_ee;
-     }
-         $selected_state_tax[$data_employee]=$t_tx  ;
-
- 
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-
-
-}
-// print_r($selected_state_tax);die();
-//Starts Other Tax
-  if(!empty($data['other_tax']) && ($data['other_tax'] !=='Not Applicable') ) {
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['other_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-
-                    //  echo $this->db->last_query(); .;
-// 
-
-  $tax_split=explode(',',$state[0]['tax']);
-  //  print_r($tax_split); .;
-    $local_tax_range='';
-          
-      
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-    foreach($tax as $tx){
-
-    //   echo "<br/>";
-    //   echo "state"   .$tx['tax'];
-    //   echo "<br/>";   
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final > $split[0] && $final < $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-           if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-        
-              $local_tax_er=($local_tax_employer/100)*$final;
-$row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-           
-$data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-          
-             $t_tx='';
-          if($row==1){
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','other_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-
-            if($ar){
-       $t_tx=$ar;
-      
-   }else{
-           $t_tx=0;
-            
-        }
-
-
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                   ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    // echo $this->db->last_query();
-   if($query->num_rows() >= 1){
-     $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                      ->where("tax_type","other_tax")
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                     // echo $this->db->last_query();
-                     $amt = $query;
-     $other_tax_sum[$search_tax[1]]=$amt;
-   
-   }else{
-         $other_tax_sum[$search_tax[1]]=$local_tax_ee;
-     
-   }
-               $other_tax[$data_employee]=$t_tx;
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-
-
-}
-
-//Start Other Working Tax
-$other_working_tax=array();
-$other_working_sum=array();
-  if(!empty($data['employee_data'][0]['state_tax_1']) && ($data['employee_data'][0]['state_tax_1'] !=='Not Applicable') ) {
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['state_tax_1'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  $tax_split=explode(',',$state[0]['tax']);
-   // print_r($state);
-    $local_tax_range='';
-          
-      
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-    foreach($tax as $tx){
-
-    //   echo "<br/>";
-    //   echo "state"   .$tx['tax'];
-    //   echo "<br/>";   
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final > $split[0] && $final < $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-
-           if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-        
-              $local_tax_er=($local_tax_employer/100)*$final;
-$row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-           
-$data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-              $t_tx='';
-          if($row==1){
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','other_working_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-
-            if($ar){
-       $t_tx=$ar;
-      
-   }else{
-           $t_tx=0;
-            
-        }
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                   ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    // echo $this->db->last_query();
-   if($query->num_rows() >= 1){
-     $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                      ->where("tax_type","other_working_tax")
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                     // echo $this->db->last_query();
-                     $amt = $query;
-     $other_working_sum[$search_tax[1]]=$amt;
-   
-   }else{
-         $other_working_sum[$search_tax[1]]=$local_tax_ee;
-     
-   }
-               $other_working_tax[$data_employee]=$t_tx;
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-
-
-}
-//Living county starts
-$living_county_tax_range='';
-       $living_county_tax='';
-    $living_county_tax=array();
-    $living_county_sum=array();
-  if(!empty($data['employee_data'][0]['living_county_tax']) && ($data['employee_data'][0]['living_county_tax'] !=='Not Applicable') ) {
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['living_county_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  $tax_split=explode(',',$state[0]['tax']);
-   // print_r($state);
-    $local_tax_range='';
-          
-      
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-    foreach($tax as $tx){
-
-    //   echo "<br/>";
-    //   echo "state"   .$tx['tax'];
-    //   echo "<br/>";   
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final > $split[0] && $final < $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-           if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-        
-              $local_tax_er=($local_tax_employer/100)*$final;
-$row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-           
-$data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-              $t_tx='';
-          if($row==1){
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','living_county_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-
-            if($ar){
-       $t_tx=$ar;
-      
-   }else{
-           $t_tx=0;
-            
-        }
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                   ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    // echo $this->db->last_query();
-   if($query->num_rows() >= 1){
-     $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                      ->where("tax_type","living_county_tax")
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                     // echo $this->db->last_query();
-                     $amt = $query;
-     $living_county_sum[$search_tax[1]]=$amt;
-   
-   }else{
-         $living_county_sum[$search_tax[1]]=$local_tax_ee;
-     
-   }
-               $living_county_tax[$data_employee]=$t_tx;
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-
-
-}
-//Working county starts
-$working_county_tax_range='';
-       $working_county_tax='';
-    $working_county_tax=array();
-    $working_county_sum=array();
-  if(!empty($data['employee_data'][0]['cty_tax']) && ($data['employee_data'][0]['cty_tax'] !=='Not Applicable') ) {
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['cty_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  $tax_split=explode(',',$state[0]['tax']);
-   // print_r($state);
-    $local_tax_range='';
-          
-      
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-    foreach($tax as $tx){
-
-      // echo "<br/>";
-      // echo "state"   .$tx['tax'];
-      // echo "<br/>";   
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final > $split[0] && $final < $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-           if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-        // echo "LOCAL_TAX_EMPLOYEE :".$local_tax_employee;
-        // echo "<br/>";
-              $local_tax_er=($local_tax_employer/100)*$final;
-$row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-           
-$data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-        //  print_r($search_tax);
-              $t_tx='';
-          if($row==1){
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','working_county_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-//echo $this->db->last_query();
-            if($ar){
-       $t_tx=$ar;
-      
-   }else{
-           $t_tx=0;
-            
-        }
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                   ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    // echo $this->db->last_query();
-   if($query->num_rows() >= 1){
-     $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                      ->where("tax_type","working_county_tax")
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                     // echo $this->db->last_query();
-                     $amt = $query;
-     $working_county_sum[$search_tax[1]]=$amt;
-   
-   }else{
-         $working_county_sum[$search_tax[1]]=$local_tax_ee;
-     
-   }
-               $working_county_tax[$data_employee]=$t_tx;
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
-
-
-}
-
-//Working county starts
-$living_local_tax_range='';
-       $living_local_tax='';
-    $living_local_tax=array();
-    $living_local_sum=array();
-  if(!empty($data['employee_data'][0]['living_local_tax']) && ($data['employee_data'][0]['living_local_tax'] !=='Not Applicable') ) {
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['living_local_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-  $tax_split=explode(',',$state[0]['tax']);
-   // print_r($state);
-    $local_tax_range='';
-          
-      
-   foreach($tax_split as $tax){
-       $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-    foreach($tax as $tx){
-
-    //   echo "<br/>";
-    //   echo "state"   .$tx['tax'];
-    //   echo "<br/>";   
-              $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-      if($split[0]!='' && $split[1]!=''){
-               if($final > $split[0] && $final < $split[1]){
-          $local_tax_range=$split[0]."-".$split[1];
-         $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-           if(!empty( $data['localtax'])){
-               $i=0;
-                foreach( $data['localtax'] as $lt){
-        $local_tax_employee=$lt['employee'];
-        $local_tax_employer=$lt['employer'];
-            $local_tax_ee=($local_tax_employee/100)*$final;
-        
-              $local_tax_er=($local_tax_employer/100)*$final;
-$row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-           
-$data_employee="'employee_".$tx['tax']."'";
-             $search_tax=explode('-',$tx['tax']);
-              $t_tx='';
-          if($row==1){
-            $ar = $this->db->select('amount')->from('tax_history')->where('tax_type','living_local_tax')->where('tax',$search_tax[1])->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row()->amount;
-
-            if($ar){
-       $t_tx=$ar;
-      
-   }else{
-           $t_tx=0;
-            
-        }
-   $query = $this->db->select("*")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                   ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get();
-                    // echo $this->db->last_query();
-   if($query->num_rows() >= 1){
-     $query = $this->db->select_sum("amount")
-                     ->from("tax_history")
-                     ->where("employee_id",$data['employee_data'][0]['id'])
-                     ->where("tax",$search_tax[1])
-                      ->where("tax_type","living_state_tax")
-                       ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-                   ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-
-                     ->get()->row()->amount;
-                    //   echo $this->db->last_query();
-                     $amt = $query;
-     $living_local_sum[$search_tax[1]]=$amt;
-   
-   }else{
-         $living_local_sum[$search_tax[1]]=$local_tax_ee;
-     
-   }
-               $living_local_tax[$data_employee]=$t_tx;
-            }
-               $i++;
-           }  
-       }
-                }
-       }
-   }
-   }
+ $data=array(
+    'this_perid_state_tax' => $this_period_statetax,
+    'overall_state_tax' => $overall_state_tax,
+ );
+return $data;
 
 
 }
 
 
-           $ads_id = $data['timesheet_data'][0]['admin_name'];
-           $adminis_data = $this->Hrm_model->administrator_info($ads_id);
-            $payslip_design=$this->db->select('*')->from('payslip_invoice_design')->where('user_id',$this->session->userdata('user_id'))->get()->result_array();
-            $currency_details = $CI->Web_settings->retrieve_setting_editdata();
-            $name =$data['employee_data'][0]['first_name'].' '.$data['employee_data'][0]['last_name'];
-            $get_officeloan_data=$this->db->select('*')->from('person_ledger')->where('create_by',$this->session->userdata('user_id'))->where('person_id',$name)->where('status',0)->get()->result_array();
- 
-
-$payrolltaxinfo = $this->db->select('weekly')
-    ->from('tax_history')
-    ->where('created_by', $this->session->userdata('user_id'))
-    ->where('time_sheet_id', $data['timesheet_data'][0]['timesheet_id'])
-    ->where('weekly IS NOT NULL')
-      ->get()
-    ->result_array();
-// echo $this->db->last_query(); 
+            public function time_list()
+            {
+            list($user_id, $admin_id) = array_map('decodeBase64UrlParameter', [$_GET['id'],$_GET['admin_id']]);    
 
 
-
-$payrolltaxinfo1 = $this->db->select('biweekly')
-    ->from('tax_history')
-    ->where('created_by', $this->session->userdata('user_id'))
-    ->where('time_sheet_id', $data['timesheet_data'][0]['timesheet_id'])
-    ->where('biweekly IS NOT NULL')
-     ->get()
-    ->result_array();
-
-
-$payrolltaxinfo2 = $this->db->select('monthly')
-    ->from('tax_history')
-    ->where('created_by', $this->session->userdata('user_id'))
-    ->where('time_sheet_id', $data['timesheet_data'][0]['timesheet_id'])
-     ->where('monthly IS NOT NULL')
-     ->get()
-    ->result_array();
-
-
- 
-
-
-        $ytdtotals = $this->db->select(['SUM(biweekly) AS OVbiweekly','SUM(weekly) AS OVweekly','SUM(monthly) AS OVmonthly' ,'SUM(amount) AS OVhourly' ])   
-        ->from('tax_history')
-        ->where('created_by', $this->session->userdata('user_id'))
-        ->where("employee_id", $data['employee_data'][0]['id'])
-          ->where('tax_type','state_tax')
-           ->where('tax','Income tax')
-        ->join('timesheet_info', 'tax_history.time_sheet_id = timesheet_info.timesheet_id')
-        ->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE)
-        ->get()
-        ->result_array();
-
-$extrahours = $this->db->select('*')
-            ->from('working_time')
-            ->where('created_by', $this->session->userdata('user_id'))
-             ->get()
-            ->result_array();
-
-            $incometax=$this->db->select('amount')
-            ->from('tax_history')
-            ->where('created_by',$this->session->userdata('user_id'))
-            ->where('time_sheet_id',$data['timesheet_data'][0]['timesheet_id']) 
-            ->where('tax_type','state_tax')
-            ->where('tax', 'Income tax')
-            ->get()
-            ->result_array();
-   
-
-              // Over Time 
-
-            $overtime_info = $this->db->select('*')->from('timesheet_info')
-            ->where('create_by', $this->session->userdata('user_id'))->where('timesheet_id',$data['timesheet_data'][0]['timesheet_id']) ->get()->result_array();
- 
-             $timesheet_id =$data['timesheet_data'][0]['timesheet_id'];
-             $payperiod =$data['timesheet_data'][0]['month'];
-             // $data['sc']=$this->Hrm_model->sc_info_count($templ_name,$payperiod);
-             // $scValue =  $data['sc']['sc'][0]['sc']; // Accessing 'sc=12'
-             // $sc_totalAmount1 = $data['sc']['total_gtotal']; // Accessing total amount
-             // $sc_count = $data['sc']['count'];
-             // $scValue = $scValue / 100;
-
-// Calculate the percentage of $sc_totalAmount1 based on $scValue
-$scValueAmount1 = $scValue * $sc_totalAmount1;
-$merged_tax = array_merge($local_tax, $selected_local_tax, $selected_state_tax,$other_tax);
-$merged_sum = array_merge($local_sum, $selected_local_sum, $selected_state_sum,$other_tax_sum);
-
-
-$data=array(
-    'sc'=> $scValueAmount1,
-    // 'no_of_inv' =>$sc[0]['no_of_inv'],
-     // 'sales_c_amount' =>$sc[0]['sales_c_amount'],
-               'currency'  =>$currency_details[0]['currency'],
-               'color'=> $dataw[0]['color'],         
-               'selected_local_tax'=>$selected_local_tax,
-               'selected_state_tax' => $selected_state_tax ,
-               'working_county_tax'=>$working_county_tax,
-                'other_working_tax' =>$other_working_tax,
-                'living_local_tax'=>$living_local_tax,
-                'living_county_tax'=>$living_county_tax,
-               'selected_living_state_tax' =>$local_tax,
-               'other_tax' => $other_tax,
-                'selected_living_state_sum'=>$local_sum,
-                'other_working_sum' => $other_working_sum,
-               'selected_local_sum'=>$selected_local_sum,
-               'selected_state_sum'=>$selected_state_sum,
-                'working_county_sum'=>$working_county_sum,
-                'living_local_sum'=>$living_local_sum,
-                'living_county_sum'=>$living_county_sum,
-                'other_tax_sum' =>$other_tax_sum,  
-              's_tax'=>  $s_tax  ,
-              'm_tax'=> $m_tax ,
-              'u_tax'=> $u_tax ,
-              'f_tax'=> $f_tax ,
-              's'=>  $s,
-              'f'=>  $f,
-              'u'=> $u,
-              'm'=>  $m,
-                'sum'=>$merged_sum,
-           'designation' =>$timesheetdata[0]['job_title'],
-           'company'=> $datacontent,
-           'template' =>$payslip_design[0]['template'],
-               'business_name'=>(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']),  
-               'phone'=>(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']),  
-               'email'=>(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']),  
-               'address'=>(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']),
-           'logo'=>base_url().$company_info[0]['logo'],  
-           'infotime' =>  $timesheetdata,
-           'infoemployee' =>  $employeedata,
-           'total' => $final,
-           'adm_name'  => $adminis_data,
-           'adminis_data'=> $adminis_data,
-           // 'totalpayments'=>      $get_officeloan_data[0]['noofpayterms'],
-           // 'count_paid'  =>       $get_officeloan_data[0]['payterms'],
-           // 't_amount'  =>       $get_officeloan_data[0]['debit'],
-           // 'o_s_a'  =>       $get_officeloan_data[0]['out_standing'],
-           // 'o_s_l'  =>       $get_officeloan_data[0]['o_s_l'],
-          
-           'hourly'    =>       $incometax[0]['amount'],    
-        
-        
-            // 'weekly'     =>       $payrolltaxinfo[0]['weekly']     ,
-            // 'biweekly'   =>       $payrolltaxinfo1[0]['biweekly'], 
-            // 'monthly'    =>       $payrolltaxinfo2[0]['monthly'], 
-             //ajith
            
-            'OVhourly'    =>         $ytdtotals[0]['OVhourly'], 
-            'OVweekly'    =>         $ytdtotals[0]['OVweekly'], 
-            'OVbiweekly'  =>         $ytdtotals[0]['OVbiweekly'], 
-            'OVmonthly'   =>         $ytdtotals[0]['OVmonthly'], 
-
-            'data_work_hour'   =>         $extrahours[0]['work_hour'],
-            'extra_workamount'   =>  $extrahours[0]['extra_workamount'], 
-              'hrate' =>$hrate,
+            $timesheet_id = $this->input->get('timesheet_id');
+            $employee_id = $this->input->get('templ_name');
+            $company_info = $this->Hrm_model->retrieve_companyinformation($user_id);
+            $default_setting =$this->Web_settings->default_company_setting($user_id);
+            $employeedata  = $this->Hrm_model->employee_info($employee_id,$user_id);
+            $timesheetdata = $this->Hrm_model->timesheet_info_data($timesheet_id,$user_id);
+            $overtime_hour = $this->Hrm_model->get_overtime_data($user_id);
             
-            'extra_hour'   =>  $overtime_info[0]['extra_hour'], 
-            'extra_rate'   =>  $overtime_info[0]['extra_rate'], 
-            'extra_thisrate'   =>  $overtime_info[0]['extra_thisrate'], 
-            'extra_this_hour'   =>  $overtime_info[0]['extra_this_hour'], 
-            'extra_ytd'   =>  $overtime_info[0]['extra_ytd'], 
-
-
-            'above_extra_beforehours' => (!empty($overtime_info[0]['above_extra_beforehours']) ? $overtime_info[0]['above_extra_beforehours'] : '0:00'),
-            'above_extra_rate'   =>  $overtime_info[0]['above_extra_rate'], 
-            'above_extra_sum'   =>  $overtime_info[0]['above_extra_sum'], 
-            'above_this_hours'   =>  $overtime_info[0]['above_this_hours'], 
-            'above_extra_ytd'   =>  $overtime_info[0]['above_extra_ytd'], 
-
-       );
-
-
- // print_r($data); die();
-
-                $empid = $employeedata[0]['id'];
-$user_id = $this->session->userdata('user_id'); // Assuming session value is available
-
-$this->db->select('*');
-$this->db->from('timesheet_info');
-$this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
-$this->db->where('info_payslip.templ_name', $empid);
-$this->db->where('info_payslip.create_by', $user_id);
-
-$this->db->where('timesheet_info.month <=', date('Y-m-d'));
-
-$this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
-
-
-
-$query = $this->db->get();
-
-$sc_info_datapay = $this->Hrm_model->sc_get_data_pay($d1,$empid,$timesheetdata[0]['timesheet_id']);
-           if ($query->num_rows() >=1) {
           
-          //  echo "IF ";
-           $info_datapay = $this->Hrm_model->get_data_pay($d1,$empid,$timesheetdata[0]['timesheet_id']);
-       
-        //  print_r($info_datapay);
+            $working_state_tax=  $employeedata[0]['state_tx'];
+            $living_state_tax=  $employeedata[0]['local_tax'];
+            $hrate= $timesheetdata[0]['h_rate'];
+            $total_hours=  $timesheetdata[0]['total_hours'];
+            $payperiod =$timesheetdata[0]['month'];
+            $get_date = explode('-', $payperiod);
+            $end_date = $get_date[1]; 
+            $scAmount = $this->saleCommission($employee_id, $payperiod, $user_id, $admin_id);
+            $thisPeriodAmount = $this->thisPeriodAmount($timesheetdata[0]['payroll_type'], $total_hours, $hrate, $scAmount, $timesheetdata[0]['extra_thisrate'], $timesheetdata[0]['above_extra_sum'], $user_id, $admin_id);
 
-    $data['overalltotalhours'] = (!empty($info_datapay[0]['t_hours']) && ($info_datapay[0]['t_hours'] !='00:00')) ? $info_datapay[0]['t_hours'] : $info_datapay[0]['t_days'];
-
-
-
-      $data['extra_eth']=$info_datapay[0]['eth'];
-      $data['extra_ytdeth']=$info_datapay[0]['ytdeth'];
-
-      $data['above_eth'] = (!empty($info_datapay[0]['above_eth']) && ((substr($info_datapay[0]['above_eth'], 0, 2) !== '00'))) ? $info_datapay[0]['above_eth'] : $info_datapay[0]['above_eth_days'];
-      $data['ytdeth']=$info_datapay[0]['ytdeth'];
-
-    //   $data['above_ytdeth']=$info_datapay[0]['above_ytdeth'];
-
-   
-     $data['above_ytdeth']=$info_datapay[0]['above_ytdeth'] + $info_datapay[0]['sc'];
-
-      $data['sum_above']=$info_datapay[0]['ytdeth']+$info_datapay[0]['above_ytdeth'];
-      
+            $admin_name = $this->Hrm_model->getDatas('administrator', '*', ['adm_id'=> $timesheetdata[0]['admin_name']]);
 
 
-      // above_ytdeth
-      // above_eth
-      $data['aboveytd'] = $info_datapay[0]['extra_thisrate']+  $info_datapay[0]['above_extra_sum'];
-           $data['overalltotalamount']=$info_datapay[0]['t_amount']+$info_datapay[0]['sc'];
-           $data['t_s_tax']=$info_datapay[0]['t_s_tax'];
-             $data['t_m_tax']=$info_datapay[0]['t_m_tax'];
-               $data['t_f_tax']=$info_datapay[0]['t_f_tax'];
-                 $data['t_u_tax']=$info_datapay[0]['t_u_tax'];
-
-              }
-              else{
-        
-                 $info_datapay = $this->Hrm_model->get_data_pay($d1,$empid,$timesheetdata[0]['timesheet_id']);
-                  $data['overalltotalhours']=$timesheetdata[0]['total_hours'];
-
-                  $data['extra_eth']=$info_datapay[0]['eth'];
-                  $data['extra_ytdeth']=$info_datapay[0]['ytdeth'];
-                  $data['above_eth'] = (!empty($info_datapay[0]['above_eth']) && ($info_datapay[0]['above_eth'] !='00:00')) ? $info_datapay[0]['above_eth'] : $info_datapay[0]['above_eth_days'];
-               
-                  
-                   $data['above_ytdeth']=$info_datapay[0]['above_ytdeth'] + $info_datapay[0]['sc'];
-                   $data['aboveytd'] = $info_datapay[0]['extra_thisrate'];
-                   $data['overalltotalamount']= $sc_info_datapay[0]['S_sales_c_amount'];
-                   $data['t_s_tax']=     $sc_info_datapay[0]['s_s_tax'];
-                   $data['t_m_tax']=     $sc_info_datapay[0]['s_m_tax'];
-                   $data['t_f_tax']=     $sc_info_datapay[0]['s_f_tax'];
-                   $data['t_u_tax']=     $sc_info_datapay[0]['s_u_tax'];
-              }
+           // Country Tax Starts //
+            $f = $this->countryTax('Federal Income tax', $employeedata[0]['employee_tax'], $thisPeriodAmount, $employee_id, 'f_tax', $user_id, $end_date,  $timesheet_id);
+            $this_period_federal = $f['tax_value'];
+            $overall_federal = $f['tax_data']['t_f_tax'];
+            $s = $this->countryTax('Social Security', $employeedata[0]['employee_tax'], $thisPeriodAmount, $employee_id, 's_tax', $user_id, $end_date,  $timesheet_id);
+            $this_period_social = $s['tax_value'];
+            $overall_social = $s['tax_data']['t_s_tax'];
+            $m = $this->countryTax('Medicare', $employeedata[0]['employee_tax'], $thisPeriodAmount, $employee_id, 'm_tax', $user_id, $end_date,  $timesheet_id);
+            $this_period_medicare = $m['tax_value'];
+            $overall_medicare = $m['tax_data']['t_m_tax'];
+            $u = $this->countryTax('Federal unemployment',$employeedata[0]['employee_tax'], $thisPeriodAmount, $employee_id, 'u_tax', $user_id, $end_date, $timesheet_id);
+            $this_period_unemp = $u['tax_value'];
+            $overall_unemp = $u['tax_data']['t_u_tax'];
+           // Country Tax Ends //
 
 
-              // print_r($data); die();
-
-
-$t_data = $this->Hrm_model-> timesheet_info_data($timesheet_id);
-// print_r($t_data);
- //echo  $t_data[0]['payroll_type'];
-            if ($t_data[0]['payroll_type'] =='Sales Partner'){
-$data['partner_total'] = $t_data[0]['extra_thisrate'];
-$this->db->select('*');
-$this->db->from('timesheet_info');
-$this->db->where('timesheet_info.month <=', date('Y-m-d'));
-$this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
-$this->db->where('payroll_type','Sales Partner');
-$this->db->where('templ_name',$templ_name);
-
-$query = $this->db->get();
-//echo $this->db->last_query();
-   if ($query->num_rows() >=1) {
-$partner = $this->Hrm_model->get_data_pay_partner($d1,$empid,$timesheetdata[0]['timesheet_id']);
-  $data['partner']=$partner[0]['amount'];
- $data['jt']=$partner[0]['job_title'];
-// echo $data['partner'];
-   }
- //print_r($data);echo $infotime[0]['job_title'];
-         }
- if ($t_data[0]['payroll_type'] =='SalesCommission'){
-$data['partner_total'] = $t_data[0]['extra_thisrate'];
-$this->db->select('*');
-$this->db->from('timesheet_info');
-$this->db->where('timesheet_info.month <=', date('Y-m-d'));
-$this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
-$this->db->where('payroll_type','SalesCommission');
-$this->db->where('templ_name',$templ_name);
-
-$query = $this->db->get();
-//echo $this->db->last_query();
-   if ($query->num_rows() >=1) {
-        $payperiod =$data['timesheet_data'][0]['month'];
-                    $get_date = explode('-', $payperiod);
-         $d1 = $get_date[1];
+           $working_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$working_state_tax,$user_id,$thisPeriodAmount,'state_tax',$timesheet_id);
          
-$partner = $this->Hrm_model->get_data_pay_SalesCommission($d1,$empid,$timesheetdata[0]['timesheet_id']);
-  $data['comm']=$partner[0]['amount'];
- $data['jt_comm']=$partner[0]['job_title'];
-// echo $data['comm'];
-   }
-
-         }
-         
-
-// echo "<pre>"; print_r($data); die; echo "</pre>";
-
-if($payslip_design[0]['template']==3){
-       $content = $this->parser->parse('hr/pay_slip2', $data, true);
+           $living_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$living_state_tax,$user_id,$thisPeriodAmount,'living_state_tax',$timesheet_id);
  
-      $this->template->full_admin_html_view($content);
- }else{
+
+                $data=array(
+                'working_state' => $working_state_tax,
+                'living_state'  => $living_state_tax,
+                'this_federal'  => $f,
+                'overall_federal' =>  $overall_federal,
+                'this_social'  => $s,
+                'overall_social' =>  $overall_social,
+                'this_medicare'  => $m,
+                'overall_medicare' =>  $overall_medicare,
+                'this_unemp'  => $u,
+                'overall_unemp' =>  $overall_unemp,
+                'company_info' => $company_info,
+                'employee_info' => $employeedata,
+                'timesheet_info' => $timesheetdata,
+                'overtime_hour' => $overtime_hour,
+                'setting'    =>$default_setting,
+                'admin'   =>  $admin_name,
+                'ytd' => $f['ytd'],
+                );
+
+
+
 
        $content = $this->parser->parse('hr/pay_slip', $data, true);
  
       $this->template->full_admin_html_view($content);
 
- }
+ 
+
+ 
 }
 
         private function insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$taxData, $taxType, $timesheetdata, $checkExisting = false) {
@@ -2364,7 +1224,7 @@ if($payslip_design[0]['template']==3){
                 $tx_n = $result['tx_n'];
                 $code = $result['code'];
 
-                // Check for existing record if needed
+             
                 if ($checkExisting) {
                     $existingRecord = $this->db->select('*')->from('tax_history_employer')
                         ->where('time_sheet_id', $timesheetdata[0]['timesheet_id'])
@@ -2372,12 +1232,12 @@ if($payslip_design[0]['template']==3){
                         ->where('tax', str_replace("'", "", explode('-', $k)[1]))
                         ->where('tax_type', $taxType)->get()->row();
                     if ($existingRecord) {
-                        continue; // Skip if record exists
+                        continue; 
                     }
 
-                    // Special condition for living_state_tax
+                  
                     if ($taxType === 'living_state_tax' && (trim(strtolower($tx_n)) === 'unemployment' || stripos($tx_n, 'unemployment') !== false)) {
-                        continue; // Skip unemployment tax
+                        continue; 
                     }
                 }
 
@@ -2433,10 +1293,10 @@ private function insertTaxHistory($taxData, $taxType, $timesheetdata, $checkExis
                     'created_by' => $this->session->userdata('user_id'),
                 );
 
-                // print_r($data1); die;
+            
 
                 $this->db->insert('tax_history', $data1); $total_deduction += round($v,3);
-                // echo $this->db->last_query(); die;
+             
             }
         }
     }
@@ -2451,17 +1311,16 @@ private function insertTaxHistory($taxData, $taxType, $timesheetdata, $checkExis
 
 
 
-        public function check_employee_pay_type(){
-          $CI = &get_instance();
-           $CI->load->model('Hrm_model');
-               $employeeId = $this->input->post('employeeId');
-         $pay_type = $CI->db->select('payroll_type')->from('employee_history')->where('id', $employeeId)->get()->row()->payroll_type;
-        if(empty($pay_type)){
-          $pay_type='Sales Partner';
-        }else{
-         echo $pay_type;
-        }
-       }
+public function check_employee_pay_type()
+{
+    $employeeId = $this->input->post('employeeId');
+    $pay_type = $this->db->select('payroll_type')->from('employee_history')->where('id', $employeeId)->get()->row()->payroll_type;
+    if(empty($pay_type)){
+      $pay_type='Sales Partner';
+    }else{
+     echo $pay_type;
+    }
+}
 
      
      
@@ -2476,54 +1335,58 @@ public function add_taxname_data(){
         $this->load->model('Hrm_model');
         $postData = $this->input->post('value');
         $data = $this->Hrm_model->insert_taxesname($postData);
-       // echo json_encode($data);
+     
     }
 
     public function payslip_setting() {
         $data['title'] = display('payslip');
+        $CI = & get_instance();
+        $CD = & get_instance();
       
-        $this->load->model('Web_settings');
-        $this->load->model('Invoice_content');
-        $setting_detail = $this->Web_settings->retrieve_setting_editdata();
-        $dataw = $this->Invoice_content->get_data_payslip();
-        $data= array(
-            'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : ''),
-            'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : ''),
-            'color'=> (!empty($dataw[0]['color']) ? $dataw[0]['color'] : ''),
-            'invoice_logo' =>(!empty($setting_detail[0]['invoice_logo']) ? $setting_detail[0]['invoice_logo'] : ''),
-            'template'=> (!empty($dataw[0]['template']) ? $dataw[0]['template'] : '')
-        );
-
+        $CD->load->model('Companies');
+        $CI->load->model('Web_settings');
+        $CI->load->model('Invoice_content');
+       $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
+       $dataw = $CI->Invoice_content->get_data_payslip();
+       $datac = $CD->Companies->company_details();
+           $datacontent = $CI->Invoice_content->retrieve_data();
+       $data= array(
+            'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
+        'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : '') ,
+        'color'=> (!empty($dataw[0]['color']) ? $dataw[0]['color'] : '') ,
+        'invoice_logo' =>(!empty($setting_detail[0]['invoice_logo']) ? $setting_detail[0]['invoice_logo'] : '') ,
+        'address'=>(!empty($datacontent[0]['address']) ? $datacontent[0]['address'] : '') ,
+        'cname'=>(!empty($datacontent[0]['business_name']) ? $datacontent[0]['business_name'] : '') ,
+        'mobile'=>(!empty($datacontent[0]['phone']) ? $datacontent[0]['phone'] : '') ,
+        'email'=>(!empty($datacontent[0]['email']) ? $datacontent[0]['email'] : '') ,
+        // 'reg_number'=>(!empty($datacontent[0]['reg_number']) ? $datacontent[0]['reg_number'] : '') ,
+        // 'website'=>(!empty($datacontent[0]['website']) ? $datacontent[0]['website'] : '') ,
+        // 'address'=>(!empty($datacontent[0]['address']) ? $datacontent[0]['address'] : '') ,
+        'template'=> (!empty($dataw[0]['template']) ? $dataw[0]['template'] : '')
+   );
+    // print_r($data);
         $content = $this->parser->parse('hr/payslip_view', $data, true);
         $this->template->full_admin_html_view($content);
     }
 
 
 
-public function employee_payslip_permission() {
-  $this->load->model('Hrm_model');
-  $CI = & get_instance();
-  $CI->load->model('Web_settings');
-  $data['title']            = display('Payment_Administration');
+public function employee_payslip_permission() 
+{
+  $data['title'] = display('Payment_Administration');
   $id = $this->input->get('timesheet_id');
   $data['time_sheet_data'] = $this->Hrm_model->time_sheet_data($id);
-  // var_dump($data['time_sheet_data']);
   $data['employee_name'] = $this->Hrm_model->employee_name($data['time_sheet_data'][0]['templ_name']);
 
   $data['designation'] = $this->db->select('designation')->from('employee_history')->where('id',$data['employee_name'][0]['id'])->get()->row()->designation;
-  //if(empty($data['employee_name'])){
   $data['employee'] = $this->Hrm_model->employee_partner($data['time_sheet_data'][0]['templ_name']);
-  //  }
   $data['payment_terms'] = $this->Hrm_model->get_payment_terms();
   $setting_detail = $this->Web_settings->retrieve_setting_editdata(decodeBase64UrlParameter($_GET['id']));
   $data['dailybreak'] = $this->Hrm_model->get_dailybreak();  
   $data['duration'] = $this->Hrm_model->get_duration_data();
   $data['setting_detail'] =$setting_detail;
   $data['administrator'] = $this->Hrm_model->administrator_data();
-  
   $data['extratime_info'] = $this->Hrm_model->get_overtime_data();
-  // print_r($data['employee']); die();
-
   $content = $this->parser->parse('hr/emp_payslip_permission', $data, true);
   $this->template->full_admin_html_view($content);
 }
@@ -2560,7 +1423,7 @@ public function officeloan_edit($transaction_id) {
            $data['payment_typ']  =$paytype;
            $data['bank_name']  =$bank_name;
           
-        //    print_r( $data['bank_name']);
+        
         $person_listdaa =  $CI->Settings->office_loan_person();
 
            $data=array(
@@ -2595,16 +1458,16 @@ public function officeloan_edit($transaction_id) {
 
 
 
-// Delete Expense
+
     public function delete_expense($id = null)
     {
-        // echo $id; .;
+      
         $this->db->where('id', $id);
         $this->db->delete('expense');
         redirect('Chrm/expense_list');
         $this->template->full_admin_html_view($content);
     }
-    // Edit Expense Data
+   
     public function edit_expense($id)
     {
        $this->load->library('lsettings');
@@ -2635,9 +1498,7 @@ public function employee_update_form() {
         $data["state_tx"]            = $this->Hrm_model->state_tax($decodedId);
         $data["cty_tax"]             = $this->Hrm_model->state_tax($decodedId);
         $data["designation"]         = $this->Hrm_model->getdesignation($data["employee_data"][0]["designation"], $decodedId);
-        // $data["payroll_data"]        = $this->Hrm_model->payroll_editdata($employee_id, $decodedId);
-        // $data["employeetype_data"]   = $this->Hrm_model->employeestype_editdata($employee_id, $decodedId);
-        // $data["bank_data"]           = $this->Hrm_model->getbankinfo($decodedId);
+      
         $data["desig"]               = $this->Hrm_model->designation_dropdown($decodedId);
         $content                     = $this->parser->parse("hr/employee_updateform", $data, true);
         $this->template->full_admin_html_view($content);
@@ -2688,8 +1549,7 @@ public function employee_update_form() {
                     
                 }
                 $old_images = isset($_POST['old_image']) ? $_POST['old_image'] : [];
-           //     $all_images = array_merge($old_images, $images);
-             //   $insertImages = implode(", ", $all_images);
+       
             } else {
                 echo "No files uploaded or invalid file structure.";
             }
@@ -2860,12 +1720,12 @@ public function employee_update_form() {
             
         ];
         $this->db->insert('expense',$postData);
-     //   echo $this->db->last_query(); .;
+    
         redirect(base_url('Chrm/expense_list'));
     }
 
     private function processTaxData($key, $value) {
-        // print_r($value); die;
+     
         if (trim(round($value, 3)) > 0) {
             $split = explode('-', $key);
             $tx_n = str_replace("'", "", $split[1]);
@@ -2906,8 +1766,7 @@ public function employee_update_form() {
                  $setting=  $CI->Web_settings->retrieve_setting_editdata();
 
                  $data=array(
-                //     'curn_info_default' =>$curn_info_default[0]['currency_name'],
-                //     'currency'  =>$currency_details[0]['currency'],
+                
                     'header'=> $dataw[0]['header'],
                     'logo'=>(!empty($setting[0]['invoice_logo'])?$setting[0]['invoice_logo']:$company_info[0]['logo']),  
                     'color'=> $dataw[0]['color'],
@@ -2928,7 +1787,7 @@ public function employee_update_form() {
                     'company'=>(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']),   
                     'phone'=>(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']),   
                     'email'=>(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']),   
-                    // 'reg_number'=>(!empty($datacontent[0]['reg_number'])?$datacontent[0]['reg_number']:$company_info[0]['reg_number']),  
+                   
                     'website'=>(!empty($datacontent[0]['website'])?$datacontent[0]['website']:$company_info[0]['website']),   
                     'address'=>(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']),
 
@@ -2936,7 +1795,7 @@ public function employee_update_form() {
                     'office_loan_datas' => $office_loan_datas
                 );
 
-            //    print_r($office_loan_datas); .;
+
 
                 print_r($dataw[0]['color']);
 
@@ -2957,7 +1816,7 @@ public function employee_update_form() {
            
                       $w = & get_instance();
                       $w->load->model('Ppurchases');
-                    //  $CI->load->model('Invoices');
+                  
                       $CI->load->model('Web_settings');
                     
                       $CC->load->model('invoice_content');
@@ -2968,7 +1827,7 @@ public function employee_update_form() {
                          $company_info = $w->Ppurchases->retrieve_company();
 
                           $employee_data = $this->db->select('first_name,last_name,designation,id')->from('employee_history')->where('id',$pdf[0]['templ_name'])->get()->row();
-                        //  print_r($employee_data);.;
+                      
                          $setting=  $CI->Web_settings->retrieve_setting_editdata();
                          $dataw = $CA->Invoice_content->retrieve_data();
                          $datacontent = $CC->invoice_content->retrieve_data();
@@ -2986,7 +1845,7 @@ public function employee_update_form() {
                           'company'=>(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']),   
                           'phone'=>(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']),   
                           'email'=>(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']),   
-                          // 'reg_number'=>(!empty($datacontent[0]['reg_number'])?$datacontent[0]['reg_number']:$company_info[0]['reg_number']),  
+                         
                           'website'=>(!empty($datacontent[0]['website'])?$datacontent[0]['website']:$company_info[0]['website']),   
                           'address'=>(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']),
       
@@ -2994,7 +1853,7 @@ public function employee_update_form() {
                           'time_sheet' =>$pdf
            
                            );
-                           // print_r($data);
+                          
                            print_r($dataw[0]['color']);
            
                          $content = $this->load->view('hr/timesheet_pdf', $data, true);
@@ -3007,11 +1866,21 @@ public function employee_update_form() {
 
 
 
-public function timesheed_inserted_data() 
-{
-    $this->auth->check_admin_auth();
-    $this->CI->load->model('Web_settings');
-    $this->CI->load->model('Hrm_model');
+public function timesheed_inserted_data() {
+  //    echo $id; .;
+  $CI = & get_instance();
+  $CC = & get_instance();
+  $CA = & get_instance();
+
+  $w = & get_instance();
+  $w->load->model('Ppurchases');
+  $CI->load->model('Invoices');
+  $CI->load->model('Web_settings');
+
+  $CC->load->model('invoice_content');
+  $CI = & get_instance();
+  $this->auth->check_admin_auth();
+  $CI->load->model('Hrm_model');
 
     $type = $this->input->get('type');
 
@@ -3019,17 +1888,14 @@ public function timesheed_inserted_data()
     $setting =  $this->CI->Web_settings->retrieve_setting_editdata();
     $company_info = $this->CI->Web_settings->retrieve_companysetting_editdata();
 
-    $timesheet_data = $timesheet_details = $admin_name = [];
-    if($type == 'emp_data') {
-        $id = $this->input->get('employee');
-        $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]); 
-    } else {
-        /* return timesheet_info and employee history datas */
-        $id = $this->input->get('timesheet_id');
-        $timesheet_data = $this->CI->Hrm_model->timesheet_data($id);
-        $timesheet_details = $this->CI->Hrm_model->getDatas('timesheet_info_details', '*', ['timesheet_id' => $id]);
-        $admin_name = $this->Hrm_model->getDatas('administrator', '*', ['adm_id'=> $timesheet_data[0]['admin_name']]);
-    }
+  if($type == 'emp_data') {
+    $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]); 
+  } else {
+    /* return timesheet_info and employee history datas */
+    $timesheet_data = $CI->Hrm_model->timesheet_data($id);
+    $timesheet_details = $CI->Hrm_model->getDatas('timesheet_info_details', '*', ['timesheet_id' => $id]);
+    $admin_name = $this->Hrm_model->getDatas('administrator', '*', ['adm_id'=> $timesheet_data[0]['admin_name']]);
+  }
 
     $fname = 'Employee';  
     $data = array(
@@ -3126,7 +1992,7 @@ public function manageTimesheetListData()
     $edit           = "";
     $delete         = "";
 
-    foreach ($items as $item) { //echo "<pre>"; print_r($item); echo "</pre>"; die;
+    foreach ($items as $item) { 
 
       $user = '<a href="' . base_url("Chrm/employee_payslip_permission?id=" . $encodedId . "&admin_id=" . $admin_id . "&timesheet_id=" . $item['timesheet_id']) . '" class="btnclr btn btn-sm"> <i class="fa fa-user" aria-hidden="true"></i> </a>';
 
@@ -3223,7 +2089,7 @@ public function add_dailybreak_info()
 // Payslip Function - Madhu
 public function pay_slip()
 {
-   list($user_id, $company_id) = array_map('decodeBase64UrlParameter', [$this->input->post('admin_company_id'), $this->input->post('adminId')]);
+    list($user_id, $company_id) = array_map('decodeBase64UrlParameter', [$this->input->post('admin_company_id'), $this->input->post('adminId')]);
 
     $company_info = $this->Hrm_model->retrieve_companyinformation($user_id);
     $datacontent  =  $this->Hrm_model->retrieve_companydata($user_id);
@@ -3285,159 +2151,63 @@ public function pay_slip()
     $hours_per_day1 = $this->input->post('sum');
     $daily_bk1=$this->input->post('dailybreak');
 
-    $purchase_id_1 = $this->db->where('templ_name', $this->input->post('templ_name'))->where('timesheet_id',$data_timesheet['timesheet_id']);
-
+    $purchase_id_1 = $this->db->where('templ_name', $this->input->post('templ_name')) ->where('timesheet_id', $data_timesheet['timesheet_id'])->where('create_by', $user_id);
     $q = $this->db->get('timesheet_info');
     $row = $q->row_array();
 
     $old_id = isset($row['timesheet_id']) ? trim($row['timesheet_id']) : null;
 
-    if (!empty($old_id)) {
-        $this->session->set_userdata("timesheet_id_old", $old_id);
-        $timesheet_id_old = $this->session->userdata("timesheet_id_old");
+    if(!empty($old_id)){
+        $this->session->set_userdata("timesheet_id_old",$row['timesheet_id']);
+        $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
+        $this->db->delete('timesheet_info');
+        $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
+        $this->db->delete('timesheet_info_details');
+        // Log Entry
+        logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y'));
+        $this->db->insert('timesheet_info', $data_timesheet);
+    }else{
+        // Log Entry
+       logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y'));
+       $this->db->insert('timesheet_info', $data_timesheet);
 
-        $this->db->where('timesheet_id', $timesheet_id_old)->delete('timesheet_info');
-        $this->db->where('timesheet_id', $timesheet_id_old)->delete('timesheet_info_details');
     }
 
-    logEntry($user_id, $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y') );
+    $purchase_id_2 = $this->db->select('timesheet_id')->from('timesheet_info')->where('templ_name',$this->input->post('templ_name'))->where('month', $this->input->post('date_range'))->get()->row()->timesheet_id;
 
-    $this->db->insert('timesheet_info', $data_timesheet);
+    $this->session->set_userdata("timesheet_id_new",$purchase_id_2);
 
-    $query = $this->db->select('timesheet_id') ->from('timesheet_info') ->where('templ_name', $this->input->post('templ_name')) ->where('month', $this->input->post('date_range')) ->get();
-
-    $purchase_id_2 = $query->row() ? $query->row()->timesheet_id : null;
-    $this->session->set_userdata("timesheet_id_new", $purchase_id_2);
-    $timesheet_id = $this->session->userdata("timesheet_id_new");
-
-    if (!empty($timesheet_id)) {
-        if (empty($date1)) {
-            $data1 = ['timesheet_id' => $timesheet_id];
+    if (!empty($date1) && is_array($date1)) {
+        for ($i = 0, $n = count($date1); $i < $n; $i++) {
+            $present = isset($present1[$i]) ? $present1[$i] : null;
+            $date = isset($date1[$i]) ? $date1[$i] : null;
+            $day = isset($day1[$i]) ? $day1[$i] : null;
+            $time_start = isset($time_start1[$i]) ? $time_start1[$i] : null;
+            $daily_bk = isset($daily_bk1[$i]) ? $daily_bk1[$i] : null;
+            $time_end = isset($time_end1[$i]) ? $time_end1[$i] : null;
+            $hours_per_day = isset($hours_per_day1[$i]) ? $hours_per_day1[$i] : null;
+            if (empty($date) || empty($day) || empty($time_start) || empty($time_end)) {
+                continue;
+            }
+            $data1 = array(
+                'timesheet_id' => $this->session->userdata("timesheet_id_new"),
+                'present' => $present,
+                'Date' => $date,
+                'Day' => $day,
+                'time_start' => $time_start,
+                'daily_break' => $daily_bk,
+                'time_end' => $time_end,
+                'hours_per_day' => $hours_per_day,
+                'created_by' => $user_id,
+            );
             $this->db->insert('timesheet_info_details', $data1);
-        } else {
-            if (!empty($date1) && !empty($present1) && !empty($day1) && !empty($time_start1) && !empty($daily_bk1) && !empty($time_end1) && !empty($hours_per_day1)) {
-                foreach ($date1 as $i => $date) {
-                    $present = isset($present1[$i]) ? $present1[$i] : null;
-                    $day = isset($day1[$i]) ? $day1[$i] : null;
-                    $time_start = isset($time_start1[$i]) ? $time_start1[$i] : null;
-                    $daily_bk = isset($daily_bk1[$i]) ? $daily_bk1[$i] : null;
-                    $time_end = isset($time_end1[$i]) ? $time_end1[$i] : null;
-                    $hours_per_day = isset($hours_per_day1[$i]) ? $hours_per_day1[$i] : null;
-
-                    if ($present !== null && $day !== null && $time_start !== null && $time_end !== null && $hours_per_day !== null) {
-                        $data1 = [
-                            'timesheet_id' => $timesheet_id,
-                            'present' => $present,
-                            'Date' => $date,
-                            'Day' => $day,
-                            'time_start' => $time_start,
-                            'daily_break' => $daily_bk,
-                            'time_end' => $time_end,
-                            'hours_per_day' => $hours_per_day,
-                            'created_by' => $this->session->userdata('user_id')
-                        ];
-
-                        $this->db->insert('timesheet_info_details', $data1);
-                    } 
-                }
-            } 
         }
+    }else {
+        logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'Date1 array is empty or invalid', 'Error', date('m-d-Y'));
     }
-
-    $data['employee_data'] = $this->Hrm_model->employee_info($this->input->post('templ_name'), $user_id);
-    $data['timesheet_data'] = $this->Hrm_model-> timesheet_info_data($this->session->userdata("timesheet_id_new"), $user_id);
-    $timesheetdata =$data['timesheet_data'];
-    $employeedata  =$data['employee_data'];
-    $hrate= $data['employee_data'][0]['hrate'];
-    $total_hours=  $data['timesheet_data'][0]['total_hours'];
-    $payperiod =$data['timesheet_data'][0]['month'];
-    $get_date = explode('-', $payperiod);
-    $d1 = $get_date[1];
-    
-    // Sales Commission Amount
-    $employee_id = $data['employee_data'][0]['id']; 
-    $scValueAmount1 = $this->saleCommission($employee_id, $payperiod, $user_id, $company_id);
-
-    // This Period Final Amount
-    $final_amount = $this->thisPeriodAmount($data['timesheet_data'], $scValueAmount1, $user_id, $company_id);
-
+    $this->session->set_flashdata('message', display('save_successfully'));
+    redirect(base_url('Chrm/manage_timesheet?id=' . urlencode($this->input->post('admin_company_id')) . '&admin_id=' . urlencode($this->input->post('adminId'))));
 }
-
-
-// This Period Final Amount - Madhu
-public function thisPeriodAmount($data, $scValueAmount1, $user_id, $company_id) 
-{   
-
-    $workingHour = $this->db->select('work_hour, created_by')->where('created_by', $user_id)->get()->row(); 
-    print_r($workingHour); die;
-    echo "<pre>"; print_r($data); echo "</pre>"; die;
-
-    $payroll_type = $data['timesheet_data'][0]['payroll_type'];
-    $total_hours  = $data['timesheet_data'][0]['total_hours']; 
-    $hrate = $data['timesheet_data'][0]['h_rate']; 
-    $extra_thisrate = $data['timesheet_data'][0]['extra_thisrate'];
-    $above_extra_sum = $data['timesheet_data'][0]['above_extra_sum'];
-    $limit_hours = '40:00'; 
-    $final = 0;
-
-    if ($payroll_type == 'Hourly') {
-        list($totalH, $totalM) = explode(':', $total_hours);
-        $totalMinutes = ($totalH * 60) + (int)$totalM;
-        list($limitH, $limitM) = explode(':', $limit_hours);
-        $limitMinutes = ($limitH * 60) + (int)$limitM;
-        list($hours, $minutes) = explode(':', $total_hours);
-        $decimal_hours = $hours + ($minutes / 60);
-
-        $total_cost = $hrate * $decimal_hours;
-        if ($total_hours <= $limit_hours) {
-            $final = $total_cost + $scValueAmount1;
-        } else {
-            $final = $extra_thisrate + $above_extra_sum;
-        }
-
-    } elseif ($payroll_type == 'Salaried-BiWeekly') {
-        if ($total_hours <= 14) {
-            $final = $hrate * $total_hours + $scValueAmount1;
-        } else {
-            $final = $extra_thisrate + $above_extra_sum;
-        }
-    } elseif ($payroll_type == 'Salaried-weekly') {
-        if ($total_hours <= 7) {
-            $final = $hrate * $total_hours + $scValueAmount1;
-        } else {
-            $final = $extra_thisrate + $above_extra_sum;
-        }
-    } elseif ($payroll_type == 'Salaried-Monthly') {
-        if ($total_hours <= 30) {
-            $final = $hrate * $total_hours + $scValueAmount1;
-        } else {
-            $final = $extra_thisrate + $above_extra_sum;
-        }
-    } elseif ($payroll_type == 'Salaried-BiMonthly') {
-        if ($total_hours <= 60) {
-            $final = $hrate * $total_hours + $scValueAmount1;
-        } else {
-            $final = $extra_thisrate + $above_extra_sum;
-        }
-    }
-
-    return $final;
-}
-
-
-// Sales Commision Amount - Madhu
-public function saleCommission($employee_id, $payperiod, $user_id, $company_id) 
-{
-    $salescommision = $this->Hrm_model->sc_info_count($employee_id, $payperiod);
-    $scValue = $salescommision['scValueAmount']; 
-    $sc_totalAmount1 = $salescommision['total_gtotal']; 
-    $sc_count = $salescommision['count']; 
-    $scValue = $scValue / 100;
-    $scValueAmount1 = $scValue * $sc_totalAmount1;
-    return $scValueAmount1;
-}
-
-
 
 
 public function expense_list()
@@ -3523,1832 +2293,261 @@ public function payslipIndexData()
 
 
 // Admin Approve this Function
-// public function adminApprove()
-// {
-//    $company_info = $this->Ppurchases->retrieve_company();
-//    $datacontent  = $this->invoice_content->retrieve_data();
-//    $user_id = $this->input->post('admin_company_id');
-//    $admin_id = $this->input->post('adminId');
-//    $data['title'] = display('pay_slip');
-//    $data['business_name']=(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']);
-//     $data['phone']=(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']);
-//     $data['email']=(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']);
-//     $data['address']=(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']);
-//     $data_timesheet['total_hours'] = $this->input->post('total_net');
-//     $data_timesheet['templ_name'] = $this->input->post('templ_name');
-//     $data_timesheet['duration'] = $this->input->post('duration');
-//     $data_timesheet['job_title'] = $this->input->post('job_title');
-//     $data_timesheet['payroll_type'] = $this->input->post('payroll_type');
-//     $data_timesheet['payment_term'] = $this->input->post('payment_term');
-//     $data_timesheet['extra_hour'] = $this->input->post('extra_hour');
-//     $data_timesheet['extra_rate'] = $this->input->post('extra_rate');
-//     $data_timesheet['extra_thisrate'] = $this->input->post('extra_thisrate');
-//     $data_timesheet['extra_this_hour'] = $this->input->post('extra_this_hour');
-//     $data_timesheet['extra_ytd'] = $this->input->post('extra_ytd');
-//     $data_timesheet['above_extra_beforehours'] = $this->input->post('above_extra_beforehours');
-//     $data_timesheet['above_extra_rate'] = $this->input->post('above_extra_rate');
-//     $data_timesheet['above_extra_sum'] = $this->input->post('above_extra_sum');
-//     $data_timesheet['above_this_hours'] = $this->input->post('above_this_hours');
-//     $data_timesheet['above_extra_ytd'] = $this->input->post('above_extra_ytd');
-//     $data_timesheet['month'] = $this->input->post('date_range');
-//     $date_split=explode(' - ',$this->input->post('date_range'));
-//     $data_timesheet['start'] =  $date_split[0];
-//     $data_timesheet['end'] =  $date_split[1];
+public function adminApprove()
+{  
 
-//     if ($this->input->post('payment_method') == 'Cash') {
-//         $data_timesheet['cheque_date'] =(!empty($this->input->post('cash_date',TRUE))?$this->input->post('cash_date',TRUE):'');
-//     }
-//     else if ($this->input->post('payment_method') == 'Cheque') {
-//         $data_timesheet['cheque_date'] =(!empty($this->input->post('cheque_date',TRUE))?$this->input->post('cheque_date',TRUE):'');
-//     }
+   list($user_id, $company_id) = array_map('decodeBase64UrlParameter', [$this->input->post('admin_company_id'), $this->input->post('adminId')]);
 
-//     $start_date = $data_timesheet['start'];
-//     $month = intval(substr($start_date, 0, 2));
+   $company_info = $this->Hrm_model->retrieve_companyinformation($user_id);
+   $datacontent  =  $this->Hrm_model->retrieve_companydata($user_id);
+   $data['title'] = display('pay_slip');
+   $data['business_name']=(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']);
+    $data['phone']=(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']);
+    $data['email']=(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']);
+    $data['address']=(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']);
+    $data_timesheet['total_hours'] = $this->input->post('total_net');
+    $data_timesheet['templ_name'] = $this->input->post('templ_name');
+    $data_timesheet['duration'] = $this->input->post('duration');
+    $data_timesheet['job_title'] = $this->input->post('job_title');
+    $data_timesheet['payroll_type'] = $this->input->post('payroll_type');
+    $data_timesheet['payment_term'] = $this->input->post('payment_term');
+    $data_timesheet['extra_hour'] = $this->input->post('extra_hour');
+    $data_timesheet['extra_rate'] = $this->input->post('extra_rate');
+    $data_timesheet['extra_thisrate'] = $this->input->post('extra_thisrate');
+    $data_timesheet['extra_this_hour'] = $this->input->post('extra_this_hour');
+    $data_timesheet['extra_ytd'] = $this->input->post('extra_ytd');
+    $data_timesheet['above_extra_beforehours'] = $this->input->post('above_extra_beforehours');
+    $data_timesheet['above_extra_rate'] = $this->input->post('above_extra_rate');
+    $data_timesheet['above_extra_sum'] = $this->input->post('above_extra_sum');
+    $data_timesheet['above_this_hours'] = $this->input->post('above_this_hours');
+    $data_timesheet['above_extra_ytd'] = $this->input->post('above_extra_ytd');
+    $data_timesheet['month'] = $this->input->post('date_range');
+    $date_split=explode(' - ',$this->input->post('date_range'));
+    $data_timesheet['start'] =  $date_split[0];
+    $data_timesheet['end'] =  $date_split[1];
 
-//     if ($month >= 1 && $month <= 3) {
-//         $quarter = 'Q1';
-//     } elseif ($month >= 4 && $month <= 6) {
-//         $quarter = 'Q2';
-//     } elseif ($month >= 7 && $month <= 9) {
-//         $quarter = 'Q3';
-//     } elseif ($month >= 10 && $month <= 12) {
-//         $quarter = 'Q4';
-//     } else {
-//         $quarter = 'Unknown';
-//     }
+    if ($this->input->post('payment_method') == 'Cash') {
+        $data_timesheet['cheque_date'] =(!empty($this->input->post('cash_date',TRUE))?$this->input->post('cash_date',TRUE):'');
+    }
+    else if ($this->input->post('payment_method') == 'Cheque') {
+        $data_timesheet['cheque_date'] =(!empty($this->input->post('cheque_date',TRUE))?$this->input->post('cheque_date',TRUE):'');
+    }
 
-//     $data_timesheet['quarter'] = $quarter;
+    $start_date = $data_timesheet['start'];
+    $month = intval(substr($start_date, 0, 2));
+    $quarter = $this->getQuarter($month);
+    $data_timesheet['quarter'] = $quarter;
 
-//     $total_deduction=0; 
+    $total_deduction=0; 
 
-//     $data_timesheet['timesheet_id'] =  $this->input->post('tsheet_id');
-//     $data_timesheet['create_by'] =$this->session->userdata('user_id');
-//     $data_timesheet['admin_name'] = (!empty($this->input->post('administrator_person',TRUE))?$this->input->post('administrator_person',TRUE):'');
-//     $data_timesheet['payment_method'] =(!empty($this->input->post('payment_method',TRUE))?$this->input->post('payment_method',TRUE):'');
-//     $data_timesheet['cheque_no'] =(!empty($this->input->post('cheque_no',TRUE))?$this->input->post('cheque_no',TRUE):'');
-//     $data_timesheet['bank_name'] =(!empty($this->input->post('bank_name',TRUE))?$this->input->post('bank_name',TRUE):'');
-//     $data_timesheet['payment_ref_no'] =(!empty($this->input->post('payment_refno',TRUE))?$this->input->post('payment_refno',TRUE):'');
-//     $timesheet_id  = $this->input->post('tsheet_id');
-//     $total_hours   = $this->input->post('total_net', TRUE);
-//     $data['employee_data'] = $this->Hrm_model->employee_info($this->input->post('templ_name'));
-//     $data['timesheet_data'] = $this->Hrm_model->timesheet_info_data($data_timesheet['timesheet_id']);
+    $data_timesheet['timesheet_id'] =  $this->input->post('tsheet_id');
+    $data_timesheet['create_by'] = $user_id;
+    $data_timesheet['admin_name'] = (!empty($this->input->post('administrator_person',TRUE))?$this->input->post('administrator_person',TRUE):'');
+    $data_timesheet['payment_method'] =(!empty($this->input->post('payment_method',TRUE))?$this->input->post('payment_method',TRUE):'');
+    $data_timesheet['cheque_no'] =(!empty($this->input->post('cheque_no',TRUE))?$this->input->post('cheque_no',TRUE):'');
+    $data_timesheet['bank_name'] =(!empty($this->input->post('bank_name',TRUE))?$this->input->post('bank_name',TRUE):'');
+    $data_timesheet['payment_ref_no'] =(!empty($this->input->post('payment_refno',TRUE))?$this->input->post('payment_refno',TRUE):'');
+    $timesheet_id  = $this->input->post('tsheet_id');
+    $total_hours   = $this->input->post('total_net', TRUE);
+    $data['employee_data'] = $this->Hrm_model->employee_info($this->input->post('templ_name'), $user_id);
+    $data['timesheet_data'] = $this->Hrm_model->timesheet_info_data($data_timesheet['timesheet_id'], $user_id);
 
-//     $timesheetdata =$data['timesheet_data'];
-//     $employeedata  =$data['employee_data'];
-//     $hrate= $data['employee_data'][0]['hrate'];
-//     $data_timesheet['h_rate']=$data['employee_data'][0]['hrate'];
+    $timesheetdata =$data['timesheet_data'];
+    $employeedata  =$data['employee_data'];
+    $hrate= $data['employee_data'][0]['hrate'];
+    $data_timesheet['h_rate']=$data['employee_data'][0]['hrate'];
+    $total_hours =  $data['timesheet_data'][0]['total_hours'];
+    $payperiod =$data['timesheet_data'][0]['month'];
+    $get_date = explode('-', $payperiod);
+    $endDate = $get_date[1];
+    $employeedata = $data['employee_data'];
 
-//     $total_hours=  $data['timesheet_data'][0]['total_hours'];
-//     $payperiod =$data['timesheet_data'][0]['month'];
-//     $get_date = explode('-', $payperiod);
-//     $d1 = $get_date[1];
+    $working_state_tax=  $employeedata[0]['state_tx'];
+    $living_state_tax=  $employeedata[0]['local_tax'];
 
-//     $data['sc']=$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
+    $data['sc']=$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
 
-//     $scValueAmount1 = 0;
-//     if (isset($data['employee_data']) && !empty($data['employee_data'])) {
-//         if (isset($data['employee_data'][0]['choice'])) {
-//             if ($data['employee_data'][0]['choice'] == 'No') {
-//                 $scValueAmount1 = 0;
-//             } else {
-//               $scValueAmount1 = $scValue * $sc_totalAmount1;
-//             }
-//         }
-//     }
-    
-//     // Sales Partner
-//     if ($data['timesheet_data'][0]['payroll_type']=='Sales Partner')
-//     {
-//         $data['sc'] =$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
-//         $scValue =  $data['sc']['sc'][0]['sc'];
-//         $total_gtotal_value = $data['sc']['total_gtotal'];
-//         $scValue1 = $scValue / 100;
-//         $result = $scValue1 * $total_gtotal_value;
-//         $final = $result;
-//     }
-
-//     if ($data['timesheet_data'][0]['payroll_type'] !=='Sales Partner' ||  $data['employee_data'][0]['choice'] == 'Yes')
-//     {
-//         if(!empty($this->input->post('administrator_person',TRUE))){
-//             $data_timesheet['uneditable']=1;
-//         }else{
-//             $data_timesheet['uneditable']=0;
-//         }
-
-//         $u_id=$this->input->post('unique_id');
-//         $data_timesheet['unique_id']=$u_id;
-//         $employee_detail = $this->db->where('id', $this->input->post('templ_name'));
-//         $q=$this->db->get('employee_history');
-//         $row = $q->row_array();
-
-//         if(!empty($row['id'])){
-//             $data['selected_living_state_tax']=$row['living_state_tax'];
-//             $data['selected_local_tax']=$row['local_tax'];
-//             $data['selected_state_tax']=$row['state_tx'];
-//             $data['templ_name']=$row['first_name']." ".$row['last_name'];
-//             $data['job_title']=$row['designation'];
-//        }
-
-//         $date1 = $this->input->post('date');
-//         $day1 = $this->input->post('day');
-//         $time_start1 = $this->input->post('start');
-//         $time_end1 = $this->input->post('end');
-//         $hours_per_day1 = $this->input->post('sum');
-//         $daily_bk1=$this->input->post('dailybreak');
-//         $present1 = $this->input->post('block');
-//         $purchase_id_1 = $this->db->where('templ_name', $this->input->post('templ_name'))->where('timesheet_id', $data_timesheet['timesheet_id']);
-//         $q=$this->db->get('timesheet_info');
-//         $row = $q->row_array();
-//         $old_id=trim($row['timesheet_id']);
-
-//         if(!empty($old_id)){
-//             $this->session->set_userdata("timesheet_id_old",$row['timesheet_id']);
-//             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Payment Administration', 'Human Resource', 'TimeSheet has been Updated successfully', 'Update', date('m-d-Y'));
-//            $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
-//            $this->db->delete('timesheet_info');
-//            $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
-//            $this->db->delete('timesheet_info_details');
-//            $this->db->insert('timesheet_info', $data_timesheet);
-//         }else{
-//             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Payment Administration', 'Human Resource', 'TimeSheet has been Updated successfully', 'Update', date('m-d-Y'));
-//             $this->db->insert('timesheet_info', $data_timesheet);
-//         }
-
-//     }
-        
-
-// }
-
-
-
-
-public function second_pay_slip() 
-{
-
-    $CI = & get_instance();
-    $CI->load->model('invoice_content');
-    $w = & get_instance();
-    $w->load->model('Ppurchases');
-    $company_info = $w->Ppurchases->retrieve_company();
-    $datacontent = $CI->invoice_content->retrieve_data();
-    $user_id = $this->input->post('admin_company_id');
-    $admin_id = $this->input->post('adminId');
-    $data['title'] = display('pay_slip');
-    $data['business_name']=(!empty($datacontent[0]['company_name'])?$datacontent[0]['company_name']:$company_info[0]['company_name']);
-          $data['phone']=(!empty($datacontent[0]['mobile'])?$datacontent[0]['mobile']:$company_info[0]['mobile']);
-          $data['email']=(!empty($datacontent[0]['email'])?$datacontent[0]['email']:$company_info[0]['email']);
-           $data['address']=(!empty($datacontent[0]['address'])?$datacontent[0]['address']:$company_info[0]['address']);
-       $data_timesheet['total_hours'] = $this->input->post('total_net');
-       $data_timesheet['templ_name'] = $this->input->post('templ_name');
-       $data_timesheet['duration'] = $this->input->post('duration');
-       $data_timesheet['job_title'] = $this->input->post('job_title');
-       $data_timesheet['payroll_type'] = $this->input->post('payroll_type');
-       $data_timesheet['payment_term'] = $this->input->post('payment_term');
-       $data_timesheet['extra_hour'] = $this->input->post('extra_hour');
-       $data_timesheet['extra_rate'] = $this->input->post('extra_rate');
-       $data_timesheet['extra_thisrate'] = $this->input->post('extra_thisrate');
-       $data_timesheet['extra_this_hour'] = $this->input->post('extra_this_hour');
-       $data_timesheet['extra_ytd'] = $this->input->post('extra_ytd');
-       $data_timesheet['above_extra_beforehours'] = $this->input->post('above_extra_beforehours');
-       $data_timesheet['above_extra_rate'] = $this->input->post('above_extra_rate');
-       $data_timesheet['above_extra_sum'] = $this->input->post('above_extra_sum');
-       $data_timesheet['above_this_hours'] = $this->input->post('above_this_hours');
-       $data_timesheet['above_extra_ytd'] = $this->input->post('above_extra_ytd');
-       $data_timesheet['month'] = $this->input->post('date_range');
-       $date_split=explode(' - ',$this->input->post('date_range'));
-       $data_timesheet['start'] =  $date_split[0];
-       $data_timesheet['end'] =  $date_split[1];
-
-       if ($this->input->post('payment_method') == 'Cash') {
-            $data_timesheet['cheque_date'] =(!empty($this->input->post('cash_date',TRUE))?$this->input->post('cash_date',TRUE):'');
-        }
-        else if ($this->input->post('payment_method') == 'Cheque') {
-            $data_timesheet['cheque_date'] =(!empty($this->input->post('cheque_date',TRUE))?$this->input->post('cheque_date',TRUE):'');
-        }
- // Assuming $data_timesheet['start'] is set and contains a date in the format of 'd/m/Y'
- $start_date = $data_timesheet['start'];
-$month = intval(substr($start_date, 0, 2));
-
-// Determine the quarter based on the month
-if ($month >= 1 && $month <= 3) {
-    $quarter = 'Q1';
-} elseif ($month >= 4 && $month <= 6) {
-    $quarter = 'Q2';
-} elseif ($month >= 7 && $month <= 9) {
-    $quarter = 'Q3';
-} elseif ($month >= 10 && $month <= 12) {
-    $quarter = 'Q4';
-} else {
-    // Handle unexpected case
-    $quarter = 'Unknown';
-}
-
-// Assign the quarter to the appropriate field in your data array
-$data_timesheet['quarter'] = $quarter;
-
- // Now $data_timesheet includes the quarter based on the start date
-
-      $total_deduction=0; 
-        
-       
-       $data_timesheet['timesheet_id'] =  $this->input->post('tsheet_id');
-       $data_timesheet['create_by'] =$this->session->userdata('user_id');
-       $data_timesheet['admin_name'] = (!empty($this->input->post('administrator_person',TRUE))?$this->input->post('administrator_person',TRUE):'');
-       $data_timesheet['payment_method'] =(!empty($this->input->post('payment_method',TRUE))?$this->input->post('payment_method',TRUE):'');
-       $data_timesheet['cheque_no'] =(!empty($this->input->post('cheque_no',TRUE))?$this->input->post('cheque_no',TRUE):'');
-         $data_timesheet['bank_name'] =(!empty($this->input->post('bank_name',TRUE))?$this->input->post('bank_name',TRUE):'');
-           $data_timesheet['payment_ref_no'] =(!empty($this->input->post('payment_refno',TRUE))?$this->input->post('payment_refno',TRUE):'');
-        $timesheet_id  = $this->input->post('tsheet_id');
-        $total_hours   = $this->input->post('total_net', TRUE);
-        $data['employee_data'] = $this->Hrm_model->employee_info($this->input->post('templ_name'));
-        $data['timesheet_data'] = $this->Hrm_model->timesheet_info_data($data_timesheet['timesheet_id']);
-
-        $timesheetdata =$data['timesheet_data'];
-        $employeedata  =$data['employee_data'];
-        $hrate= $data['employee_data'][0]['hrate'];
-        $data_timesheet['h_rate']=$data['employee_data'][0]['hrate'];
-
-        $total_hours=  $data['timesheet_data'][0]['total_hours'];
-        $payperiod =$data['timesheet_data'][0]['month'];
-        $get_date = explode('-', $payperiod);
-        $d1 = $get_date[1];
-        $data['sc']=$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
-        /*$scValue =  $data['sc']['sc'][0]['sc']; 
-        $sc_totalAmount1 = $data['sc']['total_gtotal'];    
-        $sc_count = $data['sc']['count'];
-        $scValue = $scValue / 100;*/
-$scValueAmount1 = 0;
-   if (isset($data['employee_data']) && !empty($data['employee_data'])) {
-    if (isset($data['employee_data'][0]['choice'])) {
-        if ($data['employee_data'][0]['choice'] == 'No') {
-            $scValueAmount1 = 0;
-        } else {
-          $scValueAmount1 = $scValue * $sc_totalAmount1;
+    $scAmount= 0;
+    if (isset($data['employee_data']) && !empty($data['employee_data'])) {
+        if (isset($data['employee_data'][0]['choice'])) {
+            if ($data['employee_data'][0]['choice'] == 'No') {
+                $scAmount = 0;
+            } else {
+              $scAmount = $scValue * $sc_totalAmount1;
+            }
         }
     }
-  }
-
-   if ($data['timesheet_data'][0]['payroll_type']=='Sales Partner'){
-  $data['sc'] =$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
-   $scValue =  $data['sc']['sc'][0]['sc'];
-   $total_gtotal_value = $data['sc']['total_gtotal'];
-   $scValue1 = $scValue / 100;
-   $result = $scValue1 * $total_gtotal_value;
-   $final = $result;
- }
-
-
-
-
-  if ($data['timesheet_data'][0]['payroll_type'] !=='Sales Partner' ||  $data['employee_data'][0]['choice'] == 'Yes'){
-
-
     
-           if(!empty($this->input->post('administrator_person',TRUE))){
-            $data_timesheet['uneditable']=1;
-       }else{
-             $data_timesheet['uneditable']=0;
-       }
-       $u_id=$this->input->post('unique_id');
-     //  if(empty($u_id)){
-        $data_timesheet['unique_id']=$u_id;
-     //  }
+    // Sales Partner
+    $employee_id = $data['employee_data'][0]['id'];
   
-    $employee_detail = $this->db->where('id', $this->input->post('templ_name'));
-    $q=$this->db->get('employee_history');
-      // echo $this->db->last_query();
-    $row = $q->row_array();
-    if(!empty($row['id'])){
-    $data['selected_living_state_tax']=$row['living_state_tax'];
-    $data['selected_local_tax']=$row['local_tax'];
+    $timesheet_id = $data_timesheet['timesheet_id'];
+    $scAmount = $this->saleCommission($employee_id, $payperiod, $user_id, $company_id);
 
-    $data['selected_state_tax']=$row['state_tx'];
+    if ($data['timesheet_data'][0]['payroll_type'] !=='Sales Partner' ||  $data['employee_data'][0]['choice'] == 'Yes')
+    {
+        if(!empty($this->input->post('administrator_person',TRUE))){
+            $data_timesheet['uneditable']=1;
+        }else{
+            $data_timesheet['uneditable']=0;
+        }
 
+        $u_id=$this->input->post('unique_id');
+        $data_timesheet['unique_id']=$u_id;
+        $employee_detail = $this->db->where('id', $this->input->post('templ_name'));
+        $q=$this->db->get('employee_history');
+        $row = $q->row_array();
 
-// print_r($data['selected_state_tax']); die;
+        if(!empty($row['id'])){
+            $data['selected_living_state_tax']=$row['living_state_tax'];
+            $data['selected_local_tax']=$row['local_tax'];
+            $data['selected_state_tax']=$row['state_tx'];
+            $data['templ_name']=$row['first_name']." ".$row['last_name'];
+            $data['job_title']=$row['designation'];
+        }
 
-
-$data['templ_name']=$row['first_name']." ".$row['last_name'];
-$data['job_title']=$row['designation'];
-   }
         $date1 = $this->input->post('date');
-       $day1 = $this->input->post('day');
-       $time_start1 = $this->input->post('start');
-       $time_end1 = $this->input->post('end');
-       $hours_per_day1 = $this->input->post('sum');
+        $day1 = $this->input->post('day');
+        $time_start1 = $this->input->post('start');
+        $time_end1 = $this->input->post('end');
+        $hours_per_day1 = $this->input->post('sum');
         $daily_bk1=$this->input->post('dailybreak');
         $present1 = $this->input->post('block');
-              $purchase_id_1 = $this->db->where('templ_name', $this->input->post('templ_name'))->where('timesheet_id', $data_timesheet['timesheet_id']);
-       $q=$this->db->get('timesheet_info');
-    //   echo $this->db->last_query();
-       $row = $q->row_array();
- //    echo $row['timesheet_id'];
-       $old_id=trim($row['timesheet_id']);
-   if(!empty($old_id)){
-       $this->session->set_userdata("timesheet_id_old",$row['timesheet_id']);
+        $purchase_id_1 = $this->db->where('templ_name', $this->input->post('templ_name')) ->where('timesheet_id', $data_timesheet['timesheet_id'])->where('create_by', $user_id);
+        $q = $this->db->get('timesheet_info');
+        $row = $q->row_array();
 
-       logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Payment Administration', 'Human Resource', 'TimeSheet has been Updated successfully', 'Update', date('m-d-Y'));
+        $old_id = isset($row['timesheet_id']) ? trim($row['timesheet_id']) : null;
 
-    $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
-    $this->db->delete('timesheet_info');
-    $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
-    $this->db->delete('timesheet_info_details');
+        if(!empty($old_id)){
+            $this->session->set_userdata("timesheet_id_old",$row['timesheet_id']);
+            $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
+            $this->db->delete('timesheet_info');
+            $this->db->where('timesheet_id', $this->session->userdata("timesheet_id_old"));
+            $this->db->delete('timesheet_info_details');
 
- $this->db->insert('timesheet_info', $data_timesheet);
-//  echo $this->db->last_query(); die();
-}
-   else{
-
-    logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Payment Administration', 'Human Resource', 'TimeSheet has been Updated successfully', 'Update', date('m-d-Y'));
-
-   $this->db->insert('timesheet_info', $data_timesheet);
-    // echo $this->db->last_query(); die();
-  }
- 
-$data['timesheet_data'] = $this->Hrm_model-> timesheet_info_data($data_timesheet['timesheet_id']);
-
-  $limit_hours = '40:00';
-  list($totalH, $totalM) = explode(':', $total_hours);
-$totalMinutes = ($totalH * 60) + (int)$totalM;
-list($limitH, $limitM) = explode(':', $limit_hours);
-$limitMinutes = ($limitH * 60) + (int)$limitM;
- if($data['timesheet_data'][0]['payroll_type']=='Hourly'){
-  list($hours, $minutes) = explode(':', $total_hours);
-
-// Convert total hours to decimal hours
-$decimal_hours = $hours + ($minutes / 60);
-
-// Calculate total cost
-$total_cost = $hrate * $decimal_hours;
-
-if ($total_hours <= $limit_hours) {
-  $final = ($total_cost) + $scValueAmount1;
- } else {
-  $final = $data['timesheet_data'][0]['extra_thisrate'] + $data['timesheet_data'][0]['above_extra_sum'];
- }
-}
-
-else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-BiWeekly'){
-if ($total_hours <= 14) {
-  $final = ($hrate * $total_hours) + $scValueAmount1;
- } else {
-  $final = $data['timesheet_data'][0]['extra_thisrate'] + $data['timesheet_data'][0]['above_extra_sum'];
- }
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-weekly'){
-  $final = ($hrate * $total_hours) + $scValueAmount1;
- 
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-Monthly'){
-// Get the current month and year
-$current_month = date('m');
-$current_year = date('Y');
-$days_in_month = cal_days_in_month(CAL_GREGORIAN, $current_month, $current_year);
-if ($total_hours <= $days_in_month) {
-  $final = ($hrate * $total_hours) + $scValueAmount1;
- } else {
-  $final = $data['timesheet_data'][0]['extra_thisrate'] + $data['timesheet_data'][0]['above_extra_sum'];
- }
-}else if ($data['timesheet_data'][0]['payroll_type']=='Salaried-BiMonthly'){
-if ($total_hours <= 60) {
-  $final = ($total_cost) + $scValueAmount1;
- }
-else {
-  $final = $data['timesheet_data'][0]['extra_thisrate'] + $data['timesheet_data'][0]['above_extra_sum'];
- }
-}else if ($data['timesheet_data'][0]['payroll_type']=='SalesCommission'){
- $final = ($total_cost) + $scValueAmount1;
-}
-  $final= round($final,2);
-   $purchase_id_2 = $this->db->select('timesheet_id')->from('timesheet_info')->where('templ_name',$this->input->post('templ_name'))->where('month', $this->input->post('date_range'))->get()->row()->timesheet_id;
- //  echo $this->db->last_query();
-   $this->session->set_userdata("timesheet_id_new",$purchase_id_2);
-    // echo $this->db->last_query();
-    if($date1){
-     for ($i = 0, $n = count($date1); $i < $n; $i++) {
-           $date = $date1[$i];
-           $day = $day1[$i];
-           $daily_bk = $daily_bk1[$i];
-           $time_start = $time_start1[$i];
-           $time_end = $time_end1[$i];
-           $hours_per_day = $hours_per_day1[$i];
-           $present =  $present1[$i];
-           $data1 = array(
-             'timesheet_id' =>$this->session->userdata("timesheet_id_new"),
-               'Date'    => $date,
-               'Day'      => $day,
-                'daily_break'  =>$daily_bk,
-               'time_start'  => $time_start,
-               'time_end'   =>  $time_end,
-               'hours_per_day' => $hours_per_day,
-               'present'    => $present,
-               'created_by' => $this->session->userdata('user_id')
-            );
-          $this->db->insert('timesheet_info_details', $data1);
-        }
+            // Log Entry
+            logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y'));
+            $this->db->insert('timesheet_info', $data_timesheet);
         }else{
-         $data1 = array(
-           'timesheet_id' =>$this->session->userdata("timesheet_id_new"),
-           'created_by' => $this->session->userdata('user_id')
-           );
-          $this->db->insert('timesheet_info_details', $data1);
-           }
-      
-                 $s='';$u='';$m='';$f='';
-          $federal_tax = $this->db->select('*')->from('federal_tax')->where('tax','Federal Income tax')->where('created_by', $this->session->userdata('user_id'))->get()->result_array();
-          $federal_range='';
-          $f_tax='';
-          foreach($federal_tax as $amt){
-              $split=explode('-',$amt[$data['employee_data'][0]['employee_tax']]);
-              if($final > $split[0] && $final < $split[1]){
-                $federal_range=$split[0]."-".$split[1];
-              }
-              }
-           
-           
-       $data['federal'] = $this->Hrm_model->federal_tax_info($data['employee_data'][0]['employee_tax'],$final,$federal_range);
+            // Log Entry
+           logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'TimeSheet has been added successfully', 'Add', date('m-d-Y'));
+           $this->db->insert('timesheet_info', $data_timesheet);
 
-       if(!empty($data['federal'])){
-    
-           $Federal_employee= $data['federal'][0]['employee'];
-           $f=($Federal_employee/100)*$final;
-           $f= round($f, 3);
-           $Federal_employer= $data['federal'][0]['employer'];
-           $ff=($Federal_employer/100)*$final;
-           $ff= round($ff, 3);
-           $ar = $this->db->select('f_tax')->from('tax_history')->where('employee_id',$this->input->post('templ_name'))->get()->row()->f_tax;
-           $f_tax=$ar+$f;
-  
-       }
-
-
-
-       //Social Security
-       $social_tax = $this->db->select('*')->from('federal_tax')->where('tax','Social Security')->where('created_by', $this->session->userdata('user_id'))->get()->result_array();
-       $social_range='';
-       $s_tax='';
-          $split=explode('-',$social_tax[0][$data['employee_data'][0]['employee_tax']]);
-           if($final > $split[0] && $final < $split[1]){
-          $social_range=$split[0]."-".$split[1];
-           }
-       $data['social'] = $this->Hrm_model->social_tax_info($data['employee_data'][0]['employee_tax'],$final,$social_range);
-       if(!empty($data['social'][0]['employee'])){
-       $social_employee= $data['social'][0]['employee'];
-         $s=($social_employee/100)*$final;
-          $s= round($s, 3);
-         $social_employer= $data['social'][0]['employer'];
-     
-         $ss=($social_employer/100)*$final;
-         $ss= round($ss,3);
-          $ar = $this->db->select('s_tax')->from('tax_history')->where('employee_id',$this->input->post('templ_name'))->get()->row()->s_tax;
-        
-       
-          $s_tax=$ar+$s;
-       }
-          // $s_tax= round($s_tax1, 2);
-          //Medicare2747
-       $Medicare = $this->db->select('*')->from('federal_tax')->where('tax','Medicare')->where('created_by', $this->session->userdata('user_id'))->get()->result_array();
-
-       $Medicare_range='';
-       $m_tax='';
-       foreach($Medicare as $social_amt){
-          $split=explode('-',$social_amt[$data['employee_data'][0]['employee_tax']]);
-           if($final > $split[0] && $final < $split[1]){
-          $Medicare_range=$split[0]."-".$split[1];
-           }
-           }
-       $data['Medicare'] = $this->Hrm_model->Medicare_tax_info($data['employee_data'][0]['employee_tax'],$final,$Medicare_range);
-       if(!empty($data['Medicare'])){
-       $Medicare_employee= $data['Medicare'][0]['employee'];
-       $m=($Medicare_employee/100)*$final;
-        $m= round($m, 3);
-   $Medicare_employer= $data['Medicare'][0]['employer'];
-         $mm=($Medicare_employer/100)*$final;
-         $mm= round($mm, 3);
-           $ar = $this->db->select('m_tax')->from('tax_history')->where('employee_id',$this->input->post('templ_name'))->get()->row()->m_tax;
-        
-       
-           $m_tax=$ar+$m;
-      
-       }
-
-        // Start Country
-        //Federal unemployment
-        $unemployment = $this->db->select('*') ->from('federal_tax') ->where('tax', 'Federal unemployment')->where('created_by', $this->session->userdata('user_id')) ->get() ->result_array();
-      
-        $unemployment_range='';
-        $u_tax='';
-        foreach($unemployment as $social_amt){ 
-
-          $split=explode('-',$social_amt[$data['employee_data'][0]['employee_tax']]);
-           if($final > $split[0]){
-               $unemployment_range=$split[0]."-".$split[1];
-            
-            }
         }
-       $data['unemployment'] = $this->Hrm_model->unemployment_tax_info($data['employee_data'][0]['employee_tax'],$final,$unemployment_range);
-        if(!empty($data['unemployment'])){
-            $unemployment_employee= $data['unemployment'][0]['employee'];
-            $unemployment_employer= $data['unemployment'][0]['employer'];
-            $unemployment_details = $data['unemployment'][0]['details'];
-            $details = preg_replace('/\D/', '', $unemployment_details);
-            $u=($unemployment_employee/100)*$final;
-            $u= round($u, 3);
 
-             if( $data['timesheet_data'][0]['payroll_type']  == 'Hourly'){
+        $purchase_id_2 = $this->db->select('timesheet_id')->from('timesheet_info')->where('templ_name',$this->input->post('templ_name'))->where('month', $this->input->post('date_range'))->get()->row()->timesheet_id;
 
-              $emp_salary_amt = $this->Hrm_model->get_employee_sal($data['timesheet_data'][0]['templ_name'] , $data['timesheet_data'][0]['payroll_type']);
-
-              $get_employee_sal_overtime = $this->Hrm_model->get_employee_sal_overtime($data['timesheet_data'][0]['templ_name'] , $data['timesheet_data'][0]['payroll_type'] ,$data['timesheet_data'][0]['timesheet_id']);
-              
-              // Sale Commission
-              $emp_sc = $this->Hrm_model->get_employee_sales_commission($data['timesheet_data'][0]['templ_name'] , $data['timesheet_data'][0]['payroll_type']);
-
-              if($data['employee_data'][0]['choice'] == 'Yes'){
-                $all_ytd = $emp_salary_amt[0]['totalamout'] + $emp_salary_amt[0]['overtime'] + $emp_sc[0]['salescom']  ;
-              }else{
-                $all_ytd = $get_employee_sal_overtime[0]['totalamout']  ;
-              }
-            } else{
-              $emp_salary_amt = $this->Hrm_model->get_employee_sal($data['timesheet_data'][0]['templ_name'] , $data['timesheet_data'][0]['payroll_type']);
-
-              $emp_sc = $this->Hrm_model->get_employee_sales_commission($data['timesheet_data'][0]['templ_name'] , $data['timesheet_data'][0]['payroll_type']);
-              if($data['employee_data'][0]['choice'] == 'Yes'){
-                $all_ytd = $emp_salary_amt[0]['totalamout'] + $emp_sc[0]['salescom'] ;
-              }else{
-                $all_ytd = $emp_salary_amt[0]['totalamout'] ;
-              }
-             }
-              $this->db->select('h_rate, total_hours, extra_thisrate, SUM(extra_thisrate) as totalamout');
-              $this->db->from('timesheet_info');
-              $this->db->where('timesheet_info.month <=', date('Y-m-d'));
-              $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') < STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
-              $this->db->where('templ_name', $data['timesheet_data'][0]['templ_name']);
-              $query = $this->db->get();
-              $data['emp_salary_amt'] = $query->result_array();
-              if (!empty($data['emp_salary_amt'])) {
-                  $total = $data['emp_salary_amt'][0]['extra_thisrate'];
-                  $ytd = $data['emp_salary_amt'][0]['totalamout'];
-              }
-              $ytd_salary_amt = $this->Hrm_model->get_employee_sal_ytd($data['timesheet_data'][0]['templ_name']);
-              $ytd_sal = $ytd_salary_amt[0]['overalltotal'];
-              $total_unemployment = $this->Hrm_model->total_unemployment($data['timesheet_data'][0]['templ_name']);
-           
-      
-              if((round($total_unemployment['unempltotal'])) < 420 ){
-                
-                if ($all_ytd <= $details) {
-               
-                $uu = ($unemployment_employer / 100) * $final;
-                $uu = round($uu, 3);
-                $tax_amt_final = $final; 
-              
-              }
-              elseif ($all_ytd > $details) {
-                  $bal = $details  - $ytd_sal ;
-                  $uu = ($unemployment_employer / 100) * $bal;
-                  $tax_amt_final = $bal;
-                
-                  $uu = round($uu, 3);    
-                }
-                else {
-                  $uu = 0.00;   
-            
-              }
-            }else{
-              
-              $uu = 0.00;    
-            }
-            $ar = $this->db->select('u_tax')->from('tax_history')->where('employee_id',$this->input->post('templ_name'))->get()->row()->u_tax;
-            $u_tax=$ar+$u;
-            }
-// End Country
-      
-
-//Start State          
-$state='';
-$living_state_tax_range='';
-$living_state_tax='';
-$living_state_tax_employer=array();
-$living_state_tax=array();
-
-print_r($data['employee_data'][0]['living_state_tax']);
-
-if($data['employee_data'][0]['living_state_tax'] !='' && ($data['employee_data'][0]['living_state_tax'] !=='Not Applicable')){
-
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['living_state_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
- 
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-
-$tax_split=explode(',',$state[0]['tax']);
-
-foreach($tax_split as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-
-   // echo "<pre>"; print_r($tax); echo "</pre>"; die;
-
-    foreach($tax as $tx){ 
-        $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-        if($split[0]!='' && $split[1]!=''){
-            if($final >= $split[0] && $final <= $split[1]){  
-                $local_tax_range=$split[0]."-".$split[1];
-                $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-                    if(!empty($data['localtax'])){
-                    $i=0;
-                    foreach( $data['localtax'] as $lt){
-                        // echo "<pre>"; print_r($lt); echo "</pre>"; die;
-                        $local_tax_employee=$lt['employee'];
-                        $local_tax_employer=$lt['employer'];
-                        $local_tax_ee=($local_tax_employee/100)*$final;
-                        $local_tax_er=($local_tax_employer/100)*$final;
-
-                        $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-
-                        // echo "<pre>"; print_r($row_employer); echo "</pre>"; die;
-                        $data_employer="'employer_".$tx['tax']."'";
-                        if($row_employer==1){
-                            $t_tx1=$local_tax_er;
-                            $living_state_tax_employer[$data_employer]=$t_tx1;
-                        }
-
-                        $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-                        $data_employee="'employee_".$tx['tax']."'";
-                        $search_tax=explode('-',$tx['tax']);
-                        if($row==1){
-                            $t_tx=$local_tax_ee;
-                            $living_state_tax[$data_employee]=$t_tx;
-
-                        }
-                        $i++;
-                    }
+        $this->session->set_userdata("timesheet_id_new",$purchase_id_2);
+        
+        if (!empty($date1) && is_array($date1)) {
+            for ($i = 0, $n = count($date1); $i < $n; $i++) {
+                $present = isset($present1[$i]) ? $present1[$i] : null;
+                $date = isset($date1[$i]) ? $date1[$i] : null;
+                $day = isset($day1[$i]) ? $day1[$i] : null;
+                $time_start = isset($time_start1[$i]) ? $time_start1[$i] : null;
+                $daily_bk = isset($daily_bk1[$i]) ? $daily_bk1[$i] : null;
+                $time_end = isset($time_end1[$i]) ? $time_end1[$i] : null;
+                $hours_per_day = isset($hours_per_day1[$i]) ? $hours_per_day1[$i] : null;
+                if (empty($date) || empty($day) || empty($time_start) || empty($time_end)) {
+                    continue;
                 }
 
-            }
-        }
-    }
-}
-
-
-$test2= $this->db->select('*')->from('info_payslip')->where('timesheet_id',$timesheetdata[0]['timesheet_id'])->get()->row();
-    if(!empty($test2->timesheet_id)) {
-       $this->db->where('timesheet_id',$test2->timesheet_id);
-       $this->db->delete('info_payslip');
-    }
-      
-    $test= $this->db->select('time_sheet_id')->from('tax_history')->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])->get()->row();
-    if(!empty($test->time_sheet_id)) {
-       $this->db->where('time_sheet_id',$test->time_sheet_id);
-       $this->db->delete('tax_history');
-    }
-    $payperiod =$data['timesheet_data'][0]['month'];
-    $data['sc']=$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
-    if(isset($data['sc']['sc'][0]['sc'])) {
-        $scValue = $data['sc']['sc'][0]['sc'];
-    }else{
-        $scValue=0;
-    }
-    $sc_totalAmount1 = $data['sc']['total_gtotal']; 
-    $sc_count = $data['sc']['count'];
-
-    if ($sc_totalAmount1 != 0) {
-        $scValuePercentage = ($scValue / $sc_totalAmount1) * 100;
-        $scValueAmount = ($scValuePercentage / 100) * $sc_totalAmount1;
-    } else {
-       $scValueAmount = 0;
-    }
-
-    $scValue = $scValue / 100;
-
-    // Calculate the percentage of $sc_totalAmount1 based on $scValue
-    $scValueAmount = $scValue * $sc_totalAmount1;
-}
- 
-       $local_tax_range='';
-       $local_tax='';
-       $local_tax=array();
-       $local_tax_employerr=array();
-
-
-
-if(!empty($data['selected_local_tax']) && ($data['selected_local_tax'] !=='Not Applicable')){ 
-
-
-//start local tax
-echo "LOCAL TAX";
-echo "<br/>"; 
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['local_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-
-$tax_split=explode(',',$state[0]['tax']);
-
-foreach($tax_split as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-  // echo $this->db->last_query();
-foreach($tax as $tx){
-          $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-          // echo "<br/>";
-          //  echo "--------". $final."/".$split[0]."/".$split[1];
-          //    echo "<br/>";
-       if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-      $local_tax_range=$split[0]."-".$split[1];
-     $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-       if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-   
-        $local_tax_ee=($local_tax_employee/100)*$final;
-          $local_tax_er=($local_tax_employer/100)*$final;
-           echo  "$$$".$local_tax_er;
-                     $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
- $data_employer="'employer_".$tx['tax']."'";
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $local_tax_employerr[$data_employer]=$t_tx1;
-}
-
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
- $data_employee="'employee_".$tx['tax']."'";
-         $search_tax=explode('-',$tx['tax']);
-      if($row==1){
-   $t_tx=$local_tax_ee;
- $local_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-
-}
-
-$state_tax_range='';
-         $st_tax='';
-         $st_tax=array();
-         $st_tax_employer=array();
-     
-if(!empty($data['employee_data'][0]['state_tx'])  && ($data['employee_data'][0]['state_tx'] !=='Not Applicable') ) {
- 
-$state_tax1 = $this->db->select('*')->from('state_and_tax')
-->where('state',$data['employee_data'][0]['state_tx'])
- 
-->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
- 
- $state1= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax1[0]['state'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-
-$tax_split1=explode(',',$state1[0]['tax']);
-
-foreach($tax_split1 as $tax){
-
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax1[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
- 
-
-foreach($tax as $tx){
-
-          $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-
-           if($split[0]!='' && $split[1]!=''){     
-           if($final >= $split[0] && $final <= $split[1]){     
-           
-    $state_tax_range=$split[0]."-".$split[1];
-     $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$state_tax_range,$state_tax1[0]['state']);
-
-
-       if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-     if ( (strpos($tx['tax'], 'Disability') == true ) || (strpos($tx['tax'], 'FLI') == true )){
-       $local_tax_ee=($local_tax_employee)*$final;
-       $local_tax_er=($local_tax_employer)*$final;
-      
-}else{ 
-        $local_tax_ee=($local_tax_employee/100)*$final;
-       $local_tax_er=($local_tax_employer/100)*$final;
-   
-}
-
-   $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-
-   $data_employer="'employer_".$tx['tax']."'";
-
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $st_tax_employer[$data_employer]=$t_tx1;
-}
-
-//seeeeee
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where('create_by',$this->session->userdata('user_id'))->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->count_all_results();
-    $data_employee = "'employee_".$tx['tax']."'";
-    $search_tax=explode('-',$tx['tax']);
-    
-    if($row==1){
- 
-  $t_tx=$local_tax_ee;
-
- $st_tax[$data_employee]=$t_tx;
-
-
-
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-}
-
-  
-
-       $living_local_tax_range='';
-       $living_local_tax='';
-       $living_local_tax=array();
-       $living_local_tax_employer=array();
-if(!empty($data['employee_data'][0]['living_local_tax']) && ($data['employee_data'][0]['living_local_tax'] !=='Not Applicable') ) {
-//end local tax
-
-//start state tax
-echo "<br/>";
-echo "Living Local Tax";
-echo "<br/>";
-$state_tax1 = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['living_local_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-//echo $this->db->last_query();
-$state1= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax1[0]['state'])->get()->result_array();
-
-$tax_split1=explode(',',$state1[0]['tax']);
-
-foreach($tax_split1 as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax1[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
- // echo $this->db->last_query();
-foreach($tax as $tx){
-           $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
- 
-           if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-           $state_tax_range=$split[0]."-".$split[1];
- 
-          $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$state_tax_range);
-     
-     
-     if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-        $local_tax_ee=($local_tax_employee/100)*$final;
-        
-          $local_tax_er=($local_tax_employer/100)*$final;
-
- $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
- echo $this->db->last_query();
-  $data_employer="'employer_".$tx['tax']."'";
-
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $living_local_tax_employer[$data_employer]=$t_tx1;
-}
-
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where('create_by',$this->session->userdata('user_id'))->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->count_all_results();
- $data_employee="'employee_".$tx['tax']."'";
-         $search_tax=explode('-',$tx['tax']);
-
-         if($row==1){
-
-  $t_tx=$local_tax_ee;
-$living_local_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-}
-
-
-
-       $living_local_tax_range='';
-       $living_local_tax='';
-       $living_local_tax=array();
-       $living_local_tax_employer=array();
-
-if(!empty($data['employee_data'][0]['living_local_tax']) && ($data['employee_data'][0]['living_local_tax'] !=='Not Applicable') ) {
-//end local tax
-
-//start state tax
-echo "<br/>";
-echo "Living Local Tax";
-echo "<br/>";
-$state_tax1 = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['living_local_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-//echo $this->db->last_query();
-$state1= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax1[0]['state'])->get()->result_array();
-
-$tax_split1=explode(',',$state1[0]['tax']);
-
-foreach($tax_split1 as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax1[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
- // echo $this->db->last_query();
-foreach($tax as $tx){
-           $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
- 
-           if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-           $state_tax_range=$split[0]."-".$split[1];
- 
-          $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$state_tax_range);
-
-     
-     
-     if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-        $local_tax_ee=($local_tax_employee/100)*$final;
-        
-          $local_tax_er=($local_tax_employer/100)*$final;
-
- $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
- // echo $this->db->last_query();
-  $data_employer="'employer_".$tx['tax']."'";
-
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $living_local_tax_employer[$data_employer]=$t_tx1;
-}
-
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where('create_by',$this->session->userdata('user_id'))->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->count_all_results();
-    $data_employee="'employee_".$tx['tax']."'";
-    $search_tax=explode('-',$tx['tax']);
-
-         if($row==1){
-
-  $t_tx=$local_tax_ee;
-$living_local_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-}
-
-$living_county_tax_range='';
-       $living_county_tax='';
-    $living_county_tax=array();
-      $living_county_tax_employer=array();
-if((!empty($data['employee_data'][0]['living_county_tax'])) && ($data['employee_data'][0]['living_county_tax'] !=='Not Applicable') ) {
-//end local tax
-
-//start state tax
-echo "<br/>";
-echo "Living County Tax";
-echo "<br/>";
-$state_tax1 = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['living_county_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state1= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax1[0]['state'])->get()->result_array();
-
-$tax_split1=explode(',',$state1[0]['tax']);
-
-foreach($tax_split1 as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax1[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-foreach($tax as $tx){
-          $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-       if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-      $state_tax_range=$split[0]."-".$split[1];
-     $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$state_tax_range);
-       if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-        $local_tax_ee=($local_tax_employee/100)*$final;
-        
-           $local_tax_er=($local_tax_employer/100)*$final;
-           $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-           $data_employer="'employer_".$tx['tax']."'";
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $living_county_tax_employer[$data_employer]=$t_tx1;
-}
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where('create_by',$this->session->userdata('user_id'))->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->count_all_results();
- $data_employee="'employee_".$tx['tax']."'";
-         $search_tax=explode('-',$tx['tax']); 
-         if($row==1){
-  $t_tx=$local_tax_ee;
-$living_county_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-}
-
-$working_county_tax_range='';
-       $working_county_tax='';
-    $working_county_tax=array();
-        $working_county_tax_employer=array();
-if((!empty($data['employee_data'][0]['cty_tax'])) && ($data['employee_data'][0]['cty_tax'] !=='Not Applicable') ) {
-
-$state_tax1 = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['cty_tax'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state1= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax1[0]['state'])->get()->result_array();
-
-$tax_split1=explode(',',$state1[0]['tax']);
-
-foreach($tax_split1 as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax1[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
-foreach($tax as $tx){
-          $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-       if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-      $state_tax_range=$split[0]."-".$split[1];
-     $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$state_tax_range);
-       if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-        $local_tax_ee=($local_tax_employee/100)*$final;
-        
-          $local_tax_er=($local_tax_employer/100)*$final;
-
-           $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-//  echo $this->db->last_query();
-                             $data_employer="'employer_".$tx['tax']."'";
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $working_county_tax_employer[$data_employer]=$t_tx1;
-}
-
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where('create_by',$this->session->userdata('user_id'))->where($data['employee_data'][0]['employee_tax'],$state_tax_range)->count_all_results();
- $data_employee="'employee_".$tx['tax']."'";
-         $search_tax=explode('-',$tx['tax']); 
-         if($row==1){
-  $t_tx=$local_tax_ee;
-$working_county_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-}
-
-$other_tax_range='';
-       $other_tax='';
-    $other_tax=array();
-       $other_tax_employer=array();
-if((!empty($data['employee_data'][0]['state_tax_2'])) && ($data['employee_data'][0]['state_tax_2'] !=='Not Applicable')){ 
-
-
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['state_tax_2'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-
-$tax_split=explode(',',$state[0]['tax']);
-
-foreach($tax_split as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
- // echo $this->db->last_query();
-foreach($tax as $tx){
-          $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-         
-       if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-      $local_tax_range=$split[0]."-".$split[1];
-     $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-       if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-        $local_tax_ee=($local_tax_employee/100)*$final;
-          $local_tax_er=($local_tax_employer/100)*$final;
-
-          $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-//  echo $this->db->last_query();
-                             $data_employer="'employer_".$tx['tax']."'";
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $other_tax_employer[$data_employer]=$t_tx1;
-}
-
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
- $data_employee="'employee_".$tx['tax']."'";
-         $search_tax=explode('-',$tx['tax']);
-      if($row==1){
- 
-  $t_tx=$local_tax_ee;
- $other_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-
-}
-
-$other_tax_state_range='';
-       $other_working_tax='';
-    $other_working_tax=array();
-     $other_working_tax_employer=array();
-if((!empty($data['employee_data'][0]['state_tax_1'])) && ($data['employee_data'][0]['state_tax_1'] !=='Not Applicable')){ 
-
-//start local tax
-// echo "LOCAL TAX";
-// echo "<br/>";
-$state_tax = $this->db->select('*')->from('state_and_tax')->where('state',$data['employee_data'][0]['state_tax_1'])->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-$state= $this->db->select('*')->from('state_and_tax')->where('state',$state_tax[0]['state'])->get()->result_array();
-
-$tax_split=explode(',',$state[0]['tax']);
-
-foreach($tax_split as $tax){
-   $tax=$this->db->select('*')->from('state_localtax')->where('tax',$state_tax[0]['state']."-".$tax)->where('create_by',$this->session->userdata('user_id'))->get()->result_array();
- // echo $this->db->last_query();
-foreach($tax as $tx){
-          $split=explode('-',$tx[$data['employee_data'][0]['employee_tax']]);
-          // echo "<br/>";
-          //  echo "--------". $final."/".$split[0]."/".$split[1];
-          //    echo "<br/>";
-       if($split[0]!='' && $split[1]!=''){
-           
-           if($final > $split[0] && $final < $split[1]){
-              
-      $local_tax_range=$split[0]."-".$split[1];
-     $data['localtax'] = $this->Hrm_model->local_state_tax($data['employee_data'][0]['employee_tax'],$final,$local_tax_range);
-       
-      
-     
-     if(!empty( $data['localtax'])){
-           $i=0;
-            foreach( $data['localtax'] as $lt){
-    $local_tax_employee=$lt['employee'];
-    $local_tax_employer=$lt['employer'];
-        $local_tax_ee=($local_tax_employee/100)*$final;
-          $local_tax_er=($local_tax_employer/100)*$final;
-                    $row_employer = $this->db->select('*')->from('state_localtax')->where('employer',$local_tax_employer)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
-//  echo $this->db->last_query();
-                             $data_employer="'employer_".$tx['tax']."'";
-if($row_employer==1){
-$t_tx1=$local_tax_er;
- $other_working_tax_employer[$data_employer]=$t_tx1;
-}
-
-
-   $row = $this->db->select('*')->from('state_localtax')->where('employee',$local_tax_employee)->where('tax',$tx['tax'])->where($data['employee_data'][0]['employee_tax'],$local_tax_range)->where('create_by',$this->session->userdata('user_id'))->count_all_results();
- $data_employee="'employee_".$tx['tax']."'";
-         $search_tax=explode('-',$tx['tax']);
-      if($row==1){
-
-  $t_tx=$local_tax_ee;
- $other_working_tax[$data_employee]=$t_tx;
-        }
-           $i++;
-       }
-   }
-            }
-   }
-}
-}
-
-}
- 
- $test2= $this->db->select('*')->from('info_payslip')->where('timesheet_id',$timesheetdata[0]['timesheet_id'])
-          ->get()->row();
-      if(!empty($test2->timesheet_id)) {
-       $this->db->where('timesheet_id',$test2->timesheet_id);
-       $this->db->delete('info_payslip');
-       }
-
- $test= $this->db->select('time_sheet_id')->from('tax_history')->where('time_sheet_id',$timesheetdata[0]['timesheet_id'])
-        ->get()->row();
-   if(!empty($test->time_sheet_id)) {
-   $this->db->where('time_sheet_id',$test->time_sheet_id);
-   $this->db->delete('tax_history');
-    }
-
-
-
-
-
-       $payperiod =$data['timesheet_data'][0]['month'];
-       $data['sc']=$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$payperiod);
-       if(isset($data['sc']['sc'][0]['sc'])) {
-       $scValue = $data['sc']['sc'][0]['sc'];
-    // Use $scValue here
-} else {
-    $scValue =0;
-}
-       $sc_totalAmount1 = $data['sc']['total_gtotal']; // Accessing total amount
-$sc_count = $data['sc']['count'];
-if ($sc_totalAmount1 != 0) {
-    $scValuePercentage = ($scValue / $sc_totalAmount1) * 100;
-    $scValueAmount = ($scValuePercentage / 100) * $sc_totalAmount1;
-} else {
-   $scValueAmount = 0;
-}
-
- 
-  $scValue = $scValue / 100;
-  $scValueAmount = $scValue * $sc_totalAmount1;
-
-
-
-if($st_tax){
-
-
-foreach ($st_tax as $k => $v) {
-    if(trim( round($v,6)) >0){
-        $existingRecord = $this->db->select('*')
-        ->from('tax_history')
-        ->where('time_sheet_id', $timesheetdata[0]['timesheet_id'])
-        ->where('employee_id', $timesheetdata[0]['templ_name'])
-        ->where('tax', str_replace("'", "", explode('-', $k)[1]))
-        ->get()->row();
-        $split=explode('-',$k);
-        $tx_n=str_replace("'","",$split[1]);
-      //  print_r($tx_n);die();
-        $code = '';
-        if(isset($split[2])) {
-            $code = $split[2];
-        } else {
-            $code = '';
-        }
-        $code=str_replace("'","",$code);
-    
-        if ($data['employee_data'][0]['payroll_type'] == 'Hourly' || $data['employee_data'][0]['payroll_type'] == 'Salaried-weekly' || $data['employee_data'][0]['payroll_type'] == 'Salaried-BiWeekly' || $data['employee_data'][0]['payroll_type'] == 'Salaried-Monthly' ) {
-            if (strpos($tx_n, 'Income') == false) {
-             
                 $data1 = array(
-                    's_tax'=>$s,
-                    'm_tax'=>$m,
-                    'u_tax'=>$u,
-                    'f_tax'=>$f,
-                    'code'  => $code,
-                    'tax_type'=>'state_tax',
-                    'sales_c_amount' => $scValueAmount,
-                    'sc' => $scValue ,
-                    'no_of_inv' => $sc_count,
-                    'tax'  => $tx_n,
-                    'amount' => round($v,3),
-                    'time_sheet_id'   => $timesheetdata[0]['timesheet_id'],
-                    'employee_id'     => $timesheetdata[0]['templ_name'],
-                    'created_by'     => $this->session->userdata('user_id'),
+                    'timesheet_id' => $this->session->userdata("timesheet_id_new"),
+                    'present' => $present,
+                    'Date' => $date,
+                    'Day' => $day,
+                    'time_start' => $time_start,
+                    'daily_break' => $daily_bk,
+                    'time_end' => $time_end,
+                    'hours_per_day' => $hours_per_day,
+                    'created_by' => $user_id,
                 );
-                $this->db->insert('tax_history',$data1);   $total_deduction +=  round($v,3);
-              //  echo $this->db->last_query();
+                $this->db->insert('timesheet_info_details', $data1);
             }
+        } else {
+            logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $data_timesheet['timesheet_id'], $data_timesheet['month'], $this->session->userdata('userName'), 'Add TimeSheet', 'Human Resource', 'Date1 array is empty or invalid', 'Error', date('m-d-Y'));
         }
-
-            else if ($data['employee_data'][0]['sales_partner'] == 'Sales_Partner' && (trim($tx_n) == 'Income tax')){
-            $data1 = array(
-              's_tax'=>'0',
-              'm_tax'=> '0',
-              'u_tax'=> '0',
-              'f_tax'=>$f,
-              'code'  => $code,
-              'tax_type'=>'state_tax',
-              'sales_c_amount' => $scValueAmount,
-              'sc' => $scValue ,
-              'no_of_inv' => $sc_count,
-              'tax'  => $tx_n,
-              'amount' => round($v,3),
-              'time_sheet_id'   => $timesheetdata[0]['timesheet_id'],
-              'employee_id'     => $timesheetdata[0]['templ_name'],
-              'created_by'     => $this->session->userdata('user_id'),
-            );
-            $this->db->insert('tax_history',$data1); $total_deduction +=  round($v,3); 
         
-          }
+      
+        $payroll_type = $data['timesheet_data'][0]['payroll_type'];
+        $total_hours = $total_hours;
+        $hrate = $hrate;
+        $extra_thisrate = $data['timesheet_data'][0]['extra_thisrate'];
+        $above_extra_sum = $data['timesheet_data'][0]['above_extra_sum'];
+        $final = $this->thisPeriodAmount($payroll_type, $total_hours, $hrate, $scAmount, $extra_thisrate, $above_extra_sum, $user_id, $company_id);
+
+        $s = ''; $u = ''; $m = ''; $f = ''; 
+
+      
+        $f = $this->countryTax('Federal Income tax', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 'f_tax', $user_id, $endDate, $employee_id, $timesheet_id);
+
+       
+        $s = $this->countryTax('Social Security', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 's_tax', $user_id, $endDate, $employee_id, $timesheet_id);
+
+       
+        $m = $this->countryTax('Medicare', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 'm_tax', $user_id, $endDate, $employee_id, $timesheet_id);
+
+        // Unemployment tax
+        $u = $this->countryTax('Federal unemployment', $data['employee_data'][0]['employee_tax'], $final, $data['timesheet_data'][0]['templ_name'], 'u_tax', $user_id, $endDate, $employee_id, $timesheet_id);
+        
+
+        // Working State Tax
+        $working_state_tax = $this->state_tax($endDate,$employee_id,$employeedata[0]['employee_tax'],$working_state_tax,$user_id,$final,'state_tax',$timesheet_id);
+
+    }
+        
+
+}
+
+
+// Country Tax - Madhu
+            
+public function countryTax($tax_type, $employee_tax_column, $final, $templ_name, $tax_history_column, $user_id, $endDate,  $timesheet_id) 
+{
+    $tax = $this->db->select('*')->from('federal_tax')->where('tax', $tax_type)->where('created_by', $user_id)->get()->result_array();
+
+    $tax_range = '';
+    $ytd=[];
+    $tax_value = '';
+
+    foreach ($tax as $amt) {
+        $split = explode('-', $amt[$employee_tax_column]);
+        if ($final >= $split[0] && $final <= $split[1]) {
+            $tax_range = $split[0] . "-" . $split[1];
         }
-        }
-
-  $sql = "DELETE t1
-        FROM tax_history t1
-        INNER JOIN tax_history t2 ON t1.id > t2.id
-        AND t1.tax = t2.tax
-        AND t1.code = t2.code
-        AND t1.amount = t2.amount
-        AND t1.created_by = t2.created_by
-        AND t1.time_sheet_id = t2.time_sheet_id
-        WHERE t1.weekly IS NULL
-    AND t1.monthly IS NULL
-    AND t1.biweekly IS NULL;
-        ";
-// Execute the SQL query
-$this->db->query($sql);
- }
-
-
-
-// 
- if($data['employee_data'][0]['payroll_type'] == 'Hourly'){
-    $data['tax_name'] = $this->Hrm_model->get_taxname_hourly($data['employee_data'][0]['state_tx'],$data['employee_data'][0]['living_state_tax']);
-    $tax_names = array_unique(array_map(function($tax) {return $tax['tax']; }, $data['tax_name']));
-    $employee_tax_column = $data['employee_data'][0]['employee_tax'];
-     $this->db->select("$employee_tax_column, tax,details");
-        $this->db->from('state_localtax');
-        $this->db->where_in('tax', $tax_names);
-        $this->db->where('create_by', $this->session->userdata('user_id'));
-        $this->db->where("CAST(SUBSTRING_INDEX(`$employee_tax_column`, '-', 1) AS UNSIGNED) <=", $final);
-        $this->db->where("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`$employee_tax_column`, '-', -1), '-', 1) AS UNSIGNED) >=", $final);
-     $query = $this->db->get();
-     // echo $this->db->last_query(); die;
-    $hourly_taxes = $query->result_array(); 
-    foreach ($hourly_taxes as $hourly_tax) {
-            $hourly_range = $hourly_tax[$employee_tax_column];
-            $hourly_taxs = $hourly_tax['tax'];
-           
-            $split_values = explode('-', $hourly_range); 
-            $split_tax = explode('-', $hourly_taxs);
-            $getvalue = $final - (int) $split_values[0];
-            $data['hourly'] = $this->Hrm_model->hourly_tax_info($data['employee_data'][0]['employee_tax'], $final, $hourly_range);
-           
-            if (!empty($data['hourly'][0]['employee'])) {
-
-                if($data['employee_data'][0]['state_tx'] == 'Maryland'){
-                    $addamt= str_replace('$', '', $hourly_tax['details']);
-                    $hourlyemployee = $data['hourly'][0]['employee'];
-                    $firstamount = ($final - $split_values[0]);
-                    $secondamount = ($firstamount * ($hourlyemployee / 100)); 
-                    $hourly_tax_amount = $addamt + $secondamount;
-                }else{
-                    $addamt= str_replace('$', '', $hourly_tax['details']);
-                    $hourlyemployee = $data['hourly'][0]['employee'];
-                    $biwkly = ($hourly_employee / 100) * $getvalue;
-                    $biwkly = round($biwkly);
-                    $hourly_tax_amount = $addamt + $biwkly;
-                }
-            } else {
-                $hourly_tax_amount = 0;
-            }
-             $tax_type='';
-            if (strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false) {
-        $tax_type = 'state_tax';
-    } elseif (strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false) {
-        $tax_type = 'living_state_tax';
     }
 
-    if ((strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false)||(strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false)) {
-        if (strpos($tx_n, 'Income') !== false) {
-          $hr_array = array(
-                's_tax' => $s,
-                'm_tax' => $m,
-                'u_tax' => $u,
-                'f_tax' => $f,
-                'code' =>  $split_tax[2],
-                'tax_type' => $tax_type,
-                'sales_c_amount' => $scValueAmount,
-                'sc' => $scValue,
-                'no_of_inv' => $sc_count,
-                'tax' => $split_tax[1],
-                'amount' => $hourly_tax_amount,
-                'hourly' => $hourly_tax_amount,
-                'time_sheet_id' => $timesheetdata[0]['timesheet_id'],
-                'employee_id' => $timesheetdata[0]['templ_name'],
-                'created_by' => $this->session->userdata('user_id'),
-            );
-          $this->db->insert('tax_history', $hr_array); $total_deduction += $hourly_tax_amount;
-          // echo 'Income True' . $this->db->last_query(); die;
- 
-         
-        }
-           }
+    $tax_info_method = strtolower(str_replace(' ', '_', $tax_type)) . '_tax_info';
+    $data[$tax_type] = $this->Hrm_model->federal_tax_info($employee_tax_column, $final, $tax_range, $user_id);
+
+    if (!empty($data[$tax_type][0]['employee'])) {
+        $tax_employee = $data[$tax_type][0]['employee'];
+        $tax_value = round(($tax_employee / 100) * $final, 3);
     }
-    $this->Hrm_model->deleteDuplicateTaxRecords();
-     }
-
-else if($data['employee_data'][0]['payroll_type'] == 'Salaried-weekly') {
-
-    $data['tax_name'] = $this->Hrm_model->get_taxname_weekly($data['employee_data'][0]['state_tx'],$data['employee_data'][0]['living_state_tax']);
-    //print_r($data['']);
-    $tax_names = array_unique(array_map(function($tax) {return $tax['tax']; }, $data['tax_name']));
-   // print_r($tax_names);die();
-    $employee_tax_column = $data['employee_data'][0]['employee_tax'];
-     $this->db->select("$employee_tax_column, tax,details");
-        $this->db->from('weekly_tax_info');
-        $this->db->where_in('tax', $tax_names);
-        $this->db->where('create_by', $this->session->userdata('user_id'));
-        $this->db->where("CAST(SUBSTRING_INDEX(`$employee_tax_column`, '-', 1) AS UNSIGNED) <=", $final);
-        $this->db->where("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`$employee_tax_column`, '-', -1), '-', 1) AS UNSIGNED) >=", $final);
-     $query = $this->db->get();
-    $weekly_taxes = $query->result_array(); 
-  //  echo $this->db->last_query();die();
-    foreach ($weekly_taxes as $weekly_tax) {
-            $weekly_range = $weekly_tax[$employee_tax_column];
-            $weekly_taxs = $weekly_tax['tax'];
-           
-            $split_values = explode('-', $weekly_range);
-            $split_tax = explode('-', $weekly_taxs);
-            $getvalue = $final - (int) $split_values[0];
-
-            $data['weekly'] = $this->Hrm_model->weekly_tax_info($data['employee_data'][0]['employee_tax'], $final, $weekly_range);
-            if (!empty($data['weekly'][0]['employee'])) {
-
-            $addamt= str_replace('$', '', $weekly_tax['details']);
-          // echo "Addamount :".$addamt;
-             $weeklyemployee = $data['weekly'][0]['employee'];
-
-                $biwkly = ($weeklyemployee / 100) * $getvalue;
-     
-                $biwkly = round($biwkly);
-                $weekly_tax_amount = $addamt + $biwkly;
-               
-            } else {
-                $weekly_tax_amount = 0;
-            }
-
-            $tax_type='';
-
-            if (strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false) {
-                $tax_type = 'state_tax';
-            } elseif (strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false) {
-                $tax_type = 'living_state_tax';
-            }
    
-    // echo $data['employee_data'][0]['living_state_tax']; die;
+    // YTD Sum Amount
+    $sum_of_country_tax = $this->Hrm_model->sum_of_country_tax($endDate, $templ_name, $timesheet_id,$user_id);
+    $ytd['ytd_days'] = $sum_of_country_tax[0]['ytd_days'];
+    $ytd['ytd_salary'] = $sum_of_country_tax[0]['ytd_salary'];
+    $ytd['ytd_overtime_salary'] = $sum_of_country_tax[0]['ytd_overtime_salary'];
+    $ytd['ytd_hours_only_overtime'] = $sum_of_country_tax[0]['ytd_hours_only_overtime'];
+    $ytd['ytd_hours_excl_overtime'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime'];
+    $ytd['total_hours'] = $sum_of_country_tax[0]['total_hours'];
+    $ytd['ytd_hours_excl_overtime_in_time'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime_in_time'];
+    $data['t_s_tax'] = $sum_of_country_tax[0]['t_s_tax'];
+    $data['t_m_tax'] = $sum_of_country_tax[0]['t_m_tax'];
+    $data['t_f_tax'] = $sum_of_country_tax[0]['t_f_tax'];
+    $data['t_u_tax'] = $sum_of_country_tax[0]['t_u_tax'];
 
-    // if ((strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false)||(strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false)) {
-        $hr_array = array(
-                's_tax' => $s,
-                'm_tax' => $m,
-                'u_tax' => $u,
-                'f_tax' => $f,
-                'code' =>  $split_tax[2],
-                'tax_type' => $tax_type,
-                'sales_c_amount' => $scValueAmount,
-                'sc' => $scValue,
-                'no_of_inv' => $sc_count,
-                'tax' => $split_tax[1],
-                'amount' => $weekly_tax_amount,
-                'weekly' => $weekly_tax_amount,
-                'time_sheet_id' => $timesheetdata[0]['timesheet_id'],
-                'employee_id' => $timesheetdata[0]['templ_name'],
-                'created_by' => $this->session->userdata('user_id'),
-            );
-        $this->db->insert('tax_history', $hr_array); $total_deduction += $weekly_tax_amount;
-        // echo $this->db->last_query();
-    }
-    $this->Hrm_model->deleteDuplicateTaxRecords();
-  
-} 
-
-
-else if ($data['employee_data'][0]['payroll_type'] == 'Salaried-BiWeekly') {
-$data['tax_name'] = $this->Hrm_model->get_taxname_biweekly($data['employee_data'][0]['state_tx'],$data['employee_data'][0]['living_state_tax']);
-$tax_names = array_unique(array_map(function($tax) {return $tax['tax']; }, $data['tax_name']));
-$employee_tax_column = $data['employee_data'][0]['employee_tax'];
- $this->db->select("$employee_tax_column, tax,details");
-    $this->db->from('biweekly_tax_info');
-    $this->db->where_in('tax', $tax_names);
-    $this->db->where('create_by', $this->session->userdata('user_id'));
-    $this->db->where("CAST(SUBSTRING_INDEX(`$employee_tax_column`, '-', 1) AS UNSIGNED) <=", $final);
-    $this->db->where("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`$employee_tax_column`, '-', -1), '-', 1) AS UNSIGNED) >=", $final);
- $query = $this->db->get();
-$biweekly_taxes = $query->result_array(); 
-foreach ($biweekly_taxes as $biweekly_tax) {
-        $biweekly_range = $biweekly_tax[$employee_tax_column];
-        $biweekly_taxs = $biweekly_tax['tax'];
-        $split_values = explode('-', $biweekly_range);
-        $split_tax = explode('-', $biweekly_taxs);
-        $getvalue = $final - (int) $split_values[0];
-        $data['biweekly'] = $this->Hrm_model->biweekly_tax_info($data['employee_data'][0]['employee_tax'], $final, $biweekly_range);
-        if (!empty($data['biweekly'][0]['employee'])) {
-        $addamt= str_replace('$', '', $biweekly_tax['details']);
-         $biweekly_employee = $data['biweekly'][0]['employee'];
-            $biwkly = ($biweekly_employee / 100) * $getvalue;
-            $biwkly = round($biwkly);
-            $biweekly_tax_amount = $addamt + $biwkly;
-        } else {
-            $biweekly_tax_amount = 0;
-        }
-         $tax_type='';
-        if (strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false) {
-    $tax_type = 'state_tax';
-} elseif (strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false) {
-    $tax_type = 'living_state_tax';
-}
-if ((strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false)||(strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false)) {
-    if (strpos($tx_n, 'Income') == true) {
-        $biweek_array = array(
-            's_tax' => $s,
-            'm_tax' => $m,
-            'u_tax' => $u,
-            'f_tax' => $f,
-            'code' =>  $split_tax[2],
-            'tax_type' => $tax_type,
-            'sales_c_amount' => $scValueAmount,
-            'sc' => $scValue,
-            'no_of_inv' => $sc_count,
-            'tax' => $split_tax[1],
-            'amount' => $biweekly_tax_amount,
-            'biweekly' => $biweekly_tax_amount,
-            'time_sheet_id' => $timesheetdata[0]['timesheet_id'],
-            'employee_id' => $timesheetdata[0]['templ_name'],
-            'created_by' => $this->session->userdata('user_id'),
-        );
-        $this->db->insert('tax_history', $biweek_array); $total_deduction += $biweekly_tax_amount;
-    }
-
-
-       }
-}
-$this->Hrm_model->deleteDuplicateTaxRecords();
-  }
-
-  else if ($data['employee_data'][0]['payroll_type'] == 'Salaried-Monthly') {
-    $data['tax_name'] = $this->Hrm_model->get_taxname_monthly($data['employee_data'][0]['state_tx'],$data['employee_data'][0]['living_state_tax']);
-$tax_names = array_unique(array_map(function($tax) {return $tax['tax']; }, $data['tax_name']));
-$employee_tax_column = $data['employee_data'][0]['employee_tax'];
- $this->db->select("$employee_tax_column, tax,details");
-    $this->db->from('monthly_tax_info');
-    $this->db->where_in('tax', $tax_names);
-    $this->db->where('create_by', $this->session->userdata('user_id'));
-    $this->db->where("CAST(SUBSTRING_INDEX(`$employee_tax_column`, '-', 1) AS UNSIGNED) <=", $final);
-    $this->db->where("CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(`$employee_tax_column`, '-', -1), '-', 1) AS UNSIGNED) >=", $final);
- $query = $this->db->get();
-$biweekly_taxes = $query->result_array(); 
-foreach ($biweekly_taxes as $biweekly_tax) {
-        $biweekly_range = $biweekly_tax[$employee_tax_column];
-        $biweekly_taxs = $biweekly_tax['tax'];
-        $split_values = explode('-', $biweekly_range);
-        $split_tax = explode('-', $biweekly_taxs);
-        $getvalue = $final - (int) $split_values[0];
-        $data['biweekly'] = $this->Hrm_model->monthly_tax_info($data['employee_data'][0]['employee_tax'], $final, $biweekly_range);
-        if (!empty($data['biweekly'][0]['employee'])) {
-        $addamt= str_replace('$', '', $biweekly_tax['details']);
-         $biweekly_employee = $data['biweekly'][0]['employee'];
-            $biwkly = ($biweekly_employee / 100) * $getvalue;
-            $biwkly = round($biwkly);
-            $biweekly_tax_amount = $addamt + $biwkly;
-        } else {
-            $biweekly_tax_amount = 0;
-        }
-         $tax_type='';
-        if (strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false) {
-    $tax_type = 'state_tax';
-} elseif (strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false) {
-    $tax_type = 'living_state_tax';
-}
-if ((strpos($split_tax[0], $data['employee_data'][0]['state_tx']) !== false)||(strpos($split_tax[0], $data['employee_data'][0]['living_state_tax']) !== false)) {
-    if (strpos($tx_n, 'Income') == true) {
-      $biweek_array = array(
-            's_tax' => $s,
-            'm_tax' => $m,
-            'u_tax' => $u,
-            'f_tax' => $f,
-            'code' =>  $split_tax[2],
-            'tax_type' => $tax_type,
-            'sales_c_amount' => $scValueAmount,
-            'sc' => $scValue,
-            'no_of_inv' => $sc_count,
-            'tax' => $split_tax[1],
-            'amount' => $biweekly_tax_amount,
-            'biweekly' => $biweekly_tax_amount,
-            'time_sheet_id' => $timesheetdata[0]['timesheet_id'],
-            'employee_id' => $timesheetdata[0]['templ_name'],
-            'created_by' => $this->session->userdata('user_id'),
-        );
-      $this->db->insert('tax_history', $biweek_array); $total_deduction += $biweekly_tax_amount;
-    }
-       }
-}
-$this->Hrm_model->deleteDuplicateTaxRecords();
-}
-
-$data['sc']=$this->Hrm_model->sc_info_count($this->input->post('templ_name'),$data['timesheet_data'][0]['month']);
-
-if($st_tax){
-foreach ($st_tax as $k => $v) {
-    if(trim( round($v,6)) >0){
-        $result = $this->processTaxData($k, $v);
-                $tx_n = $result['tx_n'];
-                $code = $result['code'];
-      if ($data['employee_data'][0]['payroll_type'] == 'Hourly' || $data['employee_data'][0]['payroll_type'] == 'Salaried-weekly' || $data['employee_data'][0]['payroll_type'] == 'Salaried-BiWeekly' || $data['employee_data'][0]['payroll_type'] == 'Salaried-Monthly' ) {
-echo $tx_n;
-if (strpos($tx_n, 'Income') == false) {
-    if($v){
-        $data1 = array(
-                's_tax'=>$s,
-                'm_tax'=>$m,
-                'u_tax'=>$u,
-                'f_tax'=>$f,
-                'code'  => $code,
-                'tax_type'=>'state_tax',
-                 'sales_c_amount' => $data['sc']['scValueAmount'], 
-              'sc' => $data['sc']['sc'],
-             'no_of_inv' => $data['sc']['count'],
-                'tax'  => $tx_n,
-                'amount' => round($v,3),
-                'time_sheet_id'   => $timesheetdata[0]['timesheet_id'],
-                'employee_id'     => $timesheetdata[0]['templ_name'],
-                'created_by'     => $this->session->userdata('user_id'),
-            );
-          $this->db->insert('tax_history',$data1); 
-           // echo 'Income False' . $this->db->last_query(); 
-          }
-      }
-        }
-        
-        }
- }
-
-}
-
-       if($living_state_tax){
-foreach($living_state_tax as $k=>$v){
-  if(trim( round($v,6)) >0){
- $result = $this->processTaxData($k, $v);
-                $tx_n = $result['tx_n'];
-                $code = $result['code'];
-                if (strpos($tx_n, 'Income') == false) {
-$data8= array(
-           's_tax'=>$s,
-           'm_tax'=>$m,
-           'u_tax'=>$u,
-           'f_tax'=>$f,
-           'code' => $code,
-               'tax_type'=>'living_state_tax',
-             'sales_c_amount' => $data['sc']['scValueAmount'], 
-            'sc' => $data['sc']['sc'],
-             'no_of_inv' => $data['sc']['count'],
-           'no_of_inv' => $sc_count,
-           'tax'  => $tx_n,
-           'amount' => round($v,3),
-       'time_sheet_id'   => $timesheetdata[0]['timesheet_id'],
-       'employee_id'     => $timesheetdata[0]['templ_name'],
-       'created_by'     => $this->session->userdata('user_id'),
-      );
-    $this->db->insert('tax_history',$data8); $total_deduction += round($v,3);      
-    }
-  
-   }
-  }
-  }
-
-    // Working State Tax
-    $this->insertTaxHistory($local_tax, 'state_tax', $timesheetdata, true);
-    // Living State Tax
-    $this->insertTaxHistory($living_local_tax, 'living_local_tax', $timesheetdata);
-
-    $this->insertTaxHistory($working_county_tax, 'working_county_tax', $timesheetdata);
-
-    $this->insertTaxHistory($living_county_tax, 'living_county_tax', $timesheetdata);
-
-    $this->insertTaxHistory($other_tax, 'other_tax', $timesheetdata);
-
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$st_tax_employer, 'state_tax', $timesheetdata);
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$living_state_tax_employer, 'living_state_tax', $timesheetdata, true);
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$local_tax_employerr, 'local_tax', $timesheetdata, true);
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$living_local_tax_employer, 'living_local_tax', $timesheetdata);
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$working_county_tax_employer, 'working_county_tax', $timesheetdata);
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$living_county_tax_employer, 'living_county_tax', $timesheetdata);
-    $this->insertTaxHistoryEmployer($ss,$mm,$uu,$ff,$other_tax_employer, 'other_tax', $timesheetdata);
-    $this->Hrm_model->deleteDuplicateTaxRecords();
-
-
-$total_deduction += ($s+$m+$u+$f);
-
-$data2 = array(
-           's_tax'=>$s,
-           'm_tax'=>$m,
-           'u_tax'=>$u,
-           'f_tax'=>$f,
-           'net_amount' =>($final-$total_deduction),
-        'sales_c_amount' => $data['sc']['scValueAmount'], 
-            'sc' => $data['sc']['sc'],
-             'no_of_inv' => $data['sc']['count'],
-            'tax'  => $tx_n,
-        'total_amount'          =>$final,
-       'timesheet_id'   => $timesheetdata[0]['timesheet_id'],
-       'total_hours'    => $timesheetdata[0]['total_hours'],
-       'templ_name'     => $timesheetdata[0]['templ_name'],
-       'employee_tax'   => $employeedata[0]['employee_tax'],
-       'hrate'          => $employeedata[0]['hrate'],
-       'id'             => $employeedata[0]['id'],
-        'create_by'     => $this->session->userdata('user_id'),
-      );
-   $this->db->insert('info_payslip',$data2);
-    }else{
-        $data_timesheet = [
-    'unique_id' => $this->input->post('unique_id'),
-    'payroll_type' => "Sales Partner",
-    'uneditable' => 1,
-    'extra_thisrate' => $data['sc']['scValueAmount'],
-];
-
-// Fetch employee details
-$employee_id = $this->input->post('templ_name');
-$employee_detail = $this->db->where('id', $employee_id)->get('employee_history')->row_array();
-
-if (!empty($employee_detail['id'])) {
-    $data['selected_living_state_tax'] = $employee_detail['living_state_tax'];
-    $data['selected_local_tax'] = $employee_detail['local_tax'];
-    $data['selected_state_tax'] = $employee_detail['state_tx'];
-    $data_timesheet['templ_name'] = $employee_detail['id'];
-    $data['templ_name'] = "{$employee_detail['first_name']} {$employee_detail['last_name']}";
-    $data['job_title'] = 'Sales Partner';
-}
-
-// Check for existing timesheet
-$existing_timesheet = $this->db->where('templ_name', $employee_id)
-                                 ->where('timesheet_id', $data_timesheet['timesheet_id'])
-                                 ->get('timesheet_info')
-                                 ->row_array();
-
-$old_id = trim($existing_timesheet['timesheet_id'] ?? '');
-if (!empty($old_id)) {
-    $this->session->set_userdata("timesheet_id_old", $old_id);
-    $this->db->where('timesheet_id', $old_id)->delete('timesheet_info');
-    $this->db->where('timesheet_id', $old_id)->delete('timesheet_info_details');
-}
-
-// Insert new timesheet info
- $data_timesheet['net']=$total_deduction ;
-$this->db->insert('timesheet_info', $data_timesheet);
-
-// Get new timesheet ID
-$new_timesheet_id = $this->db->select('timesheet_id')
-                              ->from('timesheet_info')
-                              ->where('templ_name', $employee_id)
-                              ->where('month', $this->input->post('date_range'))
-                              ->get()
-                              ->row()
-                              ->timesheet_id;
-
-$this->session->set_userdata("timesheet_id_new", $new_timesheet_id);
-
-// Insert timesheet details
-if ($date1) {
-    for ($i = 0; $i < count($date1); $i++) {
-        $data1 = [
-            'timesheet_id' => $new_timesheet_id,
-            'Date' => $date1[$i],
-            'Day' => $day1[$i],
-            'daily_break' => $daily_bk1[$i],
-            'time_start' => $time_start1[$i],
-            'time_end' => $time_end1[$i],
-            'hours_per_day' => $hours_per_day1[$i],
-            'created_by' => $this->session->userdata('user_id'),
-        ];
-        $this->db->insert('timesheet_info_details', $data1);
-    }
-} else {
-    // If no dates, still insert a record for the timesheet details
-    $data1 = [
-        'timesheet_id' => $new_timesheet_id,
-        'created_by' => $this->session->userdata('user_id'),
-    ];
-    $this->db->insert('timesheet_info_details', $data1);
-}
-    }
-$this->session->set_flashdata('message', display('save_successfully'));
-redirect(base_url('Chrm/manage_timesheet?id=' . $user_id . '&admin_id=' . $admin_id));
-
-
-
-
-
+    return ['ytd' => $ytd ,'tax_data' => $data, 'tax_value' => $tax_value];
 }
 
 
 
 
-
-   public function  payroll_reports() {
+public function  payroll_reports() {
       $this->load->model('Hrm_model');
       $CI = & get_instance();
 
@@ -5361,15 +2560,14 @@ redirect(base_url('Chrm/manage_timesheet?id=' . $user_id . '&admin_id=' . $admin
 
       $datainfo = $this->Hrm_model->get_data_payslip();
       $emplinfo = $this->Hrm_model->empl_data_info();
-   //  print_r($emplinfo);
+
       $data=array(
           'dataforpayslip' => $datainfo,
           'employee_info' => $emplinfo,
           'setting_detail' => $setting_detail
 
      );
-  // print_r($emplinfo); 
-  // .;
+
       $content                  = $this->parser->parse('hr/payroll_manage_list', $data, true);
       $this->template->full_admin_html_view($content);
       }
@@ -5576,16 +2774,14 @@ public function formfl099nec($selectedValue = null)
 
 
     
-public function delete_tax() {
-$tax= $this->input->post('tax');
-$state= $this->input->post('state');
+public function delete_tax() 
+{
+    $tax= $this->input->post('tax');
+    $state= $this->input->post('state');
     $this->load->model('Hrm_model');
     logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), '', '', $this->session->userdata('userName'), 'State Taxes', 'Human Resource', 'State Taxes been deleted successfully', 'Delete', date('m-d-Y'));
     $this->Hrm_model->delete_tax($tax,$state);
     $this->session->set_flashdata('show', display('successfully_delete'));
-    // alert('Successfully Delete');
-    // redirect('Cinvoice/manage_invoice');
-    //  $this->session->set_userdata(array('message' => display('successfully_delete')));
      redirect("Chrm/payroll_setting");
 }
 
@@ -5629,148 +2825,101 @@ public function getemployee_data(){
 
 public function add_state_taxes_detail($tax=null) 
 {
-    
     $CI = & get_instance();
     $CI->load->model('Web_settings');
     $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
     $data['setting_detail'] = $setting_detail;
-    // $tax = urldecode($_GET['tax']);
     $url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $parts = parse_url($url);
     $user_id      = isset($_GET['id']) ? $_GET['id'] : null;
     $decodedId      = decodeBase64UrlParameter($user_id);
-   // print_r($parts); die;
     parse_str($parts['query'], $query);
-    // print_r($query['tax']); die;
-     $data['taxinfo'] = $this->db->select("*")
-     ->from('state_localtax')
-     ->where('tax',$query['tax'])
-     ->where('create_by',$decodedId)
-     ->get()->result_array();
     
-//
+    // Hourly Data
+    $data['taxinfo'] = $this->db->select("*")->from('state_localtax')->where('tax',$query['tax'])->where('create_by',$decodedId)->get()->result_array();
+    
+    // Weekly Data
+    $data['weekly_taxinfo'] = $this->db->select("*")->from('weekly_tax_info')->where('tax','Weekly '.$query['tax'])->where('create_by',$decodedId)->get()->result_array();
+
+    // BiWeekly Data
+    $data['biweekly_taxinfo'] = $this->db->select("*")->from('biweekly_tax_info')->where('tax','BIWeekly '.$query['tax'])->where('create_by',$decodedId)->get()->result_array();
  
-    $data['weekly_taxinfo'] = $this->db->select("*")
-    ->from('weekly_tax_info')
-   ->where('tax','Weekly '.$query['tax'])
-      ->where('create_by',$decodedId)
-    ->get()
-    ->result_array();
-
-
-    $data['biweekly_taxinfo'] = $this->db->select("*")
-    ->from('biweekly_tax_info')
-    ->where('tax','BIWeekly '.$query['tax'])
-    ->where('create_by',$decodedId)
-    ->get()
-    ->result_array();
- 
-
-
-    $data['monthly_taxinfo'] = $this->db->select("*")
-    ->from('monthly_tax_info')
-    ->where('tax','Monthly '.$query['tax'])
-      ->where('create_by',$decodedId)
-    ->get()
-    ->result_array();
-
-    // echo $this->db->last_query(); die();
-
-   
+    // Monthly Data
+    $data['monthly_taxinfo'] = $this->db->select("*")->from('monthly_tax_info')->where('tax','Monthly '.$query['tax'])->where('create_by',$decodedId)->get()->result_array();
 
     $data['title'] = display('add_taxes_detail');
     
     $content = $this->parser->parse('hr/add_state_tax_detail', $data, true);
     $this->template->full_admin_html_view($content);
-    // echo json_encode($data);
+}
+
+   
+   // Federal Tax - Madhu
+    public function add_taxes_detail() 
+    {   
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
+
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+        $data['setting_detail'] = $setting_detail;
+        $tax = $this->input->post('tax');
+
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Federal Income tax', $decodedId);
+
+        $data['title'] = display('add_taxes_detail');
+        $content = $this->parser->parse('hr/add_taxes_detail', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+
+    // Social Security Tax - Madhu
+    public function socialsecurity_detail() 
+    {   
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+        $data['setting_detail'] = $setting_detail;
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Social Security', $decodedId);
+        $data['title'] = display('add_taxes_detail');
+        $content = $this->parser->parse('hr/social_security_list', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+
+    // Medicare Tax - Madhu
+    public function medicare_detail() 
+    {  
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
+
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+        $data['setting_detail'] = $setting_detail;
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Medicare', $decodedId);
+        $data['title'] = display('add_taxes_detail');
+        $content = $this->parser->parse('hr/medicare_list', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+    
+    // Federal Unemployment Tax - Madhu
+    public function federalunemployment_detail() 
+    {   
+        $user_id = $this->input->get('id'); 
+        $company_id = $this->input->get('admin_id'); 
+        $decodedId = decodeBase64UrlParameter($user_id);
+
+        $setting_detail = $this->Web_settings->retrieve_setting_editdata($decodedId);
+
+        $data['taxinfo'] = $this->Hrm_model->allFederaltaxes('Federal unemployment', $decodedId);
+        $data['title'] = display('add_taxes_detail');
+        $data['setting_detail'] = $setting_detail;
+        $content = $this->parser->parse('hr/federalunemployment_list', $data, true);
+        $this->template->full_admin_html_view($content);
     }
 
 
-
-
-
-
-
-   public function add_taxes_detail() {
-       $CI = & get_instance();
-    $CI->load->model('Web_settings');
-    $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-$data['setting_detail'] = $setting_detail;
-     $tax = $this->input->post('tax');
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Federal Income tax')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-    // $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax',$tax)->get()->result_array();
-    // print_r($data['taxinfo']); .;
-    // echo $this->db->last_query(); .;
-    $data['title'] = display('add_taxes_detail');
-    $content = $this->parser->parse('hr/add_taxes_detail', $data, true);
-    $this->template->full_admin_html_view($content);
-    // echo json_encode($data);
-    }
-    public function socialsecurity_detail() {
-    $CI = & get_instance();
-      $CI->load->model('Web_settings');
-      $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-      $data['setting_detail'] = $setting_detail;
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Social Security')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
- //   echo $this->db->last_query();
-    $data['title'] = display('add_taxes_detail');
-    $content = $this->parser->parse('hr/social_security_list', $data, true);
-    $this->template->full_admin_html_view($content);
-    }
-    public function medicare_detail() {
-         $CI = & get_instance();
-      $CI->load->model('Web_settings');
-      $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-      $data['setting_detail'] = $setting_detail;
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Medicare')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-    $data['title'] = display('add_taxes_detail');
-    $content = $this->parser->parse('hr/medicare_list', $data, true);
-    $this->template->full_admin_html_view($content);
-    }
-    
-    
-    
-    
-    
-    
-    public function federalunemployment_detail() {
-
-
-      $CI = & get_instance();
-
-      $CI->load->model('Web_settings');
-
-      $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-
-
-
-
-    $data['taxinfo'] = $this->db->select("*")->from('federal_tax')->where('tax','Federal unemployment')->where('created_by',$this->session->userdata('user_id'))->get()->result_array();
-    $data['title'] = display('add_taxes_detail');
-
-    $data['setting_detail'] = $setting_detail;
-
-
-    $content = $this->parser->parse('hr/federalunemployment_list', $data, true);
-    $this->template->full_admin_html_view($content);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- public function add_timesheet() {
+ public function add_timesheet() 
+ {
 
   $data['title'] = display('add_timesheet');
   $CI = & get_instance();
@@ -5788,73 +2937,61 @@ $data['setting_detail'] = $setting_detail;
   $this->template->full_admin_html_view($content);
 }
     
-    
-    
-    
-    
-    
-    
-    
+ 
+public function add_durat_info()
+{
+    $CI = & get_instance();
+    $CI->auth->check_admin_auth();
+    $CI->load->model('Hrm_model');
+    $postData = $this->input->post('duration_name');
+    $data = $this->Hrm_model->insert_duration_data($postData);
+    echo json_encode($data);
+}
 
-        public function add_durat_info(){
-            $CI = & get_instance();
-            $CI->auth->check_admin_auth();
-            $CI->load->model('Hrm_model');
-            $postData = $this->input->post('duration_name');
-            $data = $this->Hrm_model->insert_duration_data($postData);
-            echo json_encode($data);
-        }
-    // $content = $this->parser->parse('hr/add_timesheet', $data, true);
-    // $this->template->full_admin_html_view($content);
-    // }
-
-    public function add_adm_data(){
-        $CI = & get_instance();
-        $CI->auth->check_admin_auth();
-        $CI->load->model('Hrm_model');
-        $postData = $this->input->post('data_name');
-        $postData = $this->input->post('data_adres');
-
-        //  print_r($postData); .;
-
-        $data = $this->Hrm_model->insert_adsrs_data($postData);
-        echo json_encode($data);
-    }
+public function add_adm_data()
+{
+    $CI = & get_instance();
+    $CI->auth->check_admin_auth();
+    $CI->load->model('Hrm_model');
+    $postData = $this->input->post('data_name');
+    $postData = $this->input->post('data_adres');
+    $data = $this->Hrm_model->insert_adsrs_data($postData);
+    echo json_encode($data);
+}
 
 
-
-    public function insert_data_adsr(){
-        $CI = & get_instance();
-        $CI->auth->check_admin_auth();
-        $CI->load->model('Hrm_model');
+public function insert_data_adsr()
+{
+    $CI = & get_instance();
+    $CI->auth->check_admin_auth();
+    $CI->load->model('Hrm_model');
     $data = array(
         'adm_name'   => $this->input->post('adms_name',TRUE),
         'adm_address'=> $this->input->post('address',TRUE),
         'create_by'       => $this->session->userdata('user_id'),
-  );
-  // print_r($data); .;
-    // $result = $this->Customers->customer_entry($data);
+    );
     $data = $this->Hrm_model->insert_adsrs_data($data);
     echo json_encode($data);
-    }
+}
 
 
-public function add_city(){
-$CI = & get_instance();
-$city_name = $this->input->post('city_name');
-$userId = $this->input->post('admin_company_id');
-$decodedId = decodeBase64UrlParameter($userId);
-$companyId = $this->input->post('adminId');
+public function add_city()
+{
+    $city_name = $this->input->post('city_name');
+    $userId = $this->input->post('admin_company_id');
+    $decodedId = decodeBase64UrlParameter($userId);
+    $companyId = $this->input->post('adminId');
 
     $data=array(
-         'state' => $city_name,
-         'Type' =>'City',
-         'created_by' => $decodedId
+        'state' => $city_name,
+        'Type' =>'City',
+        'created_by' => $decodedId
     );
-  $this->db->insert('state_and_tax', $data);
-  $this->session->set_userdata(array('message' => 'New City Added Successfully'));
- redirect(base_url('Chrm/payroll_setting?id=' . $userId . '&admin_id=' . $companyId));
+    $this->db->insert('state_and_tax', $data);
+    $this->session->set_userdata(array('message' => 'New City Added Successfully'));
+    redirect(base_url('Chrm/payroll_setting?id=' . $userId . '&admin_id=' . $companyId));
 }
+
   public function add_city_state_tax(){
   $CI = & get_instance();
   $selected_city = $this->input->post('selected_city');
@@ -6963,6 +4100,68 @@ public function manage_workinghours()
         } else {
             return 'Unknown';
         }
+    }
+
+    // This Period Final Amount - Madhu
+     public function thisPeriodAmount($payroll_type, $total_hours, $hrate, $scAmount, $extra_thisrate, $above_extra_sum, $user_id, $company_id)
+    {
+     
+        $workingHour = $this->db->select('work_hour, created_by')->from('working_time')->where('created_by', $user_id)->get()->row();
+      
+        $limit_hours = $workingHour->work_hour;
+        $final = 0;
+        if ($payroll_type == 'Hourly') {
+            list($totalH, $totalM) = explode(':', $total_hours);
+            $totalMinutes = ($totalH * 60) + (int)$totalM;
+            list($limitH, $limitM) = explode(':', $limit_hours);
+            $limitMinutes = ($limitH * 60) + (int)$limitM;
+            list($hours, $minutes) = explode(':', $total_hours);
+            $decimal_hours = $hours + ($minutes / 60);
+            $total_cost = $hrate * $decimal_hours;
+            if ($total_hours <= $limit_hours) {
+                $final = $total_cost + $scAmount;
+            } else {
+                $final = $extra_thisrate + $above_extra_sum;
+            }
+        } elseif ($payroll_type == 'Salaried-BiWeekly') {
+            if ($total_hours <= 14) {
+                $final = $hrate * $total_hours + $scAmount;
+            } else {
+                $final = $extra_thisrate + $above_extra_sum;
+            }
+        } elseif ($payroll_type == 'Salaried-weekly') {
+            if ($total_hours <= 7) {
+                $final = $hrate * $total_hours + $scAmount;
+            } else {
+                $final = $extra_thisrate + $above_extra_sum;
+            }
+        } elseif ($payroll_type == 'Salaried-Monthly') {
+            if ($total_hours <= 30) {
+                $final = $hrate * $total_hours + $scAmount;
+            } else {
+                $final = $extra_thisrate + $above_extra_sum;
+            }
+        } elseif ($payroll_type == 'Salaried-BiMonthly') {
+            if ($total_hours <= 60) {
+                $final = $hrate * $total_hours + $scAmount;
+            } else {
+                $final = $extra_thisrate + $above_extra_sum;
+            }
+        }
+        return $final;
+    }
+
+
+    // Sales Commision Amount - Madhu
+    public function saleCommission($employee_id, $payperiod, $user_id, $company_id) 
+    {
+        $salescommision = $this->Hrm_model->sc_info_count($employee_id, $payperiod);
+        $scValue = $salescommision['scValueAmount']; 
+        $sc_totalAmount1 = $salescommision['total_gtotal']; 
+        $sc_count = $salescommision['count']; 
+        $scValue = $scValue / 100;
+        $scValueAmount1 = $scValue * $sc_totalAmount1;
+        return $scValueAmount1;
     }
 
     // Log Data Table List

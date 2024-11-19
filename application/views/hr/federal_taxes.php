@@ -1,6 +1,5 @@
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>my-assets/css/css.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/toastr.min.css" />
+<script src="<?php echo base_url()?>assets/js/toastr.min.js" /></script>
 <?php  error_reporting(1); ?>
 <!-- Manage Invoice Start -->
 <style>
@@ -85,7 +84,7 @@ tr.noBorder td {
    <section class="content-header">
       <div class="header-icon">
          <figure class="one">
-            <img src="<?php echo base_url()  ?>asset/images/taxes.png"  class="headshotphoto" style="height:50px;" />
+            <img src="<?php echo base_url(); ?>assets/images/taxes.png"  class="headshotphoto" style="height:50px;" />
          </figure>
       </div>
       
@@ -103,26 +102,21 @@ tr.noBorder td {
 
  
    <section class="content">
-      <!-- Alert Message -->
       <?php
-         $message = $this->session->userdata('message');
-         if (isset($message)) { ?>
-      <div class="alert alert-info alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $message ?>                    
-      </div>
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
 
-      <?php
-         $this->session->unset_userdata('message'); }
-         $error_message = $this->session->userdata('error_message');
-         if (isset($error_message)) { ?>
-      <div class="alert alert-danger alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $error_message ?>                    
-      </div>
-      <?php $this->session->unset_userdata('error_message'); } ?>
-      <!-- date between search -->
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
 
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
       <div class="row">
          <div class="col-sm-12">
             <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
@@ -317,7 +311,6 @@ tr.noBorder td {
                   <div class="row">
                      <h3 class="col-sm-3" style="margin: 0;">State Taxes</h3>
                      <div class="col-sm-9 text-right">
-                         <!-- <a href="#" data-toggle="modal" data-target="#add_city" class="btnclr btn"> Add City </a> -->
                         <a href="#" data-toggle="modal" data-target="#add_states"   class="btnclr btn"> Add States </a>
                         <a href="#" data-toggle="modal" data-target="#add_state_tax"   class="btnclr btn">Add New State Tax </a>
                      </div>
@@ -325,7 +318,6 @@ tr.noBorder td {
                      <div class="col-sm-12">
                         <div class="panel panel-bd lobidrag">
                            <div class="panel-body">
-                           <!-- style="overflow-y: auto;height:500px;" -->
                            <div class="table-responsive" >
                               <?php 
                                  echo "<table border='0' class='table table-striped' cellspacing='0' cellpadding='0' style='table-layout:fixed;
@@ -519,334 +511,6 @@ tr.noBorder td {
       </div>
    </section>   
 
-<!-- /////////////////////////////////////the end///////////////////////////////////////////////////////////////// -->
-
-<div class="modal fade modal-success" id="add_city" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New City</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <div class="panel-body">
-               <form method="post">
-                <input type="hidden" class="txt_csrfname" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">Add City<i class="text-danger">*</i></label>
-                  <div class="col-sm-7">
-                     <input class="form-control" name ="city_tax" id="city_tax" type="text" placeholder="Enter your city"  required="" tabindex="1">
-                  </div>
-                  <div class="col-sm-2">
-                     <input type="submit" class="btnclr btn btn-success city_button" id="ADD_CITY" value="Submit">
-                  </div>
-               </div>
-               </form>
-                <br>
-                <div >
-                <!-- style="max-height: 300px; overflow-y: auto;" -->
-                  <table class="table table-bordered" style="margin-bottom: 0;">
-                       <thead style="position: sticky; top: 0; background-color: white;">
-                           <tr>
-                               <td>S.NO</td>
-                               <td>City Name</td>
-                               <td>Action</td>
-                           </tr>
-                       </thead>
-                       <tbody id="cityContainer">
-                           <?php if(!empty($FetchCity)){ $s=1; foreach ($FetchCity as $key => $value) { ?>
-                               <tr>
-                                   <td><?php echo $s; ?></td>
-                                   <td>
-                                      <span class="city-value"><?php echo $value['city_tax']; ?></span>
-                                      <input type="text" class="form-control city-edit" style="display: none;" value="<?php echo $value['city_tax']; ?>">
-                                    </td>
-                                    <td style="display: none;"><input type="hidden" class="city_ids" value="<?php echo $value['id']; ?>"></td>
-                                   <td>
-                                    <!-- <a class="btnclr btn  btn-sm invoice_edit"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                    <a class="btnclr btn  btn-sm" onclick="return confirm('Are you sure want to delete this city ?')"><i class="fa fa-trash-o" aria-hidden="true"></i></a> -->
-                                   <a class="btnclr btn btn-sm invoice_edit"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                                    <a class="btnclr btn btn-sm" onclick="return confirm('Are you sure you want to delete this city?') ? deleteCity(<?php echo $value['id']; ?>) : false;"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
-                                   <a class="btnclr btn btn-sm invoice_save" style="display: none;"><i class="fa fa-window-restore" aria-hidden="true" data-toggle="tooltip" data-placement="left" title="" data-original-title="Save"></i></a>
-                                   </td>
-                               </tr>
-                           <?php $s++; } }else{ ?>
-                              <tr>
-                                 <td class="text-center" colspan="3">No City Found</td>
-                              </tr>
-                           <?php } ?>
-                       </tbody>
-                  </table>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-
-
-
-<div class="modal fade modal-success" id="add_states" role="dialog">
-   <div class="modal-dialog" role="document">
-     <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New States</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_state', array('class' => 'form-vertical', 'id' => 'newcustomer')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-               <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">State Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="state_name" id="" type="text" placeholder="State Name"  required="" tabindex="1">
-
-                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"  value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-
-
-
-<!-- /.modal -->
-<div class="modal fade modal-success" id="add_state_tax" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New States Tax</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_state_tax', array('class' => 'form-vertical', 'id' => 'add_state_tax')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">State Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <select class="form-control" name="selected_state" required>
-                        <option value="" selected disabled><?php echo display('select_one') ?></option>
-                        <?php  foreach($states_list as $state){ ?>
-                        <option value="<?php  echo $state['state']; ?>"><?php  echo $state['state']; ?></option>
-                        <?php  }  ?>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">Tax Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="state_tax_name" id="" type="text" placeholder="State Tax Name"  required="" tabindex="1">
-
-                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"   value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-
-
-<!-- ////cityinfoname -->
-<div class="modal fade modal-success" id="add_city_info" role="dialog">
-   <div class="modal-dialog" role="document">
-     <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New City</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_city', array('class' => 'form-vertical', 'id' => 'newcustomer')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-               <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">City Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="city_name" id="" type="text" placeholder="City Name"  required="" tabindex="1">
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"  value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-
-
-<!-- /.modal -->
-<div class="modal fade modal-success" id="add_city_tax" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New City Tax</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_city_state_tax', array('class' => 'form-vertical', 'id' => 'add_city_state_tax')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">City Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <select class="form-control" name="selected_city" required>
-                        <option value="" selected disabled><?php echo display('select_one') ?></option>
-                        <?php  foreach($city_list as $city){ ?>
-                        <option value="<?php  echo $city['state']; ?>"><?php  echo $city['state']; ?></option>
-                        <?php  }  ?>
-                     </select>
-                  </div>
-               </div> 
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">City Tax Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="city_tax_name" id="" type="text" placeholder="City Tax Name"  required="" tabindex="1">
-                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"   value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- ///end -->
-
-
-
-<!-- ///////////////////////// County Name  ////////////////////////////// -->
-<div class="modal fade modal-success" id="add_county_info" role="dialog">
-   <div class="modal-dialog" role="document">
-     <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New County</h3>
-         </div>   
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_county', array('class' => 'form-vertical', 'id' => 'newcustomer')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">County Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="county" id="" type="text" placeholder="County Name"  required="" tabindex="1">
-                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"  value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-
-
-
-<!-- /.modal -->
-<div class="modal fade modal-success" id="add_county_tax" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New County Tax</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_county_tax', array('class' => 'form-vertical', 'id' => 'add_county_tax')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">County Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <select class="form-control" name="selected_county" required>
-                        <option value="" selected disabled><?php echo display('select_one') ?></option>
-                        <?php  foreach($county_list as $county){ ?>
-                        <option value="<?php  echo $county['state']; ?>"><?php  echo $county['state']; ?></option>
-                        <?php  }  ?>
-                     </select>
-                  </div>
-               </div> 
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">County Tax Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="county_tax_name" id="" type="text" placeholder="County Tax Name"  required="" tabindex="1">
-                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"   value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!--  ///////////  ///end ////////////////////////////////-->
-
-
 <!-- Manage Invoice End -->
 <div class="modal fade" id="myModal1" role="dialog" >
    <div class="modal-dialog">
@@ -867,9 +531,14 @@ tr.noBorder td {
 </div>
 
 
+<?php 
+   $modaldata['bootstrap_modal'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax');
+   $this->load->view('include/bootstrap_modal', $modaldata);
+?>
+
 <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<!-- <input type="hidden" name="<?php //echo $this->security->get_csrf_token_name();?>" value="<?php //echo $this->security->get_csrf_hash();?>"> -->
+
 <script type="text/javascript">
    var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
    var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
@@ -915,30 +584,36 @@ tr.noBorder td {
 
 
 
-
-
-
        $(".delete_item").click(function(){
          if (confirm("Are you sure you want to delete this item?")) {
             var tax = $(this).closest('tr').find('td.tax_value').text();
             var state = $(this).closest('tr').find('td.state_name').text();
-              var dataString = {
-                 tax : tax,
-                 state : state
-             
-            };
-            dataString[csrfName] = csrfHash;
              $.ajax({
-                 type: "POST",
-              url: "<?php echo base_url(); ?>Chrm/delete_tax",
-                    
-                 data: {<?php echo $this->security->get_csrf_token_name();?>: csrfHash,tax:tax,state:state},
-                 success:function(data)
-                 {     
-                    location.reload();
-                 },
-                 error: function (){ }
-             })
+                type: "POST",
+                url: "<?php echo base_url(); ?>Chrm/delete_tax",
+                data: {
+                    <?php echo $this->security->get_csrf_token_name();?>: '<?php echo $this->security->get_csrf_hash(); ?>',  
+                    tax: tax,
+                    state: state
+                },
+                success: function(data) {    
+                  toastr.success("Successfully Deleted", "Success", { 
+                       closeButton: false,
+                       timeOut: 1000
+                  });
+
+                  setTimeout(function() {
+                     location.reload();
+                  }, 1000);
+                },
+                error: function () {
+                  toastr.error("Failed", "Error", { 
+                     closeButton: false,
+                     timeOut: 1000
+                  });
+                }
+            });
+
          }
 
      });
@@ -1021,11 +696,20 @@ tr.noBorder td {
          data: {[csrfName]: csrfHash, cityId: cityId},
          dataType:"json",
          success: function(response) {
-            console.log(response);
-            location.reload();
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
          },
          error: function(xhr, status, error) {
-            console.log(error);
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
          }
       })
   }
@@ -1048,9 +732,20 @@ tr.noBorder td {
             url: '<?= base_url(); ?>Chrm/citydelete_tax',
             data: dataString,
             success: function (data) {
-               location.reload();
+               toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+               setTimeout(function() {
+                  location.reload();
+               }, 1000);
             },
-            error: function () {
+            error: function (error) {
+                  toastr.error(error, "Error", { 
+                  closeButton: false,
+                  timeOut: 1000
+               });
             }
         });
     }
@@ -1077,10 +772,20 @@ $(".delete_itemcounty").click(function () {
         url: '<?= base_url(); ?>Chrm/countydelete_tax',
         data: dataString,
         success: function (data) {
-            location.reload();
+            toastr.success("Successfully Deleted", "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
+
+            setTimeout(function() {
+               location.reload();
+            }, 1000);
         },
         error: function () {
-            // Handle error if needed
+            toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
         }
     });
    }

@@ -1,9 +1,8 @@
-<link rel="stylesheet" href="<?php echo base_url() ?>assets/css/calanderstyle.css">
 <div class="content-wrapper">
    <section class="content-header" style="height: 60px;">
       <div class="header-icon">
          <figure class="one">
-            <img src="<?php echo base_url() ?>asset/images/payslip.png" class="headshotphoto" style="height:50px;" />
+            <img src="<?php echo base_url() ?>assets/images/payslip.png" class="headshotphoto" style="height:50px;" />
          </figure>
       </div>
       <div class="header-title">
@@ -14,34 +13,13 @@
 
             <ol class="breadcrumb" style=" border: 3px solid #d7d4d6;" >
                <li><a href="<?php echo base_url()?>"><i class="pe-7s-home"></i> <?php echo display('home') ?></a></li>
-               <li><a href="#"><?php echo display('report') ?></a></li>
-               <li class="active" style="color:orange"><?php echo 'Federal Income Tax';?></li>
-            <div class="load-wrapp">
-               <div class="load-10">
-                  <div class="bar"></div>
-               </div>
-            </div>
+               <li><a href="#"><?php echo 'Hr'; ?></a></li>
+               <li class="active" style="color:orange"><?php echo 'Payslip List';?></li>
+    
          </ol>
       </div>
    </section>
    <section class="content">
-      <?php
-         $message = $this->session->userdata('message');
-         if (isset($message)) { 
-      ?>
-      <div class="alert alert-info alert-dismissable" style="background-color:#38469f;color:white;font-weight:bold;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $message ?>                    
-      </div>
-      <?php $this->session->unset_userdata('message'); }
-         $error_message = $this->session->userdata('error_message');
-         if (isset($error_message)) {
-      ?>
-      <div class="alert alert-danger alert-dismissable">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?php echo $error_message ?>                    
-      </div>
-      <?php $this->session->unset_userdata('error_message');}?>
       <div class="panel panel-bd lobidrag">
          <div class="panel-heading" style="height: 60px;border: 3px solid #D7D4D6;">
             <div class="col-sm-12">
@@ -104,14 +82,6 @@
       </div>
    </section>
 </div>
-
-
-<script src='<?php echo base_url();?>assets/js/moment.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-debug.js'></script>
-<script  src="<?php echo base_url() ?>assets/js/scripts.js"></script> 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
 <script type="text/javascript">
 var payslipDataTable;
 $(document).ready(function() {
@@ -189,34 +159,32 @@ $(".sidebar-mini").addClass('sidebar-collapse') ;
         "stateSave": true,
 footerCallback: function(row, data, start, end, display) {
     var api = this.api();
-
-    // Initialize total variables
-    var totalHours = 0;
+ var totalHours = 0;
     var totalAmount = 0;
     var totalOvertimeHours = 0;
     var totalSalesCommission = 0;
 
     function convertToHours(overtime) {
-    if (!overtime) return 0; // Return 0 for empty or undefined values
+    if (!overtime) return 0; 
     var timeParts = overtime.split(':');
-    var hours = parseInt(timeParts[0], 10) || 0; // Parse hours
-    var minutes = parseInt(timeParts[1], 10) || 0; // Parse minutes
-    return hours + minutes / 60; // Convert to decimal hours
+    var hours = parseInt(timeParts[0], 10) || 0; 
+    var minutes = parseInt(timeParts[1], 10) || 0; 
+    return hours + minutes / 60;
 }
 function convertToHHMM(totalHours) {
-    var hours = Math.floor(totalHours); // Get whole hours
-    var minutes = Math.round((totalHours - hours) * 60); // Get remaining minutes
-    return hours + ':' + (minutes < 10 ? '0' : '') + minutes; // Format as hh:mm
+    var hours = Math.floor(totalHours);
+    var minutes = Math.round((totalHours - hours) * 60); 
+    return hours + ':' + (minutes < 10 ? '0' : '') + minutes; 
 }
     api.rows({ page: 'current' }).every(function() {
         var rowData = this.data();
  totalAmount += parseFloat(rowData.tot_amt) || 0;
-        totalOvertimeHours += convertToHours(rowData.overtime); // Use previous function
+        totalOvertimeHours += convertToHours(rowData.overtime); 
         totalSalesCommission += parseFloat(rowData.sales_comm) || 0;
     });
 
-    // Convert total hours to hh:mm format for display
-    var totalOvertimeFormatted = convertToHHMM(totalOvertimeHours); // Use previous function
+   
+    var totalOvertimeFormatted = convertToHHMM(totalOvertimeHours);
 
     // Display the totals in the footer
     

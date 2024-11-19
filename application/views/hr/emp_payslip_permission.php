@@ -215,7 +215,7 @@ th,td{
                 </div>
                 <?php // echo form_open('Cquotation/insert_quotation', array('class' => 'form-vertical', 'id' => 'insert_quotation')) ?>
                 <!-- <form id="insert_timesheet"  method="post">   -->                  
-                <?= form_open_multipart('Chrm/second_pay_slip?id=' . $_GET['id'],'id="validate"' ) ?>
+                <?= form_open_multipart('Chrm/adminApprove?id=' . $_GET['id'],'id="validate"' ) ?>
 
                 <div class="panel-body">
                     <div class="form-group row">
@@ -311,12 +311,13 @@ th,td{
 
                                 // Rendering the sorted table rows
                                 foreach($time_sheet_data as $tsheet) {
+                                    // var_dump($tsheet); die;
                                     $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                     if(!empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates) ) {
                                         $printedDates[] = $tsheet['Date'];
                                     }
                                 }
-                                
+                                // var_dump($timesheetdata);exit;
                                 $time_tot = 0;
                                 for($i = 0; $i < $get_days; $i++) {
                                     $date = date('m/d/Y', strtotime($start_date .' +'.$i.' day'));
@@ -353,7 +354,7 @@ th,td{
                                 <td>
                                     <a style='color:white;' class="delete_day btnclr btn  m-b-5 m-r-2"><i class="fa fa-trash" aria-hidden="true"></i> </a>
                                 </td>
-
+                                   
                                 <?php if($end_week == $timesheetdata[$date]['day']) {
                                     $week_tot = $time_tot/3600;
                                     echo '<tr> 
@@ -475,7 +476,7 @@ th,td{
                                 value="<?php
                                 $mins  =  (float)$time_sheet_data[0]['total_hours'] - (float)$extratime_info[0]['work_hour'];
                                 $get_value  = (float)$time_sheet_data[0]['total_hours'] - $mins;
-                                $get_value = sprintf('%d:00', $get_value); echo $get_value; 
+                                $get_value = sprintf('%d:00', $get_value);
                                 
                                 //For This Period
                                 $hrate = $employee_name[0]['hrate']; 
@@ -503,6 +504,9 @@ th,td{
                             <input type="hidden" id="above_this_hours" name="above_this_hours" value="<?=  $get_value; ?>" />
                             <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  $total_cost ; ?>" />
                             <?php } else {
+                                $mins  =  (float)$time_sheet_data[0]['total_hours'] - (float)$extratime_info[0]['work_hour'];
+                                $get_value  = (float)$time_sheet_data[0]['total_hours'] - $mins;
+                                $get_value = sprintf('%d:00', $get_value);
                                 //For This Period
                                 $hrate = $employee_name[0]['hrate']; 
                                 list($hours, $minutes) = explode(':', $get_value);
@@ -522,7 +526,7 @@ th,td{
                                 $total_cost_ytd = $total_hours_ytd * $hrate;
                                 $total_cost_ytd =round($total_cost_ytd,2);
                             ?> 
-                            <input type="hidden" readonly id="above_extra_beforehours" value="<?php   echo $time_sheet_data[0]['total_hours'];  ?>" name="above_extra_beforehours" />
+                            <input type="hidden" readonly id="above_extra_beforehours" value="<?php echo $time_sheet_data[0]['total_hours'];  ?>" name="above_extra_beforehours" />
                             <input type="hidden" id="above_extra_rate" name="above_extra_rate" value="<?=  $employee_name[0]['hrate']; ?>" />
                             <input type="hidden" id="above_extra_sum" name="above_extra_sum" value="<?=  $total_cost_ytd ; ?>" />
                             <input type="hidden" id="above_this_hours" name="above_this_hours" value="<?= $time_sheet_data[0]['total_hours']; ?>" />

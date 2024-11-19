@@ -20,6 +20,7 @@
         <div class="header-icon">
             <figure class="one">
             <img src="<?= base_url('assets/images/employee.png') ?>"  class="headshotphoto" style="height:50px;" />
+
          </div>
         <div class="header-title">
             <div class="logo-holder logo-9">

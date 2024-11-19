@@ -1,10 +1,15 @@
-
+<?php
+    $CI =& get_instance();
+    $CI->load->model('Web_settings');
+    $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
+?>
 <footer class="main-footer">
-    <i >
+    <i>
         <span style="font-style: normal;" > 2024 © Copyright : Amorio Technologies </span>
     </i>
     <input type ="hidden" name="csrf_test_name" id="csrf_test_name" value="<?= $this->security->get_csrf_hash();?>">
     <input type ="hidden" name="base_url" id="base_url" value="<?= base_url();?>">
+
 </footer>
 
 <style>
@@ -51,7 +56,27 @@
    a:focus{
     color: #fff !important;
    }
- 
+
+   .btnclr{
+       background-color:<?php echo $setting_detail[0]['button_color']; ?>;
+       color: white;
+    }
+
+    .toast-success {
+        background-color: #006400 !important; 
+        color: white !important;
+        opacity: 0;
+        animation: fadeIn 1s forwards; 
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0; 
+        }
+        to {
+            opacity: 1; 
+        }
+    }
 </style>
 
 
@@ -60,8 +85,7 @@
 <script type="text/javascript">
    const dt = new DataTransfer(); 
    
-   $('span.file-delete').click(function(){
-
+   $('span.file-delete').click(function() {
         let name = $(this).next('span.name').text();
         $(this).parent().remove();
         for(let i = 0; i < dt.items.length; i++){
@@ -90,3 +114,4 @@
 <script type="text/javascript" src="<?= base_url(); ?>assets/datatables/buttons.html5.min.js"></script>
 <script type="text/javascript" src="<?= base_url(); ?>assets/datatables/buttons.print.min.js"></script>
 <script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/select2.min.js"></script>
+

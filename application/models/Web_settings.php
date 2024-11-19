@@ -1041,43 +1041,24 @@ public function roadtransport_remarks(){
 
 
 
-   public function retrieve_setting_editdata($id=null) {
-
+    public function retrieve_setting_editdata($user_id=null)
+    {
         $this->db->select('*');
-
         $this->db->from('web_setting');
-
-      //  $this->db->where('setting_id',1);
-      if($id){
-            $this->db->where('create_by',$id);
-      }else{
-          $this->db->where('create_by',$this->session->userdata('user_id'));
-}
+        if($user_id){
+            $this->db->where('create_by',$user_id);
+        }else{
+            $this->db->where('create_by',$this->session->userdata('user_id'));
+        }
+        
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {
-
             return $query->result_array();
 
         }
-
         return false;
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function retrieve_user_data() {
@@ -1538,8 +1519,16 @@ else
         return false;
 
     }
-
-
-
+//To get the default setting for specific company - Surya
+public function default_company_setting($id){
+$this->db->select('*');
+$this->db->from('web_setting');
+$this->db->where('create_by', $id);
+$query = $this->db->get();
+if ($query->num_rows() > 0) {
+    return $query->result_array();
+}
+return false;
+}
 }
 

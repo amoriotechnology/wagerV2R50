@@ -57,15 +57,17 @@
         <link href="<?= base_url('assets/css/custom.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/datatables/buttons.dataTables.min.css">        
+
        
         <?php if (!empty($Web_settings[0]['rtr']) && $Web_settings[0]['rtr'] == 1) {  ?>
             <!-- THEME RTL -->
             <link href="<?= base_url('assets/css/custom-rtl.css') ?>" rel="stylesheet" type="text/css"/>
         <?php } ?>
         <!-- jQuery -->
-       <script src="<?= base_url('assets/js/jquery-3.4.1.min.js?v=3.4.1') ?>" type="text/javascript"></script>
-       <script src="<?= base_url() ?>assets/js/wickedpicker.min.js" ></script>
-        <script src="<?= base_url() ?>assets/js/jquery.validate.min.js" type="text/javascript"></script>
+       <script src="<?php echo base_url('assets/js/jquery-3.4.1.min.js?v=3.4.1') ?>" type="text/javascript"></script>
+       <script src="<?php echo base_url() ?>assets/js/wickedpicker.min.js" ></script>
+        <script src="<?php echo base_url() ?>assets/js/jquery.validate.min.js" type="text/javascript"></script>
+        
     </head>
     <body class="hold-transition sidebar-mini">
                 <!-- Page Loader -->
@@ -132,6 +134,9 @@
         <script src="<?= base_url('assets/js/bootstrap-toggle.min.js') ?>" type="text/javascript"></script> 
         <script src="<?= base_url('assets/js/toastr.min.js'); ?>"></script>
         <script src="<?= base_url() ?>assets/js/sweetalert/sweetalert.min.js" type="text/javascript"></script>
+        <script src="<?php echo base_url('assets/js/frame.js') ?>" type="text/javascript"></script> 
+        <script src="<?php echo base_url('assets/js/bootstrap-toggle.min.js') ?>" type="text/javascript"></script> 
+
         <!-- Custom Theme JavaScript -->
         <script src="<?= base_url() ?>assets/js/custom.js" type="text/javascript"></script>
         <!-- summernote js -->
