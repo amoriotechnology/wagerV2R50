@@ -1,117 +1,98 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Lcompany {
 
-	#==============Company list================#
-	public function company_list($limit,$page,$links)
+	public $CI, $Web_settings;
+
+	public function __construct() 
 	{
-$CI =& get_instance();
-		$CI->load->model('Companies');
-		$CI->load->model('Web_settings');
-
-
-		$company_list = $CI->Companies->company_list($limit,$page);
-
-
-		$company_info = $CI->Companies->company_info();
-		$company_admin_info = $CI->Companies->company_admin_info();
-		$setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-
-
-		$i=$page;
-		if(!empty($company_list)){	
-			foreach($company_list as $k=>$v){$i++;
-			   $company_list[$k]['sl']=$i;
-			}
-		}
-		$data = array(
-				'title'        => display('manage_company'),
-				'company_list' => $company_list,
-
-
-				'company_info' => $company_info,
-				'company_id' =>$company_info[0]['company_id'],
-				'company_admin_info' => $company_admin_info,
-
-				'links'        => $links,
-				'setting_detail' => $setting_detail
-
-			);
-		$companyList = $CI->parser->parse('company/company',$data,true);
-		return $companyList;
+		$this->CI =& get_instance();
+		$this->CI->load->model('Web_settings');
+		$this->CI->load->model('Companies');
 	}
 
+	#==============Company list================#
+	public function company_list($limit, $page, $links)
+	{
+		$company_list = $this->CI->Companies->company_list($limit, $page);
+		$company_info = $this->CI->Companies->company_info();
 
+		$i = $page;
+		if(!empty($company_list)){	
+			foreach($company_list as $key => $v){
+				$i++;
+			   $company_list[$key]['sl'] = $i;
+			}
+		}
 
+		$data = array(
+			'title'        => display('manage_company'),
+			'company_list' => $company_list,
+			'company_info' => $company_info,
+			'company_id' =>$company_info[0]['company_id'],
+			'company_admin_info' => $this->CI->Companies->company_admin_info(),
+			'links'        => $links,
+			'setting_detail' => $this->CI->Web_settings->retrieve_setting_editdata()
+		);
 
+		$companyList = $this->CI->parser->parse('company/company',$data,true);
+		return $companyList;
+	}
 
 
 	#=============Company Search item===============#
 	public function company_branch_total()
 	{ 
-		   $CI = & get_instance();
-           $CI->load->model('Web_settings');
-           $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-		   $state_list = $CI->Companies->retrieve_statetax();
-		   $local_list = $CI->Companies->retrieve_localtax();
-
-
         $data = array(
             'title' => display('manage_users'),
-			'setting_detail' => $setting_detail,
-			'state' => $state_list,
-			'local' => $local_list,
+			'setting_detail' => $this->CI->Web_settings->retrieve_setting_editdata(),
+			'state' => $this->CI->Companies->retrieve_statetax(),
+			'local' => $this->CI->Companies->retrieve_localtax(),
         );
-        $userForm = $CI->parser->parse('company/companybranch', $data, true);
-        return $userForm;
 
-		
+        $userForm = $this->CI->parser->parse('company/companybranch', $data, true);
+        return $userForm;		
 	}
-
-
-
-
 
 
 	#=============Company Search item===============#
 	public function company_search_item($company_id)
 	{
-		$CI =& get_instance();
-		$CI->load->model('Suppliers');
-		$company_list = $CI->Companies->company_search_item($company_id);
+		$this->CI =& get_instance();
+		$this->CI->load->model('Suppliers');
+		$company_list = $this->CI->Companies->company_search_item($company_id);
+		
 		$i=0;
-		foreach($company_list as $k=>$v){$i++;
-           $company_list[$k]['sl']=$i;
+		foreach($company_list as $k=>$v) {
+			$i++;
+           $company_list[$k]['sl'] = $i;
 		}
+
 		$data = array(
-				'title' 		=> display('manage_company'),
-				'company_list' 	=> $company_list
-			);
-		$companyList = $CI->parser->parse('company/company',$data,true);
+			'title' 		=> display('manage_company'),
+			'company_list' 	=> $company_list
+		);
+
+		$companyList = $this->CI->parser->parse('company/company',$data,true);
 		return $companyList;
 	}
-#===============Company edit form==============#
-public function company_edit_data($company_id)
+
+
+	#===============Company edit form==============#
+	public function company_edit_data($company_id)
 	{
-		$CI =& get_instance();
-		$CI->load->model('Companies');
-		$CI->load->model('Web_settings');
-		$company_detail = $CI->Companies->retrieve_company_editdata($company_id);
-	
-		$editstate = $CI->Companies->editstatedata();
-		$editlocal = $CI->Companies->editlocaldata();
-		
-	
-		$url = $CI->Companies->editurldata($company_id);
-	//print_r($url);echo "<br/>";
-		$url_st = $CI->Companies->editurlstdata($company_id);
-		//print_r($url_st);echo "<br/>";
-		$url_lctx = $CI->Companies->editurllctxdata($company_id);
-	//	print_r($url_lctx);echo "<br/>";
-		$url_sstx = $CI->Companies->editurlsstxdata($company_id);
-		//	print_r($url_sstx);echo "<br/>";
-//die();
-		$setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-		$data=array(
+		$this->CI =& get_instance();
+		$this->CI->load->model('Companies');
+		$this->CI->load->model('Web_settings');
+		$company_detail = $this->CI->Companies->retrieve_company_editdata($company_id);
+		$editstate = $this->CI->Companies->editstatedata();
+		$editlocal = $this->CI->Companies->editlocaldata();
+		$url = $this->CI->Companies->editurldata($company_id);
+		$url_st = $this->CI->Companies->editurlstdata($company_id);
+		$url_lctx = $this->CI->Companies->editurllctxdata($company_id);
+		$url_sstx = $this->CI->Companies->editurlsstxdata($company_id);
+
+		$setting_detail = $this->CI->Web_settings->retrieve_setting_editdata();
+		$data = array(
 			'c_id' =>$company_id,
 			'title' 		=> display('company_edit'),
 			'company_id' 	=> $company_detail[0]['company_id'],
@@ -128,7 +109,6 @@ public function company_edit_data($company_id)
 			'Bank_Address' 		=> $company_detail[0]['Bank_Address'],
 			'Federal_Pin_Number'         => $company_detail[0]['Federal_Pin_Number'],
             'State_Tax_ID_Number'       => $company_detail[0]['State_Tax_ID_Number'],
-			
 			'url' 		=> $url,
 			'url_st' 		=> $url_st,
 			'url_lctx' 		=> $url_lctx,
@@ -141,12 +121,13 @@ public function company_edit_data($company_id)
 			'setting_detail' => $setting_detail,
 			'editState' => $editstate,
 			'editLocal' => $editlocal,
-			
-			
-			);
-	//	print_r($data);
-		$companyList = $CI->parser->parse('company/edit_company_form',$data,true);
+		);
+
+		$companyList = $this->CI->parser->parse('company/edit_company_form',$data,true);
 		return $companyList;
 	}
+
+
+
 }
 ?>

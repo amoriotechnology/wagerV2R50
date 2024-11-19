@@ -271,5 +271,12 @@ if (!function_exists('getUserLocation')) {
     }
 }
 
- 
+if (!function_exists('getAllCountries')) {
+    function getAllCountries() {
+    $ci = & get_instance();
+    $ci->load->model('Hrm_model');
+    $res = $ci->Hrm_model->getDatas('country', '*', ['' => '']);
+    return $res;
+}
+}
 
