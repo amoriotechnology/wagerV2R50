@@ -1,16 +1,4 @@
 
-<link rel="stylesheet" type="text/css" href="<?= base_url()?>my-assets/css/css.css" /> 
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" /> 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-<link href="<?= base_url() ?>assets/css/daterangepicker.css" rel="stylesheet">
-<link href="<?= base_url() ?>assets/css/style.css" rel="stylesheet">
 
 <style>
 .switch {
@@ -143,26 +131,21 @@ a.disabled {
 
 .table th,
 .table td {
-    width: auto; /* Or set the width as per your requirement */
-    /* Additional styling properties */
+    width: auto; 
+ 
     border: 1px solid #ccc;
     padding: 8px;
-    /* Other styling properties */
-}
+  
 .table input[type="text"],input[type="time"] {
     text-align:center;
-    background-color: inherit; /* Set your desired background color */
-    /* Additional styling properties */
-    /*border: 1px solid #ccc;*/
+    background-color: inherit;
+  
     border-radius: 4px;
     padding: 8px;
-    /* Other styling properties */
+  
 }
 
-.btnclr{
-    background-color:<?= $setting_detail[0]['button_color']; ?>;
-    color: white;
-}
+
 
 input {border:0;outline:0;}
 .work_table td {
@@ -195,7 +178,7 @@ th,td{
     </section>
 
     <section class="content">
-        <!-- New category -->
+     
         <div class="row">
             <div class="col-sm-12">                
                 <div class="panel panel-bd lobidrag">
@@ -264,18 +247,18 @@ th,td{
                                             <th style='height:25px;' class="col-md-1">Day</th>
                                             <th style='height:25px; ' class="col-md-5">Present / Absence</th>
                                         <?php } elseif ($employee_name[0]['payroll_type'] == 'SalesCommission') { ?>
-                                            <!-- Your code for 'SalesCommission' payroll type here, if any -->
+                                        
                                         <?php } ?>
                                     </tr>
 								</thead>
 
                                 <?php 
-                                // Function to compare dates for sorting
+                                
                                 function compareDates($a, $b) {
                                     $dateA = DateTime::createFromFormat('d/m/Y', $a['Date']);
                                     $dateB = DateTime::createFromFormat('d/m/Y', $b['Date']);
                                     if ($dateA === false || $dateB === false) {
-                                        return 0; // Handle invalid dates here if needed
+                                        return 0; 
                                     }
                                     return $dateA <=> $dateB;
                                 }
@@ -292,17 +275,17 @@ th,td{
 
 								<tbody id="tBody">
                                 <?php
-                                    // Sorting the $time_sheet_data array based on the 'Date' field
+                                   
                                     usort($time_sheet_data, 'compareDates');
 
-                                    // Variable to track printed dates
+                                   
                                     $printedDates = array();
 
-                                    // Rendering the sorted table rows
+                                 
                                     foreach($time_sheet_data as $tsheet) {
                                         $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                         if( !empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                            // Add the date to the printed dates array
+                                         
                                             $printedDates[] = $tsheet['Date'];
                                         }
                                     }
@@ -336,9 +319,7 @@ th,td{
                                     <td class="finish-time">
                                         <input <?php if ($timesheetdata[$date]['edit'] == 1) { echo 'readonly'; } ?> name="end[]" class="hasTimepicker end" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['end']; ?>" type="time">
                                     </td>
-                                    <!-- <td style="text-align:center;"  readonly class="daily-break">
-                                        <input  name='dailybreak[]' class='form-control datepicker dailybreak'  style="width: 100px;margin: auto; display: block; text-align: center;" readonly value='<?= $tsheet['daily_break']; ?>'    >
-                                    </td> -->
+                                  
                                     <td class="hours-worked">
                                         <input readonly name="sum[]" class="timeSum" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                     </td>

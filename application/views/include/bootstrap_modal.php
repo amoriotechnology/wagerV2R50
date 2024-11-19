@@ -1009,4 +1009,37 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['daily_break'],$bootstrap_modal)){ ?>
+
+<div class="modal fade" id="dailybreak_add" role="dialog">
+<div class="modal-dialog" role="document">
+    <div class="modal-content" style="margin-top: 190px;text-align:center;">
+        <div class="modal-header btnclr"  >
+            <a href="#" class="close" data-dismiss="modal">&times;</a>
+            <h4 class="modal-title">Add New Daily Break</h4>
+        </div>
+        <div class="modal-body">
+            <div id="customeMessage" class="alert hide"></div>
+            <form id="insert_daily_break" method="post">
+                <div class="panel-body">
+                    <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
+                    <div class="form-group row">
+                        <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">Daily Break<i class="text-danger">*</i></label>
+                        <div class="col-sm-6">
+                         
+                            <input type="text"   class="decimal form-control" name ="dbreak" id="dbreak" placeholder="Integer and decimal only"/>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btnclr "   data-dismiss="modal"><?php echo display('Close') ?> </a>
+            <input type="submit" class="btn btnclr "  value=<?php echo display('Submit') ?>>
+        </div>
+    </form>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<?php  }  ?>
+
+

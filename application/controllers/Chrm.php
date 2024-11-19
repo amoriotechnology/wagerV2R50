@@ -1061,6 +1061,7 @@ public function edit_timesheet()
 
 public function state_tax($endDate, $employee_id, $employee_tax, $working_state_tax, $user_id, $this_period, $tax_type, $timesheet_id)
 {
+    
     $state_tax = $this->Hrm_model->get_state_details('state', 'state_and_tax', 'state', $working_state_tax, $user_id);
 
 
@@ -1151,6 +1152,7 @@ return $data;
             
           
             $working_state_tax=  $employeedata[0]['state_tx'];
+        
             $living_state_tax=  $employeedata[0]['local_tax'];
             $hrate= $timesheetdata[0]['h_rate'];
             $total_hours=  $timesheetdata[0]['total_hours'];
@@ -1178,9 +1180,9 @@ return $data;
             $overall_unemp = $u['tax_data']['t_u_tax'];
            // Country Tax Ends //
 
-
+ 
            $working_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$working_state_tax,$user_id,$thisPeriodAmount,'state_tax',$timesheet_id);
-         
+       
            $living_state_tax = $this->state_tax($end_date,$employee_id,$employeedata[0]['employee_tax'],$living_state_tax,$user_id,$thisPeriodAmount,'living_state_tax',$timesheet_id);
  
 
@@ -3327,8 +3329,10 @@ public function add_county(){
 
     public function employee_create()
     {
+
         $decodedId = decodeBase64UrlParameter($this->input->post('company_id'));
         $admin_id = decodeBase64UrlParameter($this->input->post('admin_id'));
+
 
         if (isset($_FILES['files']) && !empty($_FILES['files']['name'][0])) {
         $no_files = count($_FILES["files"]['name']);
