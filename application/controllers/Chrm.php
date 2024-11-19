@@ -90,12 +90,8 @@ class Chrm extends CI_Controller {
         $result = $this->Hrm_model->delete_employee($emp_id);
         if ($result) {
             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $id, '', $this->session->userdata('userName'), 'Delete Employee', 'Human Resource', 'Employee has been deleted successfully', 'Delete', date('m-d-Y'));
-            $response = array(
-                'status' => 'success',
-                'msg'    => 'Employee has been deleted successfully!'
-            );
+            $this->session->set_flashdata('message', display('delete_successfully'));
         } 
-        echo json_encode($response);
         redirect(base_url("Chrm/manage_employee?id=".$id."&admin_id=".$_GET['admin_id']));
     }
 
@@ -1342,18 +1338,14 @@ public function add_taxname_data(){
 
     public function payslip_setting() {
         $data['title'] = display('payslip');
-        $CI = & get_instance();
-        $CD = & get_instance();
       
-        $CD->load->model('Companies');
-        $CI->load->model('Web_settings');
-        $CI->load->model('Invoice_content');
-       $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-       $dataw = $CI->Invoice_content->get_data_payslip();
-       $datac = $CD->Companies->company_details();
-           $datacontent = $CI->Invoice_content->retrieve_data();
+        $this->CI->load->model('Web_settings');
+        $this->CI->load->model('Invoice_content');
+       $setting_detail = $this->CI->Web_settings->retrieve_setting_editdata();
+       $dataw = $this->CI->Invoice_content->get_data_payslip();
+        $datacontent = $this->CI->Invoice_content->retrieve_data();
        $data= array(
-            'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
+        'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
         'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : '') ,
         'color'=> (!empty($dataw[0]['color']) ? $dataw[0]['color'] : '') ,
         'invoice_logo' =>(!empty($setting_detail[0]['invoice_logo']) ? $setting_detail[0]['invoice_logo'] : '') ,
@@ -1361,9 +1353,6 @@ public function add_taxname_data(){
         'cname'=>(!empty($datacontent[0]['business_name']) ? $datacontent[0]['business_name'] : '') ,
         'mobile'=>(!empty($datacontent[0]['phone']) ? $datacontent[0]['phone'] : '') ,
         'email'=>(!empty($datacontent[0]['email']) ? $datacontent[0]['email'] : '') ,
-        // 'reg_number'=>(!empty($datacontent[0]['reg_number']) ? $datacontent[0]['reg_number'] : '') ,
-        // 'website'=>(!empty($datacontent[0]['website']) ? $datacontent[0]['website'] : '') ,
-        // 'address'=>(!empty($datacontent[0]['address']) ? $datacontent[0]['address'] : '') ,
         'template'=> (!empty($dataw[0]['template']) ? $dataw[0]['template'] : '')
    );
     // print_r($data);
@@ -1500,6 +1489,7 @@ public function employee_update_form() {
         $data["state_tx"]            = $this->Hrm_model->state_tax($decodedId);
         $data["cty_tax"]             = $this->Hrm_model->state_tax($decodedId);
         $data["designation"]         = $this->Hrm_model->getdesignation($data["employee_data"][0]["designation"], $decodedId);
+        $data["country_data"]         = $this->Hrm_model->getDatas('country', '*', ['id !=' => '']);
       
         $data["desig"]               = $this->Hrm_model->designation_dropdown($decodedId);
         $content                     = $this->parser->parse("hr/employee_updateform", $data, true);
@@ -1534,6 +1524,7 @@ public function employee_update_form() {
             $response['msg']    = validation_errors();
         } else {
 
+            $form_type = $this->input->post('form_type');
             if (isset($_FILES["files"]) && is_array($_FILES["files"]["name"])) {
                 $no_files = count($_FILES["files"]["name"]);
                 $images = [];
@@ -1541,9 +1532,13 @@ public function employee_update_form() {
                 for ($i = 0; $i < $no_files; $i++) {
                     if ($_FILES["files"]["error"][$i] > 0) {
                     } else {
+                        $upload_path = "assets/uploads/employeedetails/";
+                        if($form_type != "") {
+                            $upload_path   = "assets/uploads/salespartner/";
+                        } 
                         move_uploaded_file(
                             $_FILES["files"]["tmp_name"][$i],
-                            "assets/uploads/employeedetails/" . $_FILES["files"]["name"][$i]
+                            $upload_path . $_FILES["files"]["name"][$i]
                         );
                         $images[] = $_FILES["files"]["name"][$i];
                         $insertImages = implode(', ', $images);
@@ -1557,7 +1552,11 @@ public function employee_update_form() {
             }
 
             if ($_FILES["profile_image"]["name"]) {
-                $config["upload_path"]   = "assets/uploads/profile";
+                $config["upload_path"]   = "assets/uploads/profile/";
+                if($form_type != "") {
+                    $config["upload_path"]   = "assets/uploads/profile/salespartner/";
+                } 
+                
                 $config["allowed_types"] = "gif|jpg|png|jpeg|JPEG|GIF|JPG|PNG";
                 $config["encrypt_name"]  = true;
                 $config["max_size"]      = 2048;
@@ -1644,7 +1643,7 @@ public function employee_update_form() {
                 "last_name"              => $this->input->post("last_name", true),
                 "designation"            => $this->input->post("designation", true),
                 "phone"                  => $this->input->post("phone", true),
-                "files" => !empty($old_images) ? $old_images: $insertImages,
+                "files" => !empty($insertImages) ? $insertImages: $old_images,
                 "rate_type"              => $this->input->post("paytype", true),
                 "sc"                     => $this->input->post("sc", true),
                 "email"                  => $this->input->post("email", true),
@@ -1663,6 +1662,9 @@ public function employee_update_form() {
                 "emergencycontactnum"    => $this->input->post("emergencycontactnum",true),
                 "profile_image"          => !empty($profile_image) ? $profile_image : $this->input->post("old_profileimage", true),
                 "payroll_type"           => $this->input->post("payroll_type"),
+                "account_number"         => $this->input->post("account_number"),
+                "employee_type"         => $this->input->post("employee_type"),
+                "bank_name"             => $this->input->post("bank_name"),
 
                 "working_state_tax"     => $state_tax,
                 "working_city_tax"     => $city_tax,
@@ -1869,20 +1871,10 @@ public function employee_update_form() {
 
 
 public function timesheed_inserted_data() {
-  //    echo $id; .;
-  $CI = & get_instance();
-  $CC = & get_instance();
-  $CA = & get_instance();
 
-  $w = & get_instance();
-  $w->load->model('Ppurchases');
-  $CI->load->model('Invoices');
-  $CI->load->model('Web_settings');
-
-  $CC->load->model('invoice_content');
-  $CI = & get_instance();
-  $this->auth->check_admin_auth();
-  $CI->load->model('Hrm_model');
+    $this->auth->check_admin_auth();
+    $this->load->model('Web_settings');
+    $this->load->model('Hrm_model');
 
     $type = $this->input->get('type');
 
@@ -1891,11 +1883,13 @@ public function timesheed_inserted_data() {
     $company_info = $this->CI->Web_settings->retrieve_companysetting_editdata();
 
   if($type == 'emp_data') {
+    $id = $this->input->get('employee');
     $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]); 
   } else {
     /* return timesheet_info and employee history datas */
-    $timesheet_data = $CI->Hrm_model->timesheet_data($id);
-    $timesheet_details = $CI->Hrm_model->getDatas('timesheet_info_details', '*', ['timesheet_id' => $id]);
+    $id = $this->input->get('timesheet_id');
+    $timesheet_data = $this->CI->Hrm_model->timesheet_data($id);
+    $timesheet_details = $this->CI->Hrm_model->getDatas('timesheet_info_details', '*', ['timesheet_id' => $id]);
     $admin_name = $this->Hrm_model->getDatas('administrator', '*', ['adm_id'=> $timesheet_data[0]['admin_name']]);
   }
 
@@ -4195,7 +4189,6 @@ public function manage_workinghours()
                 '<i class="fa-solid fa-check text-success"></i>'
             );
 
-
             $row = [
                 "id"  => $i,
                 "c_date" => $status . ' ' . $item["c_date"],
@@ -4223,25 +4216,21 @@ public function manage_workinghours()
         echo json_encode($response);
     }
 
-
     public function add_employee_type(){
         $this->load->model(model: 'Hrm_model');
         $data = array(
          'employee_type' => $this->input->post('employee_type'),
          'created_by' => $this->session->userdata('user_id')
         );
-        $employee_data = $this->Hrm_model->insertData('employee_type', $data);
+        $this->Hrm_model->insertData('employee_type', $data);
+        $employee_data = $this->Hrm_model->getDatas('employee_type', '*', ['created_by' => $this->session->userdata('user_id')]);
         echo json_encode($employee_data);
     }
 
 
     public function add_payment_type(){
-        $this->load->model('Hrm_model');
-        $data = array(
-         'payroll_type' => $this->input->post('new_payment_type'),
-         'created_by' => $this->session->userdata('user_id')
-        );
-        $payroll_data = $this->Hrm_model->insertData('payroll_type', $data);
+        $this->load->model(model: 'Hrm_model');
+        $payroll_data = $this->Hrm_model->add_payment_type($this->input->post('new_payment_type'));
         echo json_encode($payroll_data);
     }
 
