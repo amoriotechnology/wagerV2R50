@@ -1,4 +1,20 @@
 <?php error_reporting(1);?>
+<style>
+    .toast-success {
+        background-color: #006400 !important;
+        color: white !important;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>
 <div class="content-wrapper">
     <section class="content-header" style="height: 65px;">
         <div class="header-icon">
@@ -22,23 +38,18 @@
       
       
     <?php
-        $message = $this->session->userdata('message');
-        if (isset($message)) {
-    ?>
-        <div class="alert alert-info alert-dismissable" style="background-color: #bfddc4;color:#185e1d;;font-weight:bold;margin-left:30px;width: 1631px;">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <?= $message ?>
-        </div>
-    <?php 
-        $this->session->unset_userdata('message'); }
-        $error_message = $this->session->userdata('error_message');
-        if (isset($error_message)) {
-    ?>
-        <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-            <?= $error_message ?>
-        </div>
-        <?php $this->session->unset_userdata('error_message'); } ?>
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
         
     <section class="content">
         <div class="panel panel-bd lobidrag">

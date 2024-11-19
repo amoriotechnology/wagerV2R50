@@ -6729,10 +6729,9 @@ public function sc_cnt()
     $CI = & get_instance();
     $this->load->model('Hrm_model');
     $employeeId = $this->input->post('employeeId',TRUE);
-        $reportrange = $this->input->post('reportrange',TRUE);
-     $data['sc']=$this->Hrm_model->sc_info_count($employeeId,$reportrange);
- echo json_encode($data['sc']);
-   
+    $reportrange = $this->input->post('reportrange',TRUE);
+    $data['sc']=$this->Hrm_model->sc_info_count($employeeId,$reportrange);
+    echo json_encode($data['sc']);   
 } 
 
 

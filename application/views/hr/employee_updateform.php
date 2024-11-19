@@ -77,6 +77,20 @@
    .fg input {
    width: 60%; /* Adjust the width as needed */
    }
+   .toast-success {
+        background-color: #006400 !important;
+        color: white !important;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
 </style>
 <div class="content-wrapper">
    <section class="content-header">
@@ -99,7 +113,6 @@
       <?php
       $message = $this->session->userdata('message');
       $error_message = $this->session->userdata('error_message');
-
       if (isset($message) || isset($error_message)) { ?>
           <script type="text/javascript">
               <?php if (isset($message)) { ?>
