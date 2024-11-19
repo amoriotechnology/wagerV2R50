@@ -109,5 +109,8 @@
 <script src="<?php echo base_url(); ?>assets/datatables/buttons.print.min.js"></script>
 <script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/select2.min.js"></script>
 <script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/jquery.js"></script>
+<script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/number-to-words"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/css.css" />
+<script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/jspdf.umd.js"></script>
+<script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/html2canvas.js"></script>
 
