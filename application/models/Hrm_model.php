@@ -4900,11 +4900,11 @@ public function sum_of_country_tax($end_date = null, $empid, $timesheetid , $use
 {
 $query_row_count = $this->db->select('SUM(info_payslip.s_tax) as t_s_tax, SUM(info_payslip.m_tax) as t_m_tax, 
 SUM(info_payslip.f_tax) as t_f_tax, SUM(info_payslip.u_tax) as t_u_tax, SUM(info_payslip.total_amount) as t_amount, 
-SUM(timesheet_info.above_extra_ytd) as ytd_salary,SUM(timesheet_info.extra_ytd) as ytd_overtime_salary,
+SUM(timesheet_info.ytd) as ytd_salary,SUM(timesheet_info.extra_ytd) as ytd_overtime_salary,
 SUM(info_payslip.sc) as sc,SUM(timesheet_info.total_hours) as ytd_days,
-SUM(timesheet_info.above_this_hours) as ytd_hours_excl_overtime,SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_hours,
-SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_this_hour))) as ytd_hours_only_overtime,
-SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.above_this_hours))) as ytd_hours_excl_overtime_in_time');
+SUM(timesheet_info.hour) as ytd_hours_excl_overtime,SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_hours,
+SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_hour))) as ytd_hours_only_overtime,
+SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.hour))) as ytd_hours_excl_overtime_in_time');
 $this->db->from('timesheet_info');
 $this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
 $this->db->where('info_payslip.templ_name',$empid);
@@ -4937,14 +4937,22 @@ public function allFederaltaxes($taxType, $user_id)
 
 }
 //Get Overall Working hour
-public function get_overtime_data($id){
+public function get_overtime_data($id = null) 
+{
     $this->db->select('*');
     $this->db->from('working_time');
-    $this->db->where('created_by',$id);
+    if (!empty($id)) {
+        $this->db->where('created_by', $id);
+    } else {
+        $this->db->where('created_by', $this->session->userdata('user_id'));
+    }
+    
     $query = $this->db->get();
-   if ($query->num_rows() > 0) {
-     return $query->result_array();
-   }
-   return false;
+    // echo $this->db->last_query(); die;
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+    return false;
 }
+
 }
