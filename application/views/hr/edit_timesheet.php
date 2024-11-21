@@ -1,5 +1,3 @@
-
-
 <style>
 .switch {
   margin-top: 5px;
@@ -159,13 +157,12 @@ th,td{
 }
 </style>
 
+>>>>>>> 3df40d708f08cff4c098c499d408cf976123e68e
 <div class="content-wrapper">
-
     <section class="content-header" style="height:70px;">
         <div class="header-icon">
             <i class="pe-7s-note2"></i>
         </div>
-
         <div class="header-title">
             <h1>Edit TimeSheet</h1>
             <small></small>
@@ -176,7 +173,6 @@ th,td{
             </ol>
         </div>
     </section>
-
     <section class="content">
      
         <div class="row">
@@ -187,9 +183,7 @@ th,td{
                             <a style="float:right;color:white;" href="<?php echo base_url('Chrm/manage_timesheet?id=' . $_GET['id']); ?>" class="btnclr btn  m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo "Manage TimeSheet" ?> </a>
                         </div>
                     </div>
-                  
                     <?php echo form_open_multipart('Chrm/pay_slip?id=' . $_GET['id'], 'id="validate"'); ?>
-                  
                     <div class="panel-body">
                         <input type="hidden" name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
 
@@ -253,7 +247,6 @@ th,td{
 								</thead>
 
                                 <?php 
-                                
                                 function compareDates($a, $b) {
                                     $dateA = DateTime::createFromFormat('d/m/Y', $a['Date']);
                                     $dateB = DateTime::createFromFormat('d/m/Y', $b['Date']);
@@ -319,7 +312,6 @@ th,td{
                                     <td class="finish-time">
                                         <input <?php if ($timesheetdata[$date]['edit'] == 1) { echo 'readonly'; } ?> name="end[]" class="hasTimepicker end" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['end']; ?>" type="time">
                                     </td>
-                                  
                                     <td class="hours-worked">
                                         <input readonly name="sum[]" class="timeSum" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                     </td>
@@ -334,18 +326,15 @@ th,td{
 
                             <tbody id="tBody">
                             <?php
-                                // Initialize $i before the loop starts
+                               
                                 $i = 0;
-                                
-                                // Sorting the $time_sheet_data array based on the 'Date' field
                                 usort($time_sheet_data, 'compareDates');
-                                // Variable to track printed dates
                                 $printedDates = array();
-                                // Rendering the sorted table rows
+                                
                                 foreach($time_sheet_data as $tsheet) {
                                     $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                     if( empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                        // Add the date to the printed dates array
+                                       
                                         $printedDates[] = $tsheet['Date'];
                                     }
                                 }
@@ -380,17 +369,14 @@ th,td{
                                 <?php } ?>
                             </tr>
                             <?php
-                            // Increment $i after each iteration
+                            
                             $i++;
                         } ?>
                 </tbody>
                 <?php } ?>
 
                 <tfoot>
-            <!-- <tr style="text-align:end"> 
-                    <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours :</td>  
-                    <td style="text-align: center;"> <input  type="text"    style="text-align:center;"  id="total_net" value="<?= $time_sheet_data[0]['total_hours'] ; ?>" name="total_net" />    </td> 
-                </tr>  -->
+           
                 <tr style="text-align:end"> 
                     <?php if ($employee_name[0]['payroll_type'] == 'Hourly') { ?>
                     <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours :</td> 
@@ -415,66 +401,15 @@ th,td{
             }  ?>
             <input type="submit" style="<?php if($time_sheet_data[0]['uneditable']==1){ echo 'display:none;';}  ?>color:white;" value="Submit" class="btnclr btn btn-info"/> 
         </div>               
-        <!-- <?php //echo form_close() ?> -->
     <?= form_close() ?>
 
-        <!-- </form> -->
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-
 </div>
 
-<!------ add new Duration-->  
-<div class="modal fade" id="add_admst" role="dialog">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?= ('Add New Administrator ') ?></h4>
-        </div>
-
-        <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="insert_adm" method="post">
-                
-                <div class="panel-body">
-                <input type ="hidden" name="csrf_test_name" id="" value="<?= $this->security->get_csrf_hash();?>">
-
-                <div class="form-group row">
-                    <label for="adms_name" class="col-sm-4 col-form-label" ><?= ('Administrator Name') ?> <i class="text-danger">*</i></label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name ="adms_name" id="adms_name" type="text" placeholder="Administrator Name"   required="" tabindex="1">
-                    </div>
-                </div>
-                <input type ="hidden" name="csrf_test_name" id="" value="<?= $this->security->get_csrf_hash();?>">
-
-                <div class="form-group row">
-                    <label for="address" class="col-sm-4 col-form-label" ><?= ('Administrator Address') ?> </label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name ="address" id="address" type="text" placeholder="Administrator Adress"   required="" tabindex="1">
-                    </div>
-                </div>
-
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <a href="#" class="btn" style="color:white;background-color:#38469f;" data-dismiss="modal"><?= display('Close') ?> </a>
-                <input type="submit" class="btn" style="color:white;background-color: #38469f;" value=<?= display('Submit') ?>>
-            </div>
-
-        </form>
-
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
 <script>
     var csrfName = '<?= $this->security->get_csrf_token_name();?>';
     var csrfHash = '<?= $this->security->get_csrf_hash();?>';
@@ -509,27 +444,7 @@ th,td{
     var csrfName = '<?= $this->security->get_csrf_token_name();?>';
     var csrfHash = '<?= $this->security->get_csrf_hash();?>';
 
-    // $(function() {
-
-    // // //
-
-    // $('#reportrange').daterangepicker({
-    //     startDate: start,
-    //     endDate: end,
-    //     ranges: {
-    //        'Today': [moment(), moment()],
-    //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //     }
-    // }, //cb
-    // );
-
-    // //cb(start, end);
-
-    // });
+   
 
 $('body').on('input select change','#reportrange',function(){
     var date = $(this).val();
@@ -549,16 +464,12 @@ $('body').on('input select change','#reportrange',function(){
     let newDate;
     const monStartWeekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     
-    for(let i = 0; i <= Days; i++) { //iterate through each weekday
-        newDate = new Date(validDate); //create date object
-        newDate.setDate(validDate.getDate() + i); //increment set date
+    for(let i = 0; i <= Days; i++) { 
+        newDate = new Date(validDate); 
+        newDate.setDate(validDate.getDate() + i); 
         //append results to table
         var date=$('#date_'+i).html();
-        // date=date.replace(/ /g,"");
-        // var end=document.getElementById(`finishTime${monStartWeekDays[i]}`).value;
-        //      var sum=document.getElementById(`hoursWorked${monStartWeekDays[i]}`).value;
         var day=$('#day_'+i).html();
-        //   day=day.replace("/","");
         $('#tBody').append(
             `<tr>
                 <td  class="date" id="date_`+i+`"><input type="hidden" value="`+`${newDate.getDate()}/${newDate.getMonth() + 1}/${newDate.getFullYear()}" name="date[]"   />`+`${newDate.getDate()} / ${newDate.getMonth() + 1} / ${newDate.getFullYear()}</td>
@@ -713,33 +624,10 @@ $('body').on('input select change','#reportrange',function(){
 
 
     $(document).on('input','.timeSum', function () {
-        // $(".timeSum").change(function(){
         var $addtotal = $(this).closest('tr').find('.timeSum').val();
-        // alert($addtotal);
     });
 
 
-        // var timeOptions = {
-        //   interval: 15,
-        //   dropdown: true,
-        //   change: function(time) {
-        //   sumHours();
-        // }
-    // }
-
-
-    // $begin.timepicker(timeOptions);
-    // $end.timepicker(timeOptions);
-
-
-    // $(document).on('focus', $end, function() {
-    // $(this).select();  // select entire text on focus
-    // });
-
-
-    // $begin.on("click, focus", function () {
-    // $(this).select();
-    // });
 
     $('body').on('keyup','.end',function(){
 
@@ -748,7 +636,6 @@ $('body').on('input select change','#reportrange',function(){
         var breakv=$('#dailybreak').val();
         var calculate=parseInt(start)+parseInt(end);
         var final =calculate-parseInt(breakv);
-        // $(this).closest('tr').find('.hours-worked').html(final);
     });
 
 
@@ -778,9 +665,6 @@ $('body').on('input select change','#reportrange',function(){
 
         if ( time1 && time2 ) {
         if ( time1 > time2 ) {
-            //Correct the day so second entry is always 
-            //after first, as in midnight shift. Use a new 
-            //date object so original is not incremented.
             v = new Date(time2);
             v.setDate(v.getDate() + 1);
         } else {
@@ -807,7 +691,7 @@ $('body').on('input select change','#reportrange',function(){
         });
 
     });
-    //   console.log(total_net.toFixed(3));
+   
     $('#total_net').val(total_net.toFixed(2)).trigger('change');
     var firstDate = $('.date input').first().val(); // Get the value of the first date input
         var lastDate = $('.date input').last().val(); // Get the value of the last date input

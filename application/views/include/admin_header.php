@@ -130,12 +130,7 @@
                </a>
             </li>
             
-            <li class="dropdown notifications-menu">
-               <a href="<?php echo base_url('Cinvoice/addCart') ?>">
-               <i class="pe-7s-cart" title="View Cart"></i>
-               <span class="label total-count"></span>
-               </a>
-            </li>
+           
             <li class="dropdown notifications-menu">
                <a href="<?php echo base_url('Cservice/help_desk_show') ?>" >
                <i class="pe-7s-help1" title="Help"></i>
@@ -233,10 +228,12 @@
       <!-- Sidebar user panel -->
       <div class="user-panel text-center row" style="display: flex; align-items: center;">
          <div class="image col-md-6">
-            <?php if($_SESSION['u_type']==1){ ?>
+            <?php 
+               if($_SESSION['u_type']==1)
+                   { ?>
             <img src="<?php
                if (isset($users[0]['logo'])) {
-                  echo base_url().html_escape($users[0]['logo']);
+                   echo base_url().html_escape($users[0]['logo']);
                }
                ?>" class="img-circle" alt="User Image">
             <?php  } 
@@ -337,8 +334,8 @@
             <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/manage_timesheet?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Time sheet');?></a></li>
 
             <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/pay_slip_list?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Pay slip / Checks per user');?></a></li>
-            <!-- <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/expense_list"><?php echo display("expense");?></a></li>
-            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/manage_officeloan"><?php echo display("office_loan");?></a></li> -->
+            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/expense_list"><?php echo display("expense");?></a></li>
+            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/manage_officeloan"><?php echo display("office_loan");?></a></li>
            <li class="treeview ">
             <a href="#">
                <i class=""></i> <span><?php echo ('Reports'); ?></span>
