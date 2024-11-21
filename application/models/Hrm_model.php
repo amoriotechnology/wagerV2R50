@@ -1723,44 +1723,7 @@ $this->db->update('state_and_tax', $data1);
   return 0;
         }
 }
-public function get_data_pay($d1 = null, $empid, $timesheetid) {
-    $this->db->select('timesheet_info.*, 
-        info_payslip.*, 
-        SUM(info_payslip.s_tax) as t_s_tax, 
-        SUM(info_payslip.m_tax) as t_m_tax, 
-        SUM(info_payslip.f_tax) as t_f_tax, 
-        SUM(info_payslip.u_tax) as t_u_tax, 
-        SUM(timesheet_info.ytd) as above_ytdeth,
-        SUM(timesheet_info.extra_ytd) as ytdeth,
-        SUM(info_payslip.sc) as sc, 
-        SUM(timesheet_info.total_hours) as total_days,
-         SUM(timesheet_info.hour) as above_eth_days, 
-        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_sec,
-        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_hour))) as total_eth,
-        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.hour))) as total_above_eth
-    ');
-    $this->db->from('timesheet_info');
-    $this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
-    $this->db->where('info_payslip.templ_name', $empid);
-    $this->db->where('info_payslip.create_by', $this->session->userdata('user_id'));
-    $this->db->select('(SUM(info_payslip.total_amount) - SUM(info_payslip.sc)) as t_amount', FALSE);
-    $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE('$d1', '%m/%d/%Y')", NULL, FALSE);
-    $this->db->group_by('info_payslip.templ_name, info_payslip.create_by');
-    $query = $this->db->get();
-    if ($query->num_rows() > 0) {
-        $result = $query->result_array();
-        // Format the total seconds to "HH:MM"
-        foreach ($result as &$row) {
-            $row['above_eth_days'] = $row['above_eth_days'];
-            $row['t_days'] = $row['total_days'];
-            $row['t_hours'] = $this->format_time($row['total_sec']);
-            $row['eth'] = $this->format_time($row['total_eth']);
-            $row['above_eth'] = $this->format_time($row['total_above_eth']);
-        }
-        return $result;
-    }
-    return false;
-}
+
 public function get_taxname_weekly($living_state,$working_state){
     $user_id = $this->session->userdata('user_id');
     $this->db->select('tax');
@@ -1929,7 +1892,7 @@ public function employee_info($templ_name, $user_id)
     $this->db->where('id', $templ_name);
     $this->db->where('create_by',$user_id);
     $query = $this->db->get();
- 
+
     if ($query->num_rows() > 0) {
        return $query->result_array();
     }
@@ -3842,6 +3805,7 @@ public function get_tax_history($tax_type,$tax,$timesheet){
    return null;
    }
 }
+
 //To get the cumulative state tax amount of specific employee
 public function get_cumulative_tax_amount($tax, $end, $employee, $tax_type) {
     $this->db->select('SUM(tax_history.amount) as total_amount')
@@ -3878,6 +3842,7 @@ if($end_date){
 $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(timesheet_info.month, ' - ', -1), '%m/%d/%Y') <= STR_TO_DATE(' $end_date', '%m/%d/%Y')", NULL, FALSE);
 }
 $query = $this->db->get();
+
     if ($query->num_rows() > 0) {
         return $query->result_array();
     }

@@ -1,3 +1,4 @@
+<?php  error_reporting(1); ?>
 <div class="content-wrapper">
     <section class="content-header" style="height:70px;">
         <div class="header-icon"><i class="pe-7s-note2"></i></div>
@@ -353,11 +354,11 @@
                             <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  $get_value * $employee_name[0]['hrate'] ; ?>" />
                     
                         <?php } else { ?>
-                        <input type="hidden" readonly id="above_extra_beforehours" value="<?php   echo $time_sheet_data[0]['total_hours']; ?>" name="above_extra_beforehours" />
+                        <input type="hidden" readonly id="above_extra_beforehours" value="<?php   echo $time_sheet_data[0]['total_hours'] *8; ?>" name="above_extra_beforehours" />
                         <input type="hidden" id="above_extra_rate" name="above_extra_rate" value="<?=  $employee_name[0]['hrate']; ?>" />
-                        <input type="hidden" id="above_extra_sum" name="above_extra_sum" value="<?=  $time_sheet_data[0]['total_hours'] * $employee_name[0]['hrate'] ; ?>" />
-                        <input type="hidden" id="above_this_hours" name="above_this_hours" value="<?= $time_sheet_data[0]['total_hours']; ?>" />
-                        <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  $time_sheet_data[0]['total_hours'] * $employee_name[0]['hrate']; ?>" />
+                        <input type="hidden" id="above_extra_sum" name="above_extra_sum" value="<?=  ($time_sheet_data[0]['total_hours']*8) * $employee_name[0]['hrate'] ; ?>" />
+                        <input type="hidden" id="above_this_hours" name="above_this_hours" value="<?= $time_sheet_data[0]['total_hours'] *8; ?>" />
+                        <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  ($time_sheet_data[0]['total_hours']*8) * $employee_name[0]['hrate']; ?>" />
                         <?php } ?>
                             
                         <?php } elseif ($employee_name[0]['payroll_type'] == 'SalesCommission') { ?>

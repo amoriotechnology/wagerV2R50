@@ -303,6 +303,8 @@ td{
 <script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/select2.min.js"></script>
 
 <script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/timesheet/moment.min.js"></script>
-
+<script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/number-to-words.js"></script>
 <script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/timesheet/daterangepicker.min.js"></script>
+<script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/jspdf.debug.js"></script>
+<script type="text/javascript" charset="utf8" src="<?php echo base_url(); ?>assets/js/html2pdf.bundle.min.js"></script>
 

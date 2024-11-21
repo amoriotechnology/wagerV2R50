@@ -1,3 +1,6 @@
+
+
+
 <style>
   th,
   td {
@@ -9,98 +12,7 @@
   padding: 35px;
   position: relative;
   }
-  .btn_upload {
-  cursor: pointer;
-  display: inline-block;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  background-color: #2a72d4;
-  border: 1px solid #166b8a;
-  padding: 5px 10px;
-  }
-  .btn_upload:hover,
-  .btn_upload:focus {
-  background-color: #7ca9e6;
-  }
-  .yes {
-  display: flex;
-  align-items: flex-start;
-  margin-top: 10px !important;
-  }
-  .btn_upload input {
-  cursor: pointer;
-  height: 100%;
-  position: absolute;
-  filter: alpha(opacity=1);
-  -moz-opacity: 0;
-  opacity: 0;
-  }
-  .it {
-  margin-left: 10px;
-  height: 200px;
-  width: 800px;
-  }
-  .btn-rmv1,
-  .btn-rmv2,
-  .btn-rmv3,
-  .btn-rmv4,
-  .btn-rmv5 {
-  display: none;
-  }
-  .rmv {
-  cursor: pointer;
-  color: #fff;
-  border-radius: 30px;
-  border: 1px solid #fff;
-  display: inline-block;
-  margin: -5px -10px;
-  }
-  tr,
-  .avoid-page-break {
-  page-break-inside: avoid;
-  }
-  #download {
-  margin-left: 830px;
-  }
-  th {
-  background-color: <?php echo "#". $color;
-    ?>;
-  }
-  .payTop_details p {
-  display: inline-block;
-  }
-  .payTop_details span {
-  display: block;
-  }
-  .Employee_details {
-  text-align: center;
-  margin: auto;
-  }
-  .Employee_details p {
-  margin-bottom: 0;
-  }
-  .proposedWork.pay_table h3 {
-  font-size: 18px;
-  text-align: left;
-  font-weight: 600;
-  margin: 5px 0 0;
-  }
-  .proposedWork.pay_table p {
-  margin: 0;
-  height: 36px;
-  }
-  .proposedWork.pay_table hr {
-  margin: 5px;
-  border-top: 1px solid #4b4b4b;
-  }
-  .amount_word,
-  .custom-row {
-  display: inline-block;
-  }
-  .r {
-  text-align: center;
-  }
+
 </style>
 <div class="content-wrapper">
 <section class="content-header" style="height:70px;">
@@ -275,8 +187,13 @@ function add_time($time1, $time2) {
               <td id="total_period"><?php echo round($timesheet_info[0]["amount"],2); ?></td>
               <td style="display:none;" id="total_period"><?php echo $ytd["ytd_salary"]; ?></td>
               <td><?php 
+            if ($employee_info[0]["payroll_type"] == "Hourly") {
+            
                $hours = substr($ytd["ytd_hours_excl_overtime_in_time"], 0, 5);
               echo  isset($hours) ?  $hours : "00:00";
+            }else{  
+              echo $ytd["ytd_hours_excl_overtime"];
+            }
                ?></td>
               <td id="total_ytd"><?php echo $ytd["ytd_salary" ]; ?></td>
               <!-- <td style="display:none;" id="total_ytd"><?php echo $ytd["ytd_salary"] + $ytd["ytd_overtime_salary"]; ?></td> -->
@@ -284,23 +201,34 @@ function add_time($time1, $time2) {
             <?php if ($employee_info[0]["payroll_type"] == "Hourly") { ?> 
             <tr>
               <td>Over Time</td>
-              <td> <?php  echo $timesheet_info[0]["extra_hour"]; ?> </td>
-              <td> <?php echo $timesheet_info[0]["extra_rate"]; ?> </td>
-              <td id="above_over_this_period"> <?php echo  $timesheet_info[0]["extra_amount"]?> </td>
+             <td> <?php echo !empty($timesheet_info[0]["extra_hour"]) ? $timesheet_info[0]["extra_hour"] : 0; ?> </td>
+             <td> <?php echo !empty($timesheet_info[0]["extra_rate"]) ? $timesheet_info[0]["extra_rate"] : 0; ?> </td>
+              <td id="above_over_this_period"> <?php echo !empty($timesheet_info[0]["extra_amount"]) ? $timesheet_info[0]["extra_amount"] : 0; ?> </td>
               <td> <?php 
+              if($ytd["ytd_hours_only_overtime"]){
         $hoursExclOvertime = substr($ytd["ytd_hours_only_overtime"], 0, 5);
-          echo  isset($hoursExclOvertime) ?  $hoursExclOvertime : "00:00";
+          echo  $hoursExclOvertime ;
+              }else{
+echo "00:00";
+              }
        ?> </td>
               <td id="final_over_ytd"> <?php 
         $salary = (is_numeric($ytd["ytd_overtime_salary"]) ? $ytd["ytd_overtime_salary"] : 0);echo number_format($salary, 2); 
     ?> </td>
             </tr>
             <?php } ?> 
+            <?php if ($employee_info[0]["payroll_type"] == "Hourly") { ?> 
             <tr>
               <th><strong>TOTAL :</strong></td>
               <th> <?php echo $timesheet_info[0]["total_hours"];?> </th>
               <th></th>
-              <th><?php echo  $timesheet_info[0]["amount"]+ $timesheet_info[0]["extra_amount"]?></th>
+              <th><?php  $amount = $timesheet_info[0]["amount"];
+    $extra_amount = $timesheet_info[0]["extra_amount"];
+    if ($extra_amount == 0) {
+        echo $amount; // If extra_amount is zero, just show amount
+    } else {
+        echo $amount + $extra_amount; // Else, show the sum of both
+    }?></th>
               <th><?php
                 list($hours1, $minutes1) = explode(":",$ytd["ytd_hours_excl_overtime_in_time"]);
                 $totalMinutes1 = $hours1 * 60 + $minutes1;
@@ -319,7 +247,7 @@ function add_time($time1, $time2) {
                 $ytd["ytd_overtime_salary"]; ?></th>
             </tr>
             <?php
-              //}
+              }
               ?>
           </table>
         </div>
@@ -460,10 +388,9 @@ function add_time($time1, $time2) {
               </tr>
               <?php
                 }
-                } ?> <?php foreach (
-                $living_state["this_perid_state_tax"]
-                as $k => $v
-                ) {
+                } ?> <?php 
+                if(!empty($living_state["this_perid_state_tax"])){
+                foreach ($living_state["this_perid_state_tax"]as $k => $v) {
                 if ($v) {
                 
                     $split = explode("-", $k);
@@ -493,7 +420,8 @@ function add_time($time1, $time2) {
               </tr>
               <?php
                 }
-                } ?> 
+                }
+               } ?> 
               <tr class="avoid-page-break">
                 <td></td>
                 <td></td>
@@ -626,11 +554,66 @@ function add_time($time1, $time2) {
   </div>
 </div>
                 <script>
+                     $('#download').on('click',function () {
+         $('#downloadLink').css('display', 'block');
+         $('#separator_line').css('display', 'block');
+         
+         function first(callback1,callback2){
+         setTimeout( function(){
+          var pdf = new jsPDF('p','pt','a4');
+          const invoice = document.getElementById("content");
+                 console.log(window);
+                  var pageWidth = 8.5;
+                  var margin=0.5;
+                  var opt = {
+         lineHeight : 1.2,
+         margin : 0,
+         maxLineWidth : pageWidth - margin *1,
+                      filename: 'invoice'+'.pdf',
+                      allowTaint: true,
+                      html2canvas: { scale: 3 },
+                      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                  };
+                   html2pdf().from(invoice).set(opt).toPdf().get('pdf').then(function (pdf) {
+         var totalPages = pdf.internal.getNumberOfPages();
+         for (var i = 1; i <= totalPages; i++) {
+         pdf.setPage(i);
+         pdf.setFontSize(10);
+         pdf.setTextColor(150);
+         }
+         }).save('PaySlip_<?php echo $employee_info[0]['first_name']." ".$employee_info[0]['last_name']."_".$timesheet_info[0]['month']?>.pdf');
+         callback1();
+         callback2();
+              clonedElement.remove();
+         $("#content").attr("hidden", true);
+         }, 3000 );
+         }
+         function second(){
+         setTimeout( function(){
+         $( '#myModal_sale' ).addClass( 'open' );
+         if ( $( '#myModal_sale' ).hasClass( 'open' ) ) {
+         $( '.container' ).addClass( 'blur' );
+         }
+         $( '.close' ).click(function() {
+         $( '#myModal_sale' ).removeClass( 'open' );
+         $( '.cont' ).removeClass( 'blur' );
+         });
+         }, 1500 );
+         }
+         function third(){
+         setTimeout( function(){
+             window.location='<?php  echo base_url();   ?>'+'Chrm/pay_slip_list';
+             window.close();
+         }, 3000 );
+        }
+         first(second,third);
+         });
+         
                 function capitalize(str) {
                     return str.charAt(0).toUpperCase() + str.slice(1);
                 }
                 $(document).ready(function() {
-                    var sum = 0;
+                    var sum = 0;var net_period=0;
                     var currency = '<?php echo $setting[0]["currency"]; ?>';
                     $('.table').find('.current').each(function() {
                         var v = $(this).html();
