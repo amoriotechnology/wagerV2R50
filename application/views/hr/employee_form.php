@@ -1,10 +1,7 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>my-assets/css/css.css" />
+
 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-<script src="<?php echo base_url() ?>my-assets/js/countrypicker.js" type="text/javascript"></script>
+
 <div class="content-wrapper">
    <section class="content-header">
       <div class="header-icon">
@@ -21,6 +18,7 @@
          </ol>
       </div>
    </section>
+
    <style>
       .popup label{
       color:white;
@@ -94,6 +92,7 @@
       }
    </style>
    <!-- New Employee Type -->
+
    <!-- <div class="row"> -->
    <div class="col-sm-12">
       <div class="panel panel-bd lobidrag">
@@ -116,10 +115,11 @@
                   </div>
                </div>
                <div class="panel-title form_employee"  style="float:right ;">
-                  <a href="<?php echo base_url('Chrm/manage_employee') ?>"   style="color:white;"    class="btnclr btn"><i class="ti-align-justify"> </i> Manage Employee </a>
+                  <a href="<?php echo base_url('Chrm/manage_employee?id='.$_GET['id'].'&admin_id='.$_GET['admin_id']); ?>"   style="color:white;" class="btnclr btn"><i class="ti-align-justify"> </i> Manage Employee </a>
                </div>
             </div>
          </div>
+
          <!-- Create Employee -->
          <div class="panel-body" id="employeeForms" style="display: none;">
             <?php //echo form_open('Chrm/employee_create', array('onsubmit' => 'return validateForm()')); ?>
@@ -164,7 +164,7 @@
                   <div class="form-group row">
                      <label for="phone" class="col-sm-4 col-form-div"><?php echo display('phone') ?> <i class="text-danger">*</i></label>
                      <div class="col-sm-8">
-                        <input name="phone" class="form-control" type="number" placeholder="<?php echo display('phone') ?>" id="phone" required>
+                        <input name="phone" class="form-control" type="number" placeholder="<?php echo display('phone') ?>" id="phone" oninput="exitnumbers(this, 10)" >
                      </div>
                   </div>
                   <div class="form-group row">
@@ -210,253 +210,10 @@
                      <label for="country" class="col-sm-4 col-form-div"><?php echo display('country') ?></label>
                      <div class="col-sm-8">
                         <select name="country" class="form-control">
-                           <option value="United States of America" rel="">United States of America</option>
-                           <option value="Afganistan" rel="">Afghanistan</option>
-                           <option value="Albania" rel="">Albania</option>
-                           <option value="Algeria" rel="">Algeria</option>
-                           <option value="American Samoa" rel="">American Samoa</option>
-                           <option value="Andorra" rel="">Andorra</option>
-                           <option value="Angola" rel="">Angola</option>
-                           <option value="Anguilla" rel="">Anguilla</option>
-                           <option value="Antigua &amp; Barbuda" rel="">Antigua &amp; Barbuda</option>
-                           <option value="Argentina" rel="">Argentina</option>
-                           <option value="Armenia" rel="">Armenia</option>
-                           <option value="Aruba" rel="">Aruba</option>
-                           <option value="Australia" rel="">Australia</option>
-                           <option value="Austria" rel="">Austria</option>
-                           <option value="Azerbaijan" rel="">Azerbaijan</option>
-                           <option value="Bahamas" rel="">Bahamas</option>
-                           <option value="Bahrain" rel="">Bahrain</option>
-                           <option value="Bangladesh" rel="">Bangladesh</option>
-                           <option value="Barbados" rel="">Barbados</option>
-                           <option value="Belarus" rel="">Belarus</option>
-                           <option value="Belgium" rel="">Belgium</option>
-                           <option value="Belize" rel="">Belize</option>
-                           <option value="Benin" rel="">Benin</option>
-                           <option value="Bermuda" rel="">Bermuda</option>
-                           <option value="Bhutan" rel="">Bhutan</option>
-                           <option value="Bolivia" rel="">Bolivia</option>
-                           <option value="Bonaire" rel="">Bonaire</option>
-                           <option value="Bosnia &amp; Herzegovina" rel="">Bosnia &amp; Herzegovina</option>
-                           <option value="Botswana" rel="">Botswana</option>
-                           <option value="Brazil" rel="">Brazil</option>
-                           <option value="British Indian Ocean Ter" rel="">British Indian Ocean Ter</option>
-                           <option value="Brunei" rel="">Brunei</option>
-                           <option value="Bulgaria" rel="">Bulgaria</option>
-                           <option value="Burkina Faso" rel="">Burkina Faso</option>
-                           <option value="Burundi" rel="">Burundi</option>
-                           <option value="Cambodia" rel="">Cambodia</option>
-                           <option value="Cameroon" rel="">Cameroon</option>
-                           <option value="Canada" rel="">Canada</option>
-                           <option value="Canary Islands" rel="">Canary Islands</option>
-                           <option value="Cape Verde" rel="">Cape Verde</option>
-                           <option value="Cayman Islands" rel="">Cayman Islands</option>
-                           <option value="Central African Republic" rel="">Central African Republic</option>
-                           <option value="Chad" rel="">Chad</option>
-                           <option value="Channel Islands" rel="">Channel Islands</option>
-                           <option value="Chile" rel="">Chile</option>
-                           <option value="China" rel="">China</option>
-                           <option value="Christmas Island" rel="">Christmas Island</option>
-                           <option value="Cocos Island" rel="">Cocos Island</option>
-                           <option value="Colombia" rel="">Colombia</option>
-                           <option value="Comoros" rel="">Comoros</option>
-                           <option value="Congo" rel="">Congo</option>
-                           <option value="Cook Islands" rel="">Cook Islands</option>
-                           <option value="Costa Rica" rel="">Costa Rica</option>
-                           <option value="Cote DIvoire" rel="">Cote D'Ivoire</option>
-                           <option value="Croatia" rel="">Croatia</option>
-                           <option value="Cuba" rel="">Cuba</option>
-                           <option value="Curaco" rel="">Curacao</option>
-                           <option value="Cyprus" rel="">Cyprus</option>
-                           <option value="Czech Republic" rel="">Czech Republic</option>
-                           <option value="Denmark" rel="">Denmark</option>
-                           <option value="Djibouti" rel="">Djibouti</option>
-                           <option value="Dominica" rel="">Dominica</option>
-                           <option value="Dominican Republic" rel="">Dominican Republic</option>
-                           <option value="East Timor" rel="">East Timor</option>
-                           <option value="Ecuador" rel="">Ecuador</option>
-                           <option value="Egypt" rel="">Egypt</option>
-                           <option value="El Salvador" rel="">El Salvador</option>
-                           <option value="Equatorial Guinea" rel="">Equatorial Guinea</option>
-                           <option value="Eritrea" rel="">Eritrea</option>
-                           <option value="Estonia" rel="">Estonia</option>
-                           <option value="Ethiopia" rel="">Ethiopia</option>
-                           <option value="Falkland Islands" rel="">Falkland Islands</option>
-                           <option value="Faroe Islands" rel="">Faroe Islands</option>
-                           <option value="Fiji" rel="">Fiji</option>
-                           <option value="Finland" rel="">Finland</option>
-                           <option value="France" rel="">France</option>
-                           <option value="French Guiana" rel="">French Guiana</option>
-                           <option value="French Polynesia" rel="">French Polynesia</option>
-                           <option value="French Southern Ter">French Southern Ter</option>
-                           <option value="Gabon">Gabon</option>
-                           <option value="Gambia">Gambia</option>
-                           <option value="Georgia">Georgia</option>
-                           <option value="Germany" rel="">Germany</option>
-                           <option value="Ghana">Ghana</option>
-                           <option value="Gibraltar">Gibraltar</option>
-                           <option value="Great Britain">Great Britain</option>
-                           <option value="Greece" rel="">Greece</option>
-                           <option value="Greenland" rel="">Greenland</option>
-                           <option value="Grenada">Grenada</option>
-                           <option value="Guadeloupe">Guadeloupe</option>
-                           <option value="Guam">Guam</option>
-                           <option value="Guatemala">Guatemala</option>
-                           <option value="Guinea">Guinea</option>
-                           <option value="Guyana">Guyana</option>
-                           <option value="Haiti">Haiti</option>
-                           <option value="Hawaii">Hawaii</option>
-                           <option value="Honduras">Honduras</option>
-                           <option value="Hong Kong" rel="">Hong Kong</option>
-                           <option value="Hungary">Hungary</option>
-                           <option value="Iceland">Iceland</option>
-                           <option value="India" rel="">India</option>
-                           <option value="Indonesia" rel="">Indonesia</option>
-                           <option value="Iran" rel="">Iran</option>
-                           <option value="Iraq" rel="">Iraq</option>
-                           <option value="Ireland" rel="">Ireland</option>
-                           <option value="Isle of Man">Isle of Man</option>
-                           <option value="Israel">Israel</option>
-                           <option value="Italy" rel="">Italy</option>
-                           <option value="Jamaica">Jamaica</option>
-                           <option value="Japan" rel="">Japan</option>
-                           <option value="Jordan">Jordan</option>
-                           <option value="Kazakhstan">Kazakhstan</option>
-                           <option value="Kenya" rel="">Kenya</option>
-                           <option value="Kiribati">Kiribati</option>
-                           <option value="Korea North" rel="">Korea North</option>
-                           <option value="Korea Sout" rel="">Korea South</option>
-                           <option value="Kuwait">Kuwait</option>
-                           <option value="Kyrgyzstan">Kyrgyzstan</option>
-                           <option value="Laos">Laos</option>
-                           <option value="Latvia">Latvia</option>
-                           <option value="Lebanon">Lebanon</option>
-                           <option value="Lesotho">Lesotho</option>
-                           <option value="Liberia">Liberia</option>
-                           <option value="Libya">Libya</option>
-                           <option value="Liechtenstein">Liechtenstein</option>
-                           <option value="Lithuania">Lithuania</option>
-                           <option value="Luxembourg">Luxembourg</option>
-                           <option value="Macau">Macau</option>
-                           <option value="Macedonia">Macedonia</option>
-                           <option value="Madagascar">Madagascar</option>
-                           <option value="Malaysia">Malaysia</option>
-                           <option value="Malawi">Malawi</option>
-                           <option value="Maldives">Maldives</option>
-                           <option value="Mali">Mali</option>
-                           <option value="Malta">Malta</option>
-                           <option value="Marshall Islands">Marshall Islands</option>
-                           <option value="Martinique">Martinique</option>
-                           <option value="Mauritania">Mauritania</option>
-                           <option value="Mauritius">Mauritius</option>
-                           <option value="Mayotte">Mayotte</option>
-                           <option value="Mexico">Mexico</option>
-                           <option value="Midway Islands">Midway Islands</option>
-                           <option value="Moldova">Moldova</option>
-                           <option value="Monaco">Monaco</option>
-                           <option value="Mongolia">Mongolia</option>
-                           <option value="Montserrat">Montserrat</option>
-                           <option value="Morocco">Morocco</option>
-                           <option value="Mozambique">Mozambique</option>
-                           <option value="Myanmar">Myanmar</option>
-                           <option value="Nambia">Nambia</option>
-                           <option value="Nauru">Nauru</option>
-                           <option value="Nepal">Nepal</option>
-                           <option value="Netherland Antilles">Netherland Antilles</option>
-                           <option value="Netherlands">Netherlands (Holland, Europe)</option>
-                           <option value="Nevis">Nevis</option>
-                           <option value="New Caledonia">New Caledonia</option>
-                           <option value="New Zealand">New Zealand</option>
-                           <option value="Nicaragua">Nicaragua</option>
-                           <option value="Niger">Niger</option>
-                           <option value="Nigeria">Nigeria</option>
-                           <option value="Niue">Niue</option>
-                           <option value="Norfolk Island">Norfolk Island</option>
-                           <option value="Norway">Norway</option>
-                           <option value="Oman">Oman</option>
-                           <option value="Pakistan">Pakistan</option>
-                           <option value="Palau Island">Palau Island</option>
-                           <option value="Palestine">Palestine</option>
-                           <option value="Panama">Panama</option>
-                           <option value="Papua New Guinea">Papua New Guinea</option>
-                           <option value="Paraguay">Paraguay</option>
-                           <option value="Peru">Peru</option>
-                           <option value="Phillipines" rel="">Philippines</option>
-                           <option value="Pitcairn Island">Pitcairn Island</option>
-                           <option value="Poland">Poland</option>
-                           <option value="Portugal">Portugal</option>
-                           <option value="Puerto Rico">Puerto Rico</option>
-                           <option value="Qatar" rel="">Qatar</option>
-                           <option value="Republic of Montenegro">Republic of Montenegro</option>
-                           <option value="Republic of Serbia" rel="">Republic of Serbia</option>
-                           <option value="Reunion">Reunion</option>
-                           <option value="Romania">Romania</option>
-                           <option value="Russia" rel="">Russia</option>
-                           <option value="Rwanda">Rwanda</option>
-                           <option value="St Barthelemy">St Barthelemy</option>
-                           <option value="St Eustatius">St Eustatius</option>
-                           <option value="St Helena">St Helena</option>
-                           <option value="St Kitts-Nevis">St Kitts-Nevis</option>
-                           <option value="St Lucia">St Lucia</option>
-                           <option value="St Maarten">St Maarten</option>
-                           <option value="St Pierre &amp; Miquelon">St Pierre &amp; Miquelon</option>
-                           <option value="St Vincent &amp; Grenadines">St Vincent &amp; Grenadines</option>
-                           <option value="Saipan">Saipan</option>
-                           <option value="Samoa">Samoa</option>
-                           <option value="Samoa American">Samoa American</option>
-                           <option value="San Marino">San Marino</option>
-                           <option value="Sao Tome &amp; Principe">Sao Tome &amp; Principe</option>
-                           <option value="Saudi Arabia">Saudi Arabia</option>
-                           <option value="Senegal">Senegal</option>
-                           <option value="Serbia">Serbia</option>
-                           <option value="Seychelles">Seychelles</option>
-                           <option value="Sierra Leone">Sierra Leone</option>
-                           <option value="Singapore" rel="">Singapore</option>
-                           <option value="Slovakia">Slovakia</option>
-                           <option value="Slovenia">Slovenia</option>
-                           <option value="Solomon Islands">Solomon Islands</option>
-                           <option value="Somalia">Somalia</option>
-                           <option value="South Africa" rel="">South Africa</option>
-                           <option value="Spain">Spain</option>
-                           <option value="Sri Lanka" rel="">Sri Lanka</option>
-                           <option value="Sudan">Sudan</option>
-                           <option value="Suriname">Suriname</option>
-                           <option value="Swaziland">Swaziland</option>
-                           <option value="Sweden" rel="">Sweden</option>
-                           <option value="Switzerland">Switzerland</option>
-                           <option value="Syria">Syria</option>
-                           <option value="Tahiti">Tahiti</option>
-                           <option value="Taiwan">Taiwan</option>
-                           <option value="Tajikistan">Tajikistan</option>
-                           <option value="Tanzania">Tanzania</option>
-                           <option value="Thailand" rel="">Thailand</option>
-                           <option value="Togo">Togo</option>
-                           <option value="Tokelau">Tokelau</option>
-                           <option value="Tonga">Tonga</option>
-                           <option value="Trinidad &amp; Tobago">Trinidad &amp; Tobago</option>
-                           <option value="Tunisia">Tunisia</option>
-                           <option value="Turkey">Turkey</option>
-                           <option value="Turkmenistan">Turkmenistan</option>
-                           <option value="Turks &amp; Caicos Is">Turks &amp; Caicos Is</option>
-                           <option value="Tuvalu">Tuvalu</option>
-                           <option value="Uganda">Uganda</option>
-                           <option value="Ukraine">Ukraine</option>
-                           <option value="United Arab Erimates" rel="">United Arab Emirates</option>
-                           <option value="United Kingdom" rel="">United Kingdom</option>
-                           <option value="Uraguay">Uruguay</option>
-                           <option value="Uzbekistan">Uzbekistan</option>
-                           <option value="Vanuatu">Vanuatu</option>
-                           <option value="Vatican City State" rel="">Vatican City State</option>
-                           <option value="Venezuela">Venezuela</option>
-                           <option value="Vietnam">Vietnam</option>
-                           <option value="Virgin Islands (Brit)">Virgin Islands (Brit)</option>
-                           <option value="Virgin Islands (USA)">Virgin Islands (USA)</option>
-                           <option value="Wake Island">Wake Island</option>
-                           <option value="Wallis &amp; Futana Is">Wallis &amp; Futana Is</option>
-                           <option value="Yemen" rel="">Yemen</option>
-                           <option value="Zaire">Zaire</option>
-                           <option value="Zambia">Zambia</option>
-                           <option value="Zimbabwe">Zimbabwe</option>
+                        <option value="">Select Country</option>
+                           <?php foreach($country_data as $value) { ?>
+                              <option value="<?= $value['name']; ?>"> <?= $value['name']; ?> </option>
+                           <?php } ?>
                         </select>
                      </div>
                   </div>
@@ -949,253 +706,10 @@
                      <label for="country" class="col-sm-4 col-form-div"><?php echo display('country') ?></label>
                      <div class="col-sm-8">
                         <select name="country" class="form-control">
-                           <option value="United States of America" rel="">United States of America</option>
-                           <option value="Afganistan" rel="">Afghanistan</option>
-                           <option value="Albania" rel="">Albania</option>
-                           <option value="Algeria" rel="">Algeria</option>
-                           <option value="American Samoa" rel="">American Samoa</option>
-                           <option value="Andorra" rel="">Andorra</option>
-                           <option value="Angola" rel="">Angola</option>
-                           <option value="Anguilla" rel="">Anguilla</option>
-                           <option value="Antigua &amp; Barbuda" rel="">Antigua &amp; Barbuda</option>
-                           <option value="Argentina" rel="">Argentina</option>
-                           <option value="Armenia" rel="">Armenia</option>
-                           <option value="Aruba" rel="">Aruba</option>
-                           <option value="Australia" rel="">Australia</option>
-                           <option value="Austria" rel="">Austria</option>
-                           <option value="Azerbaijan" rel="">Azerbaijan</option>
-                           <option value="Bahamas" rel="">Bahamas</option>
-                           <option value="Bahrain" rel="">Bahrain</option>
-                           <option value="Bangladesh" rel="">Bangladesh</option>
-                           <option value="Barbados" rel="">Barbados</option>
-                           <option value="Belarus" rel="">Belarus</option>
-                           <option value="Belgium" rel="">Belgium</option>
-                           <option value="Belize" rel="">Belize</option>
-                           <option value="Benin" rel="">Benin</option>
-                           <option value="Bermuda" rel="">Bermuda</option>
-                           <option value="Bhutan" rel="">Bhutan</option>
-                           <option value="Bolivia" rel="">Bolivia</option>
-                           <option value="Bonaire" rel="">Bonaire</option>
-                           <option value="Bosnia &amp; Herzegovina" rel="">Bosnia &amp; Herzegovina</option>
-                           <option value="Botswana" rel="">Botswana</option>
-                           <option value="Brazil" rel="">Brazil</option>
-                           <option value="British Indian Ocean Ter" rel="">British Indian Ocean Ter</option>
-                           <option value="Brunei" rel="">Brunei</option>
-                           <option value="Bulgaria" rel="">Bulgaria</option>
-                           <option value="Burkina Faso" rel="">Burkina Faso</option>
-                           <option value="Burundi" rel="">Burundi</option>
-                           <option value="Cambodia" rel="">Cambodia</option>
-                           <option value="Cameroon" rel="">Cameroon</option>
-                           <option value="Canada" rel="">Canada</option>
-                           <option value="Canary Islands" rel="">Canary Islands</option>
-                           <option value="Cape Verde" rel="">Cape Verde</option>
-                           <option value="Cayman Islands" rel="">Cayman Islands</option>
-                           <option value="Central African Republic" rel="">Central African Republic</option>
-                           <option value="Chad" rel="">Chad</option>
-                           <option value="Channel Islands" rel="">Channel Islands</option>
-                           <option value="Chile" rel="">Chile</option>
-                           <option value="China" rel="">China</option>
-                           <option value="Christmas Island" rel="">Christmas Island</option>
-                           <option value="Cocos Island" rel="">Cocos Island</option>
-                           <option value="Colombia" rel="">Colombia</option>
-                           <option value="Comoros" rel="">Comoros</option>
-                           <option value="Congo" rel="">Congo</option>
-                           <option value="Cook Islands" rel="">Cook Islands</option>
-                           <option value="Costa Rica" rel="">Costa Rica</option>
-                           <option value="Cote DIvoire" rel="">Cote D'Ivoire</option>
-                           <option value="Croatia" rel="">Croatia</option>
-                           <option value="Cuba" rel="">Cuba</option>
-                           <option value="Curaco" rel="">Curacao</option>
-                           <option value="Cyprus" rel="">Cyprus</option>
-                           <option value="Czech Republic" rel="">Czech Republic</option>
-                           <option value="Denmark" rel="">Denmark</option>
-                           <option value="Djibouti" rel="">Djibouti</option>
-                           <option value="Dominica" rel="">Dominica</option>
-                           <option value="Dominican Republic" rel="">Dominican Republic</option>
-                           <option value="East Timor" rel="">East Timor</option>
-                           <option value="Ecuador" rel="">Ecuador</option>
-                           <option value="Egypt" rel="">Egypt</option>
-                           <option value="El Salvador" rel="">El Salvador</option>
-                           <option value="Equatorial Guinea" rel="">Equatorial Guinea</option>
-                           <option value="Eritrea" rel="">Eritrea</option>
-                           <option value="Estonia" rel="">Estonia</option>
-                           <option value="Ethiopia" rel="">Ethiopia</option>
-                           <option value="Falkland Islands" rel="">Falkland Islands</option>
-                           <option value="Faroe Islands" rel="">Faroe Islands</option>
-                           <option value="Fiji" rel="">Fiji</option>
-                           <option value="Finland" rel="">Finland</option>
-                           <option value="France" rel="">France</option>
-                           <option value="French Guiana" rel="">French Guiana</option>
-                           <option value="French Polynesia" rel="">French Polynesia</option>
-                           <option value="French Southern Ter">French Southern Ter</option>
-                           <option value="Gabon">Gabon</option>
-                           <option value="Gambia">Gambia</option>
-                           <option value="Georgia">Georgia</option>
-                           <option value="Germany" rel="">Germany</option>
-                           <option value="Ghana">Ghana</option>
-                           <option value="Gibraltar">Gibraltar</option>
-                           <option value="Great Britain">Great Britain</option>
-                           <option value="Greece" rel="">Greece</option>
-                           <option value="Greenland" rel="">Greenland</option>
-                           <option value="Grenada">Grenada</option>
-                           <option value="Guadeloupe">Guadeloupe</option>
-                           <option value="Guam">Guam</option>
-                           <option value="Guatemala">Guatemala</option>
-                           <option value="Guinea">Guinea</option>
-                           <option value="Guyana">Guyana</option>
-                           <option value="Haiti">Haiti</option>
-                           <option value="Hawaii">Hawaii</option>
-                           <option value="Honduras">Honduras</option>
-                           <option value="Hong Kong" rel="">Hong Kong</option>
-                           <option value="Hungary">Hungary</option>
-                           <option value="Iceland">Iceland</option>
-                           <option value="India" rel="">India</option>
-                           <option value="Indonesia" rel="">Indonesia</option>
-                           <option value="Iran" rel="">Iran</option>
-                           <option value="Iraq" rel="">Iraq</option>
-                           <option value="Ireland" rel="">Ireland</option>
-                           <option value="Isle of Man">Isle of Man</option>
-                           <option value="Israel">Israel</option>
-                           <option value="Italy" rel="">Italy</option>
-                           <option value="Jamaica">Jamaica</option>
-                           <option value="Japan" rel="">Japan</option>
-                           <option value="Jordan">Jordan</option>
-                           <option value="Kazakhstan">Kazakhstan</option>
-                           <option value="Kenya" rel="">Kenya</option>
-                           <option value="Kiribati">Kiribati</option>
-                           <option value="Korea North" rel="">Korea North</option>
-                           <option value="Korea Sout" rel="">Korea South</option>
-                           <option value="Kuwait">Kuwait</option>
-                           <option value="Kyrgyzstan">Kyrgyzstan</option>
-                           <option value="Laos">Laos</option>
-                           <option value="Latvia">Latvia</option>
-                           <option value="Lebanon">Lebanon</option>
-                           <option value="Lesotho">Lesotho</option>
-                           <option value="Liberia">Liberia</option>
-                           <option value="Libya">Libya</option>
-                           <option value="Liechtenstein">Liechtenstein</option>
-                           <option value="Lithuania">Lithuania</option>
-                           <option value="Luxembourg">Luxembourg</option>
-                           <option value="Macau">Macau</option>
-                           <option value="Macedonia">Macedonia</option>
-                           <option value="Madagascar">Madagascar</option>
-                           <option value="Malaysia">Malaysia</option>
-                           <option value="Malawi">Malawi</option>
-                           <option value="Maldives">Maldives</option>
-                           <option value="Mali">Mali</option>
-                           <option value="Malta">Malta</option>
-                           <option value="Marshall Islands">Marshall Islands</option>
-                           <option value="Martinique">Martinique</option>
-                           <option value="Mauritania">Mauritania</option>
-                           <option value="Mauritius">Mauritius</option>
-                           <option value="Mayotte">Mayotte</option>
-                           <option value="Mexico">Mexico</option>
-                           <option value="Midway Islands">Midway Islands</option>
-                           <option value="Moldova">Moldova</option>
-                           <option value="Monaco">Monaco</option>
-                           <option value="Mongolia">Mongolia</option>
-                           <option value="Montserrat">Montserrat</option>
-                           <option value="Morocco">Morocco</option>
-                           <option value="Mozambique">Mozambique</option>
-                           <option value="Myanmar">Myanmar</option>
-                           <option value="Nambia">Nambia</option>
-                           <option value="Nauru">Nauru</option>
-                           <option value="Nepal">Nepal</option>
-                           <option value="Netherland Antilles">Netherland Antilles</option>
-                           <option value="Netherlands">Netherlands (Holland, Europe)</option>
-                           <option value="Nevis">Nevis</option>
-                           <option value="New Caledonia">New Caledonia</option>
-                           <option value="New Zealand">New Zealand</option>
-                           <option value="Nicaragua">Nicaragua</option>
-                           <option value="Niger">Niger</option>
-                           <option value="Nigeria">Nigeria</option>
-                           <option value="Niue">Niue</option>
-                           <option value="Norfolk Island">Norfolk Island</option>
-                           <option value="Norway">Norway</option>
-                           <option value="Oman">Oman</option>
-                           <option value="Pakistan">Pakistan</option>
-                           <option value="Palau Island">Palau Island</option>
-                           <option value="Palestine">Palestine</option>
-                           <option value="Panama">Panama</option>
-                           <option value="Papua New Guinea">Papua New Guinea</option>
-                           <option value="Paraguay">Paraguay</option>
-                           <option value="Peru">Peru</option>
-                           <option value="Phillipines" rel="">Philippines</option>
-                           <option value="Pitcairn Island">Pitcairn Island</option>
-                           <option value="Poland">Poland</option>
-                           <option value="Portugal">Portugal</option>
-                           <option value="Puerto Rico">Puerto Rico</option>
-                           <option value="Qatar" rel="">Qatar</option>
-                           <option value="Republic of Montenegro">Republic of Montenegro</option>
-                           <option value="Republic of Serbia" rel="">Republic of Serbia</option>
-                           <option value="Reunion">Reunion</option>
-                           <option value="Romania">Romania</option>
-                           <option value="Russia" rel="">Russia</option>
-                           <option value="Rwanda">Rwanda</option>
-                           <option value="St Barthelemy">St Barthelemy</option>
-                           <option value="St Eustatius">St Eustatius</option>
-                           <option value="St Helena">St Helena</option>
-                           <option value="St Kitts-Nevis">St Kitts-Nevis</option>
-                           <option value="St Lucia">St Lucia</option>
-                           <option value="St Maarten">St Maarten</option>
-                           <option value="St Pierre &amp; Miquelon">St Pierre &amp; Miquelon</option>
-                           <option value="St Vincent &amp; Grenadines">St Vincent &amp; Grenadines</option>
-                           <option value="Saipan">Saipan</option>
-                           <option value="Samoa">Samoa</option>
-                           <option value="Samoa American">Samoa American</option>
-                           <option value="San Marino">San Marino</option>
-                           <option value="Sao Tome &amp; Principe">Sao Tome &amp; Principe</option>
-                           <option value="Saudi Arabia">Saudi Arabia</option>
-                           <option value="Senegal">Senegal</option>
-                           <option value="Serbia">Serbia</option>
-                           <option value="Seychelles">Seychelles</option>
-                           <option value="Sierra Leone">Sierra Leone</option>
-                           <option value="Singapore" rel="">Singapore</option>
-                           <option value="Slovakia">Slovakia</option>
-                           <option value="Slovenia">Slovenia</option>
-                           <option value="Solomon Islands">Solomon Islands</option>
-                           <option value="Somalia">Somalia</option>
-                           <option value="South Africa" rel="">South Africa</option>
-                           <option value="Spain">Spain</option>
-                           <option value="Sri Lanka" rel="">Sri Lanka</option>
-                           <option value="Sudan">Sudan</option>
-                           <option value="Suriname">Suriname</option>
-                           <option value="Swaziland">Swaziland</option>
-                           <option value="Sweden" rel="">Sweden</option>
-                           <option value="Switzerland">Switzerland</option>
-                           <option value="Syria">Syria</option>
-                           <option value="Tahiti">Tahiti</option>
-                           <option value="Taiwan">Taiwan</option>
-                           <option value="Tajikistan">Tajikistan</option>
-                           <option value="Tanzania">Tanzania</option>
-                           <option value="Thailand" rel="">Thailand</option>
-                           <option value="Togo">Togo</option>
-                           <option value="Tokelau">Tokelau</option>
-                           <option value="Tonga">Tonga</option>
-                           <option value="Trinidad &amp; Tobago">Trinidad &amp; Tobago</option>
-                           <option value="Tunisia">Tunisia</option>
-                           <option value="Turkey">Turkey</option>
-                           <option value="Turkmenistan">Turkmenistan</option>
-                           <option value="Turks &amp; Caicos Is">Turks &amp; Caicos Is</option>
-                           <option value="Tuvalu">Tuvalu</option>
-                           <option value="Uganda">Uganda</option>
-                           <option value="Ukraine">Ukraine</option>
-                           <option value="United Arab Erimates" rel="">United Arab Emirates</option>
-                           <option value="United Kingdom" rel="">United Kingdom</option>
-                           <option value="Uraguay">Uruguay</option>
-                           <option value="Uzbekistan">Uzbekistan</option>
-                           <option value="Vanuatu">Vanuatu</option>
-                           <option value="Vatican City State" rel="">Vatican City State</option>
-                           <option value="Venezuela">Venezuela</option>
-                           <option value="Vietnam">Vietnam</option>
-                           <option value="Virgin Islands (Brit)">Virgin Islands (Brit)</option>
-                           <option value="Virgin Islands (USA)">Virgin Islands (USA)</option>
-                           <option value="Wake Island">Wake Island</option>
-                           <option value="Wallis &amp; Futana Is">Wallis &amp; Futana Is</option>
-                           <option value="Yemen" rel="">Yemen</option>
-                           <option value="Zaire">Zaire</option>
-                           <option value="Zambia">Zambia</option>
-                           <option value="Zimbabwe">Zimbabwe</option>
+                           <option value="">Select Country</option>
+                           <?php foreach($country_data as $value) { ?>
+                              <option value="<?= $value['name']; ?>"> <?= $value['name']; ?> </option>
+                           <?php } ?>
                         </select>
                      </div>
                   </div>
@@ -1480,7 +994,7 @@
                               <datalist id="magic_state_tax_2">
                                  <!--<?php //foreach ($state_tx as $st) { ?>-->
                                  <!--    <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
-                                 <!--<?php// } ?>-->
+                                 <!--<?php // } ?>-->
                                  <option value="Not Applicable">Not Applicable</option>
                               </datalist>
                            </div>
@@ -1590,6 +1104,8 @@
    </div>
    </section>
 </div>
+
+
 <div class="modal fade" id="myModal1" role="dialog" >
    <div class="modal-dialog">
       <!-- Modal content-->
@@ -1605,404 +1121,16 @@
       </div>
    </div>
 </div>
-<!------ add new Payment Type -->  
-<div class="modal fade" id="payment_type" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?php echo display('Add New Payment Type') ?></h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_pay_type" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo display('New Payment Type') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="new_payment_type" id="new_payment_type" type="text" placeholder="New Payment Type"  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr "  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new Payment Type -->  
-<div class="modal fade" id="employees_type" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title">Add Employee Type</h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_employee_type" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">New Employee Type <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="employee_type" id="emps_type" type="text" placeholder="New Employee Type"  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr"  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new payroll Type -->
-<div class="modal fade" id="proll_type" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title">Add Payroll Type</h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_payroll_type" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">New Payroll Type <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="new_payroll_type" id="new_payroll_type" type="text" placeholder="New Payroll Type"  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr"  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new city tax -->
-<div class="modal fade" id="city_tax" role="dialog">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?php echo 'Add New City ' ?></h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_city_tax" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo 'New City ' ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="new_city_tax" id="new_city_tax" type="text" placeholder="New City "  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr "  value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<!------ add new designation_modal -->  
-<div class="modal fade" id="designation_modal" role="dialog">
-   <div class="modal-dialog" role="document">
-      <!-- <div class="modal-dialog" role="document"> -->
-      <div class="modal-content">
-         <div class="modal-header btnclr"  style="text-align:center;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?php echo ('Add New Designation ') ?></h4>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_designation" method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo ('New Designation') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input class="form-control" name ="designation" id="designation" type="text" placeholder=""  required="" tabindex="1">
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <a href="#" class="btn btnclr"   data-dismiss="modal"><?php echo display('Close') ?> </a>
-         <input type="submit" class="btn btnclr"   value=<?php echo display('Submit') ?>>
-         </div>
-         </form>
-      </div>
-      <!-- /.modal-content -->
-   </div>
-   <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-<div class="modal fade" id="add_bank_info">
-   <div class="modal-dialog">
-      <div class="modal-content" style="text-align:center;" >
-         <div class="modal-header btnclr" >
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title"><?php echo display ('ADD BANK ') ?></h4>
-         </div>
-         <div class="container"></div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="add_bank"  method="post">
-               <div class="panel-body">
-                  <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="bank_name" class="col-sm-4 col-form-label"><?php echo display('bank_name') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="bank_name" id="bank_name" required="" placeholder="<?php echo display('bank_name') ?>" tabindex="1"/>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="ac_name" class="col-sm-4 col-form-label"><?php echo display('ac_name') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="ac_name" id="ac_name" required="" placeholder="<?php echo display('ac_name') ?>" tabindex="2"/>
-                     </div>
-                  </div>
-                  <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-                  <div class="form-group row">
-                     <label for="ac_no" class="col-sm-4 col-form-label"><?php echo display('ac_no') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="ac_no" id="ac_no" required="" placeholder="<?php echo display('ac_no') ?>" tabindex="3"/>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="branch" class="col-sm-4 col-form-label"><?php echo display('branch') ?> <i class="text-danger">*</i></label>
-                     <div class="col-sm-6">
-                        <input type="text" class="form-control" name="branch" id="branch" required="" placeholder="<?php echo display('branch') ?>" tabindex="4"/>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="shipping_line" class="col-sm-4 col-form-label"><?php echo display('Country') ?>
-                     <i class="text-danger"></i>
-                     </label>
-                     <div class="col-sm-6">
-                        <select class="selectpicker countrypicker form-control"  data-live-search="true" data-default="United States"  name="country" id="country" style="width:100%"></select>
-                     </div>
-                  </div>
-                  <div class="form-group row">
-                     <label for="previous_balance" class="col-sm-4 col-form-label"><?php echo display('Currency') ?></label>
-                     <div class="col-sm-6">
-                        <select  class="form-control" id="currency" name="currency1" class="form-control"  style="width: 100%;" required=""  style="max-width: -webkit-fill-available;">
-                           <option>Select currency</option>
-                           <option value="AFN">AFN - Afghan Afghani</option>
-                           <option value="ALL">ALL - Albanian Lek</option>
-                           <option value="DZD">DZD - Algerian Dinar</option>
-                           <option value="AOA">AOA - Angolan Kwanza</option>
-                           <option value="ARS">ARS - Argentine Peso</option>
-                           <option value="AMD">AMD - Armenian Dram</option>
-                           <option value="AWG">AWG - Aruban Florin</option>
-                           <option value="AUD">AUD - Australian Dollar</option>
-                           <option value="AZN">AZN - Azerbaijani Manat</option>
-                           <option value="BSD">BSD - Bahamian Dollar</option>
-                           <option value="BHD">BHD - Bahraini Dinar</option>
-                           <option value="BDT">BDT - Bangladeshi Taka</option>
-                           <option value="BBD">BBD - Barbadian Dollar</option>
-                           <option value="BYR">BYR - Belarusian Ruble</option>
-                           <option value="BEF">BEF - Belgian Franc</option>
-                           <option value="BZD">BZD - Belize Dollar</option>
-                           <option value="BMD">BMD - Bermudan Dollar</option>
-                           <option value="BTN">BTN - Bhutanese Ngultrum</option>
-                           <option value="BTC">BTC - Bitcoin</option>
-                           <option value="BOB">BOB - Bolivian Boliviano</option>
-                           <option value="BAM">BAM - Bosnia-Herzegovina Convertible Mark</option>
-                           <option value="BWP">BWP - Botswanan Pula</option>
-                           <option value="BRL">BRL - Brazilian Real</option>
-                           <option value="GBP">GBP - British Pound Sterling</option>
-                           <option value="BND">BND - Brunei Dollar</option>
-                           <option value="BGN">BGN - Bulgarian Lev</option>
-                           <option value="BIF">BIF - Burundian Franc</option>
-                           <option value="KHR">KHR - Cambodian Riel</option>
-                           <option value="CAD">CAD - Canadian Dollar</option>
-                           <option value="CVE">CVE - Cape Verdean Escudo</option>
-                           <option value="KYD">KYD - Cayman Islands Dollar</option>
-                           <option value="XOF">XOF - CFA Franc BCEAO</option>
-                           <option value="XAF">XAF - CFA Franc BEAC</option>
-                           <option value="XPF">XPF - CFP Franc</option>
-                           <option value="CLP">CLP - Chilean Peso</option>
-                           <option value="CNY">CNY - Chinese Yuan</option>
-                           <option value="COP">COP - Colombian Peso</option>
-                           <option value="KMF">KMF - Comorian Franc</option>
-                           <option value="CDF">CDF - Congolese Franc</option>
-                           <option value="CRC">CRC - Costa Rican ColÃ³n</option>
-                           <option value="HRK">HRK - Croatian Kuna</option>
-                           <option value="CUC">CUC - Cuban Convertible Peso</option>
-                           <option value="CZK">CZK - Czech Republic Koruna</option>
-                           <option value="DKK">DKK - Danish Krone</option>
-                           <option value="DJF">DJF - Djiboutian Franc</option>
-                           <option value="DOP">DOP - Dominican Peso</option>
-                           <option value="XCD">XCD - East Caribbean Dollar</option>
-                           <option value="EGP">EGP - Egyptian Pound</option>
-                           <option value="ERN">ERN - Eritrean Nakfa</option>
-                           <option value="EEK">EEK - Estonian Kroon</option>
-                           <option value="ETB">ETB - Ethiopian Birr</option>
-                           <option value="EUR">EUR - Euro</option>
-                           <option value="FKP">FKP - Falkland Islands Pound</option>
-                           <option value="FJD">FJD - Fijian Dollar</option>
-                           <option value="GMD">GMD - Gambian Dalasi</option>
-                           <option value="GEL">GEL - Georgian Lari</option>
-                           <option value="DEM">DEM - German Mark</option>
-                           <option value="GHS">GHS - Ghanaian Cedi</option>
-                           <option value="GIP">GIP - Gibraltar Pound</option>
-                           <option value="GRD">GRD - Greek Drachma</option>
-                           <option value="GTQ">GTQ - Guatemalan Quetzal</option>
-                           <option value="GNF">GNF - Guinean Franc</option>
-                           <option value="GYD">GYD - Guyanaese Dollar</option>
-                           <option value="HTG">HTG - Haitian Gourde</option>
-                           <option value="HNL">HNL - Honduran Lempira</option>
-                           <option value="HKD">HKD - Hong Kong Dollar</option>
-                           <option value="HUF">HUF - Hungarian Forint</option>
-                           <option value="ISK">ISK - Icelandic KrÃ³na</option>
-                           <option value="INR">INR - Indian Rupee</option>
-                           <option value="IDR">IDR - Indonesian Rupiah</option>
-                           <option value="IRR">IRR - Iranian Rial</option>
-                           <option value="IQD">IQD - Iraqi Dinar</option>
-                           <option value="ILS">ILS - Israeli New Sheqel</option>
-                           <option value="ITL">ITL - Italian Lira</option>
-                           <option value="JMD">JMD - Jamaican Dollar</option>
-                           <option value="JPY">JPY - Japanese Yen</option>
-                           <option value="JOD">JOD - Jordanian Dinar</option>
-                           <option value="KZT">KZT - Kazakhstani Tenge</option>
-                           <option value="KES">KES - Kenyan Shilling</option>
-                           <option value="KWD">KWD - Kuwaiti Dinar</option>
-                           <option value="KGS">KGS - Kyrgystani Som</option>
-                           <option value="LAK">LAK - Laotian Kip</option>
-                           <option value="LVL">LVL - Latvian Lats</option>
-                           <option value="LBP">LBP - Lebanese Pound</option>
-                           <option value="LSL">LSL - Lesotho Loti</option>
-                           <option value="LRD">LRD - Liberian Dollar</option>
-                           <option value="LYD">LYD - Libyan Dinar</option>
-                           <option value="LTL">LTL - Lithuanian Litas</option>
-                           <option value="MOP">MOP - Macanese Pataca</option>
-                           <option value="MKD">MKD - Macedonian Denar</option>
-                           <option value="MGA">MGA - Malagasy Ariary</option>
-                           <option value="MWK">MWK - Malawian Kwacha</option>
-                           <option value="MYR">MYR - Malaysian Ringgit</option>
-                           <option value="MVR">MVR - Maldivian Rufiyaa</option>
-                           <option value="MRO">MRO - Mauritanian Ouguiya</option>
-                           <option value="MUR">MUR - Mauritian Rupee</option>
-                           <option value="MXN">MXN - Mexican Peso</option>
-                           <option value="MDL">MDL - Moldovan Leu</option>
-                           <option value="MNT">MNT - Mongolian Tugrik</option>
-                           <option value="MAD">MAD - Moroccan Dirham</option>
-                           <option value="MZM">MZM - Mozambican Metical</option>
-                           <option value="MMK">MMK - Myanmar Kyat</option>
-                           <option value="NAD">NAD - Namibian Dollar</option>
-                           <option value="NPR">NPR - Nepalese Rupee</option>
-                           <option value="ANG">ANG - Netherlands Antillean Guilder</option>
-                           <option value="TWD">TWD - New Taiwan Dollar</option>
-                           <option value="NZD">NZD - New Zealand Dollar</option>
-                           <option value="NIO">NIO - Nicaraguan CÃ³rdoba</option>
-                           <option value="NGN">NGN - Nigerian Naira</option>
-                           <option value="KPW">KPW - North Korean Won</option>
-                           <option value="NOK">NOK - Norwegian Krone</option>
-                           <option value="OMR">OMR - Omani Rial</option>
-                           <option value="PKR">PKR - Pakistani Rupee</option>
-                           <option value="PAB">PAB - Panamanian Balboa</option>
-                           <option value="PGK">PGK - Papua New Guinean Kina</option>
-                           <option value="PYG">PYG - Paraguayan Guarani</option>
-                           <option value="PEN">PEN - Peruvian Nuevo Sol</option>
-                           <option value="PHP">PHP - Philippine Peso</option>
-                           <option value="PLN">PLN - Polish Zloty</option>
-                           <option value="QAR">QAR - Qatari Rial</option>
-                           <option value="RON">RON - Romanian Leu</option>
-                           <option value="RUB">RUB - Russian Ruble</option>
-                           <option value="RWF">RWF - Rwandan Franc</option>
-                           <option value="SVC">SVC - Salvadoran ColÃ³n</option>
-                           <option value="WST">WST - Samoan Tala</option>
-                           <option value="SAR">SAR - Saudi Riyal</option>
-                           <option value="RSD">RSD - Serbian Dinar</option>
-                           <option value="SCR">SCR - Seychellois Rupee</option>
-                           <option value="SLL">SLL - Sierra Leonean Leone</option>
-                           <option value="SGD">SGD - Singapore Dollar</option>
-                           <option value="SKK">SKK - Slovak Koruna</option>
-                           <option value="SBD">SBD - Solomon Islands Dollar</option>
-                           <option value="SOS">SOS - Somali Shilling</option>
-                           <option value="ZAR">ZAR - South African Rand</option>
-                           <option value="KRW">KRW - South Korean Won</option>
-                           <option value="XDR">XDR - Special Drawing Rights</option>
-                           <option value="LKR">LKR - Sri Lankan Rupee</option>
-                           <option value="SHP">SHP - St. Helena Pound</option>
-                           <option value="SDG">SDG - Sudanese Pound</option>
-                           <option value="SRD">SRD - Surinamese Dollar</option>
-                           <option value="SZL">SZL - Swazi Lilangeni</option>
-                           <option value="SEK">SEK - Swedish Krona</option>
-                           <option value="CHF">CHF - Swiss Franc</option>
-                           <option value="SYP">SYP - Syrian Pound</option>
-                           <option value="STD">STD - São Tomé and Príncipe Dobra</option>
-                           <option value="TJS">TJS - Tajikistani Somoni</option>
-                           <option value="TZS">TZS - Tanzanian Shilling</option>
-                           <option value="THB">THB - Thai Baht</option>
-                           <option value="TOP">TOP - Tongan pa'anga</option>
-                           <option value="TTD">TTD - Trinidad & Tobago Dollar</option>
-                           <option value="TND">TND - Tunisian Dinar</option>
-                           <option value="TRY">TRY - Turkish Lira</option>
-                           <option value="TMT">TMT - Turkmenistani Manat</option>
-                           <option value="UGX">UGX - Ugandan Shilling</option>
-                           <option value="UAH">UAH - Ukrainian Hryvnia</option>
-                           <option value="AED">AED - United Arab Emirates Dirham</option>
-                           <option value="UYU">UYU - Uruguayan Peso</option>
-                           <option selected value="USD">USD - US Dollar</option>
-                           <option value="UZS">UZS - Uzbekistan Som</option>
-                           <option value="VUV">VUV - Vanuatu Vatu</option>
-                           <option value="VEF">VEF - Venezuelan BolÃ­var</option>
-                           <option value="VND">VND - Vietnamese Dong</option>
-                           <option value="YER">YER - Yemeni Rial</option>
-                           <option value="ZMK">ZMK - Zambian Kwacha</option>
-                        </select>
-                     </div>
-                  </div>
-               </div>
-         </div>
-         <div class="modal-footer">
-         <div class="row">
-         <div class="col-sm-8">
-         </div>
-         <div class="col-sm-4">
-         <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?></a>
-         <input type="submit" id="addBank"    class="btn btnclr" name="addBank" value="<?php echo display('save') ?>"/>
-         </div>
-         </div>  </div>
-         </form>
-      </div>
-   </div>
-</div>
+
+<?php 
+   $modaldata['bootstrap_modals'] = array('bank_info_modal', 'designation_modal', 'city_tax_modal', 'payroll_type_modal', 'emp_type_modal', 'pay_type_modal');
+   $this->load->view('include/bootstrap_modal', $modaldata);
+?>
 
 <script>
    var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
    var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+
    $(document).ready(function () {
         $('#add_city_tax').submit(function (e) {
             e.preventDefault();
@@ -2070,15 +1198,12 @@
          });
      });
    
-   var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
-   var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
-   
    
      $('#add_pay_type').submit(function(e){
+      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
        e.preventDefault();
          var data = {
-           
-           
            data : $("#add_pay_type").serialize()
          
          };
@@ -2088,7 +1213,7 @@
              type:'POST',
              data: $("#add_pay_type").serialize(), 
             dataType:"json",
-             url:'<?php echo base_url();?>Cinvoice/add_payment_type',
+             url:'<?php echo base_url();?>Chrm/add_payment_type',
              success: function(data1, statut) {
         
           var $select = $('select#paytype');
@@ -2120,12 +1245,12 @@
      // Insert Employeee Type
    
      $('#add_employee_type').submit(function(e){
+      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+
        e.preventDefault();
          var data = {
-           
-           
            data : $("#add_employee_type").serialize()
-         
          };
          data[csrfName] = csrfHash;
      
@@ -2133,11 +1258,10 @@
              type:'POST',
              data: $("#add_employee_type").serialize(), 
             dataType:"json",
-             url:'<?php echo base_url();?>Cinvoice/add_employee_type',
-             success: function(data2, statut) {
+            url:'<?php echo base_url();?>Chrm/add_employee_type',
+            success: function(data2, statut) {
         
-          var $select = $('select#emp_type');
-      
+               var $select = $('select#emp_type');
                $select.empty();
                console.log(data);
                  for(var i = 0; i < data2.length; i++) {
@@ -2187,10 +1311,7 @@
      $('#add_payroll_type').submit(function(e){
        e.preventDefault();
          var data = {
-           
-           
            data : $("#add_payroll_type").serialize()
-         
          };
          data[csrfName] = csrfHash;
      
@@ -2218,7 +1339,6 @@
           $('#myModal1').modal('show');
          window.setTimeout(function(){
            $('#payroll_type').modal('hide');
-        
           $('#myModal1').modal('hide');
       
        }, 2000);
@@ -2233,60 +1353,52 @@
      $('#add_designation').submit(function(e){
        e.preventDefault();
          var data = {
-           
-           
            data : $("#add_designation").serialize()
-         
          };
          data[csrfName] = csrfHash;
      
          $.ajax({
-             type:'POST',
-             data: $("#add_designation").serialize(),
+            type:'POST',
+            data: $("#add_designation").serialize(),
             dataType:"json",
-             url:'<?php echo base_url();?>Chrm/add_designation_data',
-             success: function(data1, statut) {
-        
-          var $select = $('select#desig');
-      
+            url:'<?php echo base_url();?>Chrm/add_designation_data',
+            success: function(data1, statut) {
+               var $select = $('select#desig');      
                $select.empty();
-               console.log(data);
-                 for(var i = 0; i < data1.length; i++) {
-           var option = $('<option/>').attr('value', data1[i].id).text(data1[i].designation);
-           $select.append(option); // append new options
-       }
-        $('#designation').val('');
-       //    $('#desig').append(result).selectmenu('refresh',true);
-         $("#bodyModal1").html("Designation  Added Successfully");
-         $('#designation_modal').modal('hide');
-         
-         $('#desig').show();
-          $('#myModal1').modal('show');
-         window.setTimeout(function(){
-           $('#designation_modal').modal('hide');
-        
-          $('#myModal1').modal('hide');
-      
-       }, 2000);
-       
-        }
+               for(var i = 0; i < data1.length; i++) {
+                  var option = $('<option/>').attr('value', data1[i].id).text(data1[i].designation);
+                  $select.append(option); // append new options
+               }
+               $('#designation').val('');
+               //    $('#desig').append(result).selectmenu('refresh',true);
+               $("#bodyModal1").html("Designation  Added Successfully");
+               $('#designation_modal').modal('hide');
+               $('#desig').show();
+               $('#myModal1').modal('show');
+               window.setTimeout(function() {
+               $('#designation_modal').modal('hide');
+               $('#myModal1').modal('hide');
+            }, 2000);
+            
+            }, error:function(res) {
+               console.log('error = '+res);
+            }
          });
      });
    
    
-   
-   
-   
-   
-     $('#add_bank').submit(function (event) {
-   var dataString = {
-      dataString : $("#add_bank").serialize()
-   };
+   $('#add_bank').submit(function (event) {
+      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+
+      var dataString = {
+         dataString : $("#add_bank").serialize()
+      };
    dataString[csrfName] = csrfHash;
    $.ajax({
       type:"POST",
       dataType:"json",
-      url:"<?php echo base_url(); ?>Csettings/add_new_bank",
+      url:"<?php echo base_url(); ?>cHRM/add_new_bank",
       data:$("#add_bank").serialize(),
       success: function (data) {
        $.each(data, function (i, item) {
@@ -2454,8 +1566,6 @@
               }
           });
       }
-
-      
    
       // Allow Numbers
       function validateInput(input) {
@@ -2523,54 +1633,52 @@
               }
           });
       });
-
-
-   
 </script>
+
 <style>
    #files-area{
-   /*  width: 30%;*/
-   margin: 0 auto;
+      /*  width: 30%;*/
+      margin: 0 auto;
    }
    .file-block{
-   border-radius: 10px;
-   background-color: #38469f;
-   margin: 5px;
-   color: #fff;
-   display: inline-flex;
-   padding: 4px 10px 4px 4px;
+      border-radius: 10px;
+      background-color: #38469f;
+      margin: 5px;
+      color: #fff;
+      display: inline-flex;
+      padding: 4px 10px 4px 4px;
    }
    .file-delete{
-   display: flex;
-   width: 24px;
-   color: initial;
-   background-color: #38469f;
-   font-size: large;
-   justify-content: center;
-   margin-right: 3px;
-   cursor: pointer;
-   color: #fff;
+      display: flex;
+      width: 24px;
+      color: initial;
+      background-color: #38469f;
+      font-size: large;
+      justify-content: center;
+      margin-right: 3px;
+      cursor: pointer;
+      color: #fff;
    }
    span.name{
-   position: relative;
-   top: 2px;
+      position: relative;
+      top: 2px;
    }
    .btn-primary {
-   color: #fff;
-   background-color: #38469f !important;
-   border-color: #38469f !important;
+      color: #fff;
+      background-color: #38469f !important;
+      border-color: #38469f !important;
    }
    .fg {
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-   align-items: center;
-   margin-bottom: 15px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
    }
    .fg label {
-   width: 40%; /* Adjust the width as needed */
+      width: 40%; /* Adjust the width as needed */
    }
    .fg input {
-   width: 60%; /* Adjust the width as needed */
+      width: 60%; /* Adjust the width as needed */
    }
 </style>

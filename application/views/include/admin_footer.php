@@ -1,10 +1,11 @@
 
 <footer class="main-footer">
-    <i >
+    <i>
         <span style="font-style: normal;" > 2024 © Copyright : Amorio Technologies </span>
     </i>
     <input type ="hidden" name="csrf_test_name" id="csrf_test_name" value="<?= $this->security->get_csrf_hash();?>">
     <input type ="hidden" name="base_url" id="base_url" value="<?= base_url();?>">
+
 </footer>
 
 <style>
@@ -257,8 +258,7 @@ td{
 <script type="text/javascript">
    const dt = new DataTransfer(); 
    
-   $('span.file-delete').click(function(){
-
+   $('span.file-delete').click(function() {
         let name = $(this).next('span.name').text();
         $(this).parent().remove();
         for(let i = 0; i < dt.items.length; i++){

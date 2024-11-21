@@ -1,3 +1,163 @@
+<style>
+.switch {
+  margin-top: 5px;
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 56px;
+  height: 20px;
+  padding: 3px;
+  background-color: white;
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  background-image: -webkit-linear-gradient(top, #EEEEEE, white 25px);
+  background-image: -moz-linear-gradient(top, #EEEEEE, white 25px);
+  background-image: -o-linear-gradient(top, #EEEEEE, white 25px);
+  background-image: linear-gradient(to bottom, #EEEEEE, white 25px);
+}
+.switch-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #ECEEEF;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+  -webkit-transition: 0.15s ease-out;
+  -moz-transition: 0.15s ease-out;
+  -o-transition: 0.15s ease-out;
+  transition: 0.15s ease-out;
+  -webkit-transition-property: opacity background;
+  -moz-transition-property: opacity background;
+  -o-transition-property: opacity background;
+  transition-property: opacity background;
+}
+.switch-label:before, .switch-label:after {
+  position: absolute;
+  top: 50%;
+  margin-top: -.5em;
+  line-height: 1;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -o-transition: inherit;
+  transition: inherit;
+}
+.switch-label:before {
+  content: attr(data-off);
+  right: 11px;
+  color: #aaa;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+}
+.switch-label:after {
+  content: attr(data-on);
+  left: 11px;
+  color: white;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label {
+  background: #38469F;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.switch-input:checked ~ .switch-label:before {
+  opacity: 0;
+}
+.switch-input:checked ~ .switch-label:after {
+  opacity: 1;
+}
+.switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  background-image: -webkit-linear-gradient(top, white 40%, #F0F0F0);
+  background-image: -moz-linear-gradient(top, white 40%, #F0F0F0);
+  background-image: -o-linear-gradient(top, white 40%, #F0F0F0);
+  background-image: linear-gradient(to bottom, white 40%, #F0F0F0);
+  -webkit-transition: left 0.15s ease-out;
+  -moz-transition: left 0.15s ease-out;
+  -o-transition: left 0.15s ease-out;
+  transition: left 0.15s ease-out;
+}
+.switch-handle:before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -6px 0 0 -6px;
+  width: 12px;
+  height: 12px;
+  background: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+  background-image: -webkit-linear-gradient(top, #EEEEEE, white);
+  background-image: -moz-linear-gradient(top, #EEEEEE, white);
+  background-image: -o-linear-gradient(top, #EEEEEE, white);
+  background-image: linear-gradient(to bottom, #EEEEEE, white);
+}
+.switch-input:checked ~ .switch-handle {
+  left: 85px;
+  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+.switch-green > .switch-input:checked ~ .switch-label {
+  background: #4FB845;
+}
+ .btnclr ,th{
+   background-color:<?= $setting_detail[0]['button_color']; ?>;
+   color: white;
+   }
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
+.table {
+    width: 100%; /* Set the table width */
+    table-layout: fixed; /* Use a fixed layout */
+}
+
+.table th,
+.table td {
+    width: auto; 
+ 
+    border: 1px solid #ccc;
+    padding: 8px;
+  
+.table input[type="text"],input[type="time"] {
+    text-align:center;
+    background-color: inherit;
+  
+    border-radius: 4px;
+    padding: 8px;
+  
+}
+
+
+
+input {border:0;outline:0;}
+.work_table td {
+    height: 36px;
+}
+th,td{
+    text-align:center;
+}
+.select2-selection{
+    display :none;
+}
+</style>
+
+>>>>>>> 3df40d708f08cff4c098c499d408cf976123e68e
 <div class="content-wrapper">
     <section class="content-header" style="height:70px;">
         <div class="header-icon">
@@ -14,7 +174,7 @@
         </div>
     </section>
     <section class="content">
-        <!-- New category -->
+     
         <div class="row">
             <div class="col-sm-12">                
                 <div class="panel panel-bd lobidrag">
@@ -81,13 +241,12 @@
                                             <th style='height:25px;' class="col-md-1">Day</th>
                                             <th style='height:25px; ' class="col-md-5">Present / Absence</th>
                                         <?php } elseif ($employee_name[0]['payroll_type'] == 'SalesCommission') { ?>
-                                            <!-- Your code for 'SalesCommission' payroll type here, if any -->
+                                        
                                         <?php } ?>
                                     </tr>
 								</thead>
 
                                 <?php 
-                               
                                 function compareDates($a, $b) {
                                     $dateA = DateTime::createFromFormat('d/m/Y', $a['Date']);
                                     $dateB = DateTime::createFromFormat('d/m/Y', $b['Date']);
@@ -109,17 +268,17 @@
 
 								<tbody id="tBody">
                                 <?php
-                                    
+                                   
                                     usort($time_sheet_data, 'compareDates');
 
-                                    
+                                   
                                     $printedDates = array();
 
-                                    
+                                 
                                     foreach($time_sheet_data as $tsheet) {
                                         $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                         if( !empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                            
+                                         
                                             $printedDates[] = $tsheet['Date'];
                                         }
                                     }
@@ -153,7 +312,6 @@
                                     <td class="finish-time">
                                         <input <?php if ($timesheetdata[$date]['edit'] == 1) { echo 'readonly'; } ?> name="end[]" class="hasTimepicker end" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['end']; ?>" type="time">
                                     </td>
-                                   
                                     <td class="hours-worked">
                                         <input readonly name="sum[]" class="timeSum" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                     </td>
