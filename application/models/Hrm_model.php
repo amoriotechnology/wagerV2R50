@@ -88,12 +88,12 @@ public function statetaxreport($employee_name=null,$url,$date=null)
         $query = $this->db->get();
         return $query->result_array();
     }
-     public function getTotalEmployee($search, $Id) {
+   public function getTotalEmployee($search, $Id) {
         $this->db->select('first_name,middle_name,last_name');
         $this->db->from('employee_history');
         if ($search != "") {
             $this->db->or_like(array('first_name' => $search, 'designation'            => $search, 'phone'         => $search, 'email'        => $search,
-                'zip'                                 => $search, 'social_security_number' => $search, 'employee_type' => $search, 'payroll_type' => $search));
+                'zip' => $search, 'social_security_number' => $search, 'employee_type' => $search, 'payroll_type' => $search));
         }
         $this->db->where('is_deleted', 0);
         $this->db->where('create_by', $Id);
@@ -114,7 +114,7 @@ public function state_tax_list_employer()
 }
 public function get_employee_sal($id , $tax){
         $user_id = $this->session->userdata('user_id');
-        $this->db->select('h_rate,total_hours,extra_thisrate, SUM(extra_thisrate) as totalamout , SUM(above_extra_sum) as overtime  ');
+        $this->db->select('h_rate,total_hours,extra_amount, SUM(extra_amount) as totalamout , SUM(amount) as overtime  ');
         $this->db->from('timesheet_info');
         $this->db->where('templ_name', $id);
         $this->db->where('payroll_type', $tax);
@@ -167,7 +167,7 @@ public function get_employee_sal_ytd($id) {
 }
  public function info_for_wrf() {
     $user_id = $this->session->userdata('user_id');
-    $this->db->select('a.*,b.* , c.total_amount , SUM(a.extra_thisrate) as sumamount');
+    $this->db->select('a.*,b.* , c.total_amount , SUM(a.extra_amount) as sumamount');
     $this->db->from('timesheet_info a'); 
     $this->db->join('employee_history b', 'b.id = a.templ_name', 'left'); 
     $this->db->join('info_payslip c', 'c.timesheet_id = a.timesheet_id', 'left'); 
@@ -214,7 +214,7 @@ public function get_f1099nec_info($selectedValue)
       public function no_salecommission($selectedValue)
       {
           $user_id = $this->session->userdata('user_id');
-          $this->db->select("SUM(extra_thisrate) as sc_nocomission");
+          $this->db->select("SUM(extra_amount) as sc_nocomission");
           $this->db->from('timesheet_info');
           $this->db->where('timesheet_info.create_by', $user_id);
           $this->db->where('templ_name', $selectedValue);
@@ -228,7 +228,7 @@ public function get_f1099nec_info($selectedValue)
             {
                 $this->load->library('session'); 
                 $user_id = $this->session->userdata('user_id');
-                $this->db->select("SUM(b.extra_thisrate) as emp_sc_amount");
+                $this->db->select("SUM(b.extra_amount) as emp_sc_amount");
                 $this->db->from('employee_history AS a'); 
                 $this->db->join('timesheet_info AS b', 'b.templ_name = a.id'); 
                 $this->db->where('a.choice', 'No'); 
@@ -291,29 +291,29 @@ public function fetchQuarterlyData($quarter) {
          $user_id = $this->session->userdata('user_id');
          $currentYear = date('Y');
         $this->db->select("
-        SUM(CASE WHEN a.month >= '01/01/$currentYear' AND a.month <= '01/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthone,
+        SUM(CASE WHEN a.month >= '01/01/$currentYear' AND a.month <= '01/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthone,
         COUNT(DISTINCT CASE WHEN a.month >= '01/01/$currentYear' AND a.month <= '01/31/$currentYear' THEN a.templ_name END) AS monthone_count,
-        SUM(CASE WHEN a.month >= '02/01/$currentYear' AND a.month <= '02/28/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthtwo,
+        SUM(CASE WHEN a.month >= '02/01/$currentYear' AND a.month <= '02/28/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthtwo,
         COUNT(DISTINCT CASE WHEN a.month >= '02/01/$currentYear' AND a.month <= '02/28/$currentYear' THEN a.templ_name END) AS monthtwo_count,
-        SUM(CASE WHEN a.month >= '03/01/$currentYear' AND a.month <= '03/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monththree,
+        SUM(CASE WHEN a.month >= '03/01/$currentYear' AND a.month <= '03/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS monththree,
         COUNT(DISTINCT  CASE WHEN a.month >= '03/01/$currentYear' AND a.month <= '03/31/$currentYear' THEN a.templ_name END) AS monththree_count,
-        SUM(CASE WHEN a.month >= '04/01/$currentYear' AND a.month <= '04/30/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthfour,
+        SUM(CASE WHEN a.month >= '04/01/$currentYear' AND a.month <= '04/30/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthfour,
         COUNT(DISTINCT CASE WHEN a.month >= '04/01/$currentYear' AND a.month <= '04/30/$currentYear' THEN a.templ_name END) AS monthfour_count,
-        SUM(CASE WHEN a.month >= '05/01/$currentYear' AND a.month <= '05/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthfive,
+        SUM(CASE WHEN a.month >= '05/01/$currentYear' AND a.month <= '05/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthfive,
         COUNT(DISTINCT CASE WHEN a.month >= '05/01/$currentYear' AND a.month <= '05/31/$currentYear' THEN a.templ_name END) AS monthfive_count,
-        SUM(CASE WHEN a.month >= '06/01/$currentYear' AND a.month <= '06/30/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthsix,
+        SUM(CASE WHEN a.month >= '06/01/$currentYear' AND a.month <= '06/30/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthsix,
         COUNT(DISTINCT CASE WHEN a.month >= '06/01/$currentYear' AND a.month <= '06/30/$currentYear' THEN a.templ_name END) AS monthsix_count,
-        SUM(CASE WHEN a.month >= '07/01/$currentYear' AND a.month <= '07/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthseven,
+        SUM(CASE WHEN a.month >= '07/01/$currentYear' AND a.month <= '07/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthseven,
         COUNT(DISTINCT CASE WHEN a.month >= '07/01/$currentYear' AND a.month <= '07/31/$currentYear' THEN a.templ_name END) AS monthseven_count,
-        SUM(CASE WHEN a.month >= '08/01/$currentYear' AND a.month <= '08/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS montheight,
+        SUM(CASE WHEN a.month >= '08/01/$currentYear' AND a.month <= '08/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS montheight,
         COUNT(DISTINCT CASE WHEN a.month >= '08/01/$currentYear' AND a.month <= '08/31/$currentYear' THEN a.templ_name END) AS montheight_count,
-        SUM(CASE WHEN a.month >= '09/01/$currentYear' AND a.month <= '09/30/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthnine,
+        SUM(CASE WHEN a.month >= '09/01/$currentYear' AND a.month <= '09/30/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthnine,
         COUNT(DISTINCT CASE WHEN a.month >= '09/01/$currentYear' AND a.month <= '09/30/$currentYear' THEN a.templ_name END) AS monthnine_count,
-        SUM(CASE WHEN a.month >= '10/01/$currentYear' AND a.month <= '10/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthten,
+        SUM(CASE WHEN a.month >= '10/01/$currentYear' AND a.month <= '10/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthten,
         COUNT(DISTINCT CASE WHEN a.month >= '10/01/$currentYear' AND a.month <= '10/31/$currentYear' THEN a.templ_name END) AS monthten_count,
-        SUM(CASE WHEN a.month >= '11/01/$currentYear' AND a.month <= '11/30/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS montheleven,
+        SUM(CASE WHEN a.month >= '11/01/$currentYear' AND a.month <= '11/30/$currentYear' THEN a.extra_amount ELSE 0 END) AS montheleven,
         COUNT(DISTINCT CASE WHEN a.month >= '11/01/$currentYear' AND a.month <= '11/30/$currentYear' THEN a.templ_name END) AS montheleven_count,
-        SUM(CASE WHEN a.month >= '12/01/$currentYear' AND a.month <= '12/31/$currentYear' THEN a.extra_thisrate ELSE 0 END) AS monthtwelve,
+        SUM(CASE WHEN a.month >= '12/01/$currentYear' AND a.month <= '12/31/$currentYear' THEN a.extra_amount ELSE 0 END) AS monthtwelve,
         COUNT(DISTINCT CASE WHEN a.month >= '12/01/$currentYear' AND a.month <= '12/31/$currentYear' THEN a.templ_name END) AS monthtwelve_count
         ");
         $this->db->from('timesheet_info a');
@@ -657,7 +657,7 @@ public function employer_state_tax_report($employee_name=null,$url,$date=null )
     }
 }
 public function get_data_pay_partner($d1=null,$empid,$timesheetid){
-    $this->db->select('sum(extra_thisrate) as amount , job_title');
+    $this->db->select('sum(extra_amount) as amount , job_title');
     $this->db->from('timesheet_info');
     $this->db->where('templ_name',$empid);
     $this->db->where('create_by', $this->session->userdata('user_id'));
@@ -672,7 +672,7 @@ $this->db->where("STR_TO_DATE(SUBSTRING_INDEX(month, ' - ', -1), '%m/%d/%Y') <= 
     return false;
         }
         public function get_data_pay_SalesCommission($d1=null,$empid,$timesheetid){
-    $this->db->select('sum(extra_thisrate) as amount , job_title');
+    $this->db->select('sum(extra_amount) as amount , job_title');
     $this->db->from('timesheet_info');
     $this->db->where('templ_name',$empid);
     $this->db->where('create_by', $this->session->userdata('user_id'));
@@ -1730,14 +1730,14 @@ public function get_data_pay($d1 = null, $empid, $timesheetid) {
         SUM(info_payslip.m_tax) as t_m_tax, 
         SUM(info_payslip.f_tax) as t_f_tax, 
         SUM(info_payslip.u_tax) as t_u_tax, 
-        SUM(timesheet_info.above_extra_ytd) as above_ytdeth,
+        SUM(timesheet_info.ytd) as above_ytdeth,
         SUM(timesheet_info.extra_ytd) as ytdeth,
         SUM(info_payslip.sc) as sc, 
         SUM(timesheet_info.total_hours) as total_days,
-         SUM(timesheet_info.above_this_hours) as above_eth_days, 
+         SUM(timesheet_info.hour) as above_eth_days, 
         SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_sec,
-        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_this_hour))) as total_eth,
-        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.above_this_hours))) as total_above_eth
+        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_hour))) as total_eth,
+        SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.hour))) as total_above_eth
     ');
     $this->db->from('timesheet_info');
     $this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
@@ -1929,6 +1929,7 @@ public function employee_info($templ_name, $user_id)
     $this->db->where('id', $templ_name);
     $this->db->where('create_by',$user_id);
     $query = $this->db->get();
+ 
     if ($query->num_rows() > 0) {
        return $query->result_array();
     }
@@ -1942,6 +1943,7 @@ public function timesheet_info_data($timesheet_id, $user_id)
     $this->db->where('timesheet_id', $timesheet_id);
     $this->db->where('create_by',$user_id);
     $query = $this->db->get();
+    // echo $this->db->last_query();die();
      if ($query->num_rows() > 0) {
        return $query->result_array();
      }
@@ -2273,15 +2275,14 @@ public function create_designation($data = []){
 $data['create_by']=$this->session->userdata('user_id');
 return $this->db->insert('designation',$data);
 }
-public function designation_info($postData){
-        $data=array(
+    public function designation_info($postData){
+        $data = array(
             'designation' => $postData,
             'create_by' => $this->session->userdata('user_id')
         );
         $this->db->insert('designation', $data);
-       // echo $this->db->last_query();die();
-        $this->db->select('*');
-        $this->db->from('designation');
+
+        $this->db->select('*')->from('designation');
         $this->db->where('create_by' ,$this->session->userdata('user_id'));
        //   $this->db->order_by('payment_type','desc');
         $query = $this->db->get();
@@ -2661,7 +2662,7 @@ public function getTaxdetailsdata($tax){
       public function employee_detl($id){
         $this->db->select('*');
         $this->db->from('employee_history a');
-         $this->db->join('designation b','a.designation = b.id');
+         $this->db->join('designation b','a.designation = b.designation');
         $this->db->where('a.id', $id);
            $this->db->where('a.create_by',$this->session->userdata('user_id'));
         $query = $this->db->get();
@@ -3389,7 +3390,7 @@ public function monthly_tax_info($employee_status,$final,$monthly_range){
 // Unemployment Overtime
 // public function get_employee_sal_overtime($id , $tax ,$timeid){
 //     $user_id = $this->session->userdata('user_id');
-//     $this->db->select('h_rate,total_hours,extra_thisrate, SUM(extra_thisrate) as totalamout , SUM(above_extra_sum) as overtime  ');
+//     $this->db->select('h_rate,total_hours,extra_amount, SUM(extra_amount) as totalamout , SUM(amount) as overtime  ');
 //     $this->db->from('timesheet_info');
 //     $this->db->where('templ_name', $id);
 //     // $this->db->where('timesheet_id', $timeid);
@@ -3404,12 +3405,12 @@ public function monthly_tax_info($employee_status,$final,$monthly_range){
 // }
 public function get_employee_sal_overtime($id, $tax, $timeid) {
     $user_id = $this->session->userdata('user_id');
-    $this->db->select('h_rate, total_hours, extra_thisrate,
+    $this->db->select('h_rate, total_hours, extra_amount,
         SUM(CASE
-            WHEN extra_this_hour IS NULL OR extra_this_hour = "" THEN extra_thisrate
-            ELSE (extra_thisrate + above_extra_sum)
+            WHEN extra_hour IS NULL OR extra_hour = "" THEN extra_amount
+            ELSE (extra_amount + amount)
         END) AS totalamout,
-        SUM(above_extra_sum) AS overtime');
+        SUM(amount) AS overtime');
     $this->db->from('timesheet_info');
     $this->db->where('templ_name', $id);
     // $this->db->where('timesheet_id', $timeid); // Uncomment if needed
@@ -3461,6 +3462,7 @@ public function getPaginatedpayslip($limit, $offset, $orderField, $orderDirectio
     $this->db->limit($limit, $offset);
     $this->db->order_by('a.id', 'desc'); 
     $query = $this->db->get();
+
     if ($query === false) {
         return false;
     }
@@ -3758,6 +3760,28 @@ public function retrieve_companydata($user_id)
         return $query->result_array();
     }
 }
+
+
+
+public function insertData($table, $data) {
+    $this->db->insert($table, $data);
+    return $this->db->insert_id();
+}
+
+
+public function bank_entry($data) {
+    $this->db->insert('bank_add', $data);
+    $this->db->select('bank_name');
+    $this->db->from('bank_add');
+    $this->db->where('created_by', $this->session->userdata('user_id'));
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+}
+
+
+
 //Latest code - Surya - Starts //
 //to get the cumulative amount of country taxes
 public function  available_country_tax($employee_id,$user_id,$start_date)
@@ -3811,8 +3835,7 @@ public function get_tax_history($tax_type,$tax,$timesheet){
     ->where('tax', $tax)
     ->where('time_sheet_id', $timesheet);
    $query= $this->db->get();
-  // echo $this->db->last_query();
-   if ($query->num_rows() > 0) {
+    if ($query->num_rows() > 0) {
  $result = $query->row_array();
  return $result['amount'];
    }else{
@@ -3839,13 +3862,13 @@ public function get_cumulative_tax_amount($tax, $end, $employee, $tax_type) {
 //To get the cumulative country tax amount of specific employee
 public function sum_of_country_tax($end_date = null, $empid, $timesheetid , $user_id)
 {
-$query_row_count = $this->db->select('SUM(info_payslip.s_tax) as t_s_tax, SUM(info_payslip.m_tax) as t_m_tax, 
-SUM(info_payslip.f_tax) as t_f_tax, SUM(info_payslip.u_tax) as t_u_tax, SUM(info_payslip.total_amount) as t_amount, 
-SUM(timesheet_info.above_extra_ytd) as ytd_salary,SUM(timesheet_info.extra_ytd) as ytd_overtime_salary,
+$query_row_count = $this->db->select('SUM(info_payslip.s_tax) as t_s_tax, SUM(info_payslip.m_tax) as t_m_tax,
+SUM(info_payslip.f_tax) as t_f_tax, SUM(info_payslip.u_tax) as t_u_tax, SUM(info_payslip.total_amount) as t_amount,
+SUM(timesheet_info.ytd) as ytd_salary,SUM(timesheet_info.extra_ytd) as ytd_overtime_salary,
 SUM(info_payslip.sc) as sc,SUM(timesheet_info.total_hours) as ytd_days,
-SUM(timesheet_info.above_this_hours) as ytd_hours_excl_overtime,SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_hours,
-SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_this_hour))) as ytd_hours_only_overtime,
-SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.above_this_hours))) as ytd_hours_excl_overtime_in_time');
+SUM(timesheet_info.hour) as ytd_hours_excl_overtime,SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.total_hours))) as total_hours,
+SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.extra_hour))) as ytd_hours_only_overtime,
+SEC_TO_TIME(SUM(TIME_TO_SEC(timesheet_info.hour))) as ytd_hours_excl_overtime_in_time');
 $this->db->from('timesheet_info');
 $this->db->join('info_payslip', 'timesheet_info.timesheet_id = info_payslip.timesheet_id');
 $this->db->where('info_payslip.templ_name',$empid);
