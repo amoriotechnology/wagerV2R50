@@ -765,45 +765,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
 <!-- /.modal -->
 
 
-if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
-
-<!-- Add States -->
-<div class="modal fade modal-success" id="add_states" role="dialog">
-   <div class="modal-dialog" role="document">
-     <div class="modal-content" style="text-align:center;">
-         <div class="modal-header btnclr" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h3 class="modal-title">Add New States</h3>
-         </div>
-         <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <?php echo form_open('Chrm/add_state', array('class' => 'form-vertical', 'id' => 'newcustomer')) ?>
-            <div class="panel-body">
-               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-               <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-               <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-               <div class="form-group row">
-                  <label for="customer_name" class="col-sm-3 col-form-label">State Name<i class="text-danger">*</i></label>
-                  <div class="col-sm-6">
-                     <input class="form-control" name ="state_name" id="" type="text" placeholder="State Name"  required="" tabindex="1">
-
-                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
-                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="modal-footer">
-            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
-            <input type="submit" class="btnclr btn btn-success"  value="Submit">
-         </div>
-         <?php echo form_close() ?>
-      </div>
-   </div>
-</div>
-
-<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modals)){ ?>
  
  <!-- Add New State Tax  -->
 <div class="modal fade modal-success" id="add_state_tax" role="dialog">
@@ -850,7 +812,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modals)){ ?>
 
 <!-- Add New City -->
 <div class="modal fade modal-success" id="add_city_info" role="dialog">
@@ -884,7 +846,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_city_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_city_tax'],$bootstrap_modals)){ ?>
 
 <!-- Add New City Tax -->
 
@@ -930,7 +892,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_county_info'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_county_info'],$bootstrap_modals)){ ?>
 
 <!-- Add County -->
 <div class="modal fade modal-success" id="add_county_info" role="dialog">
@@ -964,7 +926,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_county_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_county_tax'],$bootstrap_modals)){ ?>
 
 <!-- Add New County Tax -->
 <div class="modal fade modal-success" id="add_county_tax" role="dialog">
@@ -1009,7 +971,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['daily_break'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['daily_break'],$bootstrap_modals)){ ?>
 
 <div class="modal fade" id="dailybreak_add" role="dialog">
 <div class="modal-dialog" role="document">
@@ -1040,6 +1002,43 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-<?php  }  ?>
+<?php  } if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){   ?>
+
+<!-- Add States -->
+<div class="modal fade modal-success" id="add_states" role="dialog">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content" style="text-align:center;">
+         <div class="modal-header btnclr" >
+            <a href="#" class="close" data-dismiss="modal">&times;</a>
+            <h3 class="modal-title">Add New States</h3>
+         </div>
+         <div class="modal-body">
+            <div id="customeMessage" class="alert hide"></div>
+            <?php echo form_open('Chrm/add_state', array('class' => 'form-vertical', 'id' => 'newcustomer')) ?>
+            <div class="panel-body">
+               <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
+               <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
+               <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
+               <div class="form-group row">
+                  <label for="customer_name" class="col-sm-3 col-form-label">State Name<i class="text-danger">*</i></label>
+                  <div class="col-sm-6">
+                     <input class="form-control" name ="state_name" id="" type="text" placeholder="State Name"  required="" tabindex="1">
+
+                     <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
+                     <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
+
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <a href="#" class="btnclr btn btn-danger" data-dismiss="modal">Close</a>
+            <input type="submit" class="btnclr btn btn-success"  value="Submit">
+         </div>
+         <?php echo form_close() ?>
+      </div>
+   </div>
+</div>
+<?php } ?>
 
 

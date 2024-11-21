@@ -171,10 +171,12 @@
                            <label for="designation" class="col-sm-4 col-form-label"> <?= display('designation') ?> <i class="text-danger">*</i> </label>
                            <div class="col-sm-8">
                               <select name="designation" id="designation" class="form-control"  required>
-                                 <option value="<?= html_escape($employee_data[0]['designation'])?>"><?= html_escape($employee_data[0]['designation'])?></option>
-                                 <?php  foreach($desig as $ds){ ?>
-                                 <option value="<?= $ds['designation'] ;?>"><?= $ds['designation'] ;?></option>
-                                 <?php  } ?>
+                                 <?php foreach($desig as $ds): ?>
+                                     <option value="<?= $ds['id']; ?>" 
+                                         <?= ($ds['id'] == $employee_data[0]['designation']) ? 'selected' : ''; ?>>
+                                         <?= $ds['designation']; ?>
+                                     </option>
+                                 <?php endforeach; ?>
                               </select>
                            </div>
                         </div>
@@ -1198,8 +1200,6 @@
    var csrfName = '<?= $this->security->get_csrf_token_name();?>';
    var csrfHash = '<?= $this->security->get_csrf_hash();?>';
    $(document).ready(function(){
-   var succalert = '<div style="color: #fff; background-color: #006400 !important;" class="alert alert-success alert-dismissible" role="alert">';
-   var failalert = '<div class="alert alert-danger alert-dismissible" role="alert">';
    $("#update_employee").validate({
  
    rules: {
@@ -1239,20 +1239,27 @@
       success: function(response) {
          console.log(response, "response");
          if(response.status == 'success')
-         {
-          $('.errormessage').html(succalert+response.msg+'</div>');
-            console.log(response.msg, "Success");
-            window.setTimeout(function(){
-            window.location.href = "<?= base_url('Chrm/manage_employee'); ?>?id=" + encodeURIComponent('<?= $_GET['id']; ?>');
+         {  
+             toastr.success(response.msg, "Success", { 
+               closeButton: false,
+               timeOut: 1000
+            });
 
-         },500);
+            setTimeout(function() {
+               window.location.href = "<?= base_url('Chrm/manage_employee'); ?>?id=" + encodeURIComponent('<?= $_GET['id']; ?>');
+            }, 1000);
          }else{
-            $('.errormessage').html(failalert+response.msg+'</div>'); 
-            console.log(response.msg, "Error");
+            toastr.error(response.msg, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
          }                  
       },
           error: function(xhr, status, error) {
-          alert('An error occurred: ' + error);
+          toastr.error(error, "Error", { 
+               closeButton: false,
+               timeOut: 1000
+            });
       }
     });
   }

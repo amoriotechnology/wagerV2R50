@@ -532,7 +532,7 @@ tr.noBorder td {
 
 
 <?php 
-   $modaldata['bootstrap_modal'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax');
+   $modaldata['bootstrap_modals'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax');
    $this->load->view('include/bootstrap_modal', $modaldata);
 ?>
 

@@ -149,11 +149,11 @@
                   <div class="form-group row" id="designation">
                      <label for="designation" class="col-sm-4 col-form-label"> <?php echo display('designation') ?> <i class="text-danger">*</i> </label>
                      <div class="col-sm-7">
-                        <select name="designation"  id="desig"  class="form-control" style="width: 100%;"required>
+                        <select name="designation" id="desig" class="form-control" style="width: 100%;"required>
                            <option value="">Select Designation</option>
-                           <?php  foreach($desig as $ds){ ?>
-                           <option value="<?php  echo $ds['designation'] ;?>"><?php  echo $ds['designation'] ;?></option>
-                           <?php  } ?>
+                           <?php foreach($desig as $ds){ ?>
+                           <option value="<?php echo $ds['id'] ;?>"><?php echo $ds['designation'] ;?></option>
+                           <?php } ?>
                         </select>
                      </div>
                      <div class="col-sm-1">

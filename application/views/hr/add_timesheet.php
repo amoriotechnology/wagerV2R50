@@ -299,7 +299,6 @@ $(document).on('select change'  ,'#templ_name', function () {
         dataType:"json",
         url:'<?php echo base_url();?>Chrm/getemployee_data',
         success: function(result, statut) {
-            console.log(result);
             if (result.length > 0) { 
             if (result[0]['designation'] !== '') {
                 $('#job_title').val(result[0]['designation']);
@@ -393,6 +392,7 @@ $(document).on('select change'  ,'#templ_name', function () {
     $('.btnclr').show();
     var data = {
         value:$('#templ_name').val()
+
     };
     data[csrfName] = csrfHash;
     $.ajax({
