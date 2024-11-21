@@ -17,7 +17,7 @@
     </section>
 
     <section class="content">
-        <!-- New category -->
+     
         <div class="row">
             <div class="col-sm-12">                
                 <div class="panel panel-bd lobidrag">
@@ -86,18 +86,18 @@
                                             <th style='height:25px;' class="col-md-1">Day</th>
                                             <th style='height:25px; ' class="col-md-5">Present / Absence</th>
                                         <?php } elseif ($employee_name[0]['payroll_type'] == 'SalesCommission') { ?>
-                                            <!-- Your code for 'SalesCommission' payroll type here, if any -->
+                                        
                                         <?php } ?>
                                     </tr>
 								</thead>
 
                                 <?php 
-                                // Function to compare dates for sorting
+                                
                                 function compareDates($a, $b) {
                                     $dateA = DateTime::createFromFormat('d/m/Y', $a['Date']);
                                     $dateB = DateTime::createFromFormat('d/m/Y', $b['Date']);
                                     if ($dateA === false || $dateB === false) {
-                                        return 0; // Handle invalid dates here if needed
+                                        return 0; 
                                     }
                                     return $dateA <=> $dateB;
                                 }
@@ -114,17 +114,17 @@
 
 								<tbody id="tBody">
                                 <?php
-                                    // Sorting the $time_sheet_data array based on the 'Date' field
+                                   
                                     usort($time_sheet_data, 'compareDates');
 
-                                    // Variable to track printed dates
+                                   
                                     $printedDates = array();
 
-                                    // Rendering the sorted table rows
+                                 
                                     foreach($time_sheet_data as $tsheet) {
                                         $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                         if( !empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                            // Add the date to the printed dates array
+                                         
                                             $printedDates[] = $tsheet['Date'];
                                         }
                                     }
@@ -158,9 +158,7 @@
                                     <td class="finish-time">
                                         <input <?php if ($timesheetdata[$date]['edit'] == 1) { echo 'readonly'; } ?> name="end[]" class="hasTimepicker end" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['end']; ?>" type="time">
                                     </td>
-                                    <!-- <td style="text-align:center;"  readonly class="daily-break">
-                                        <input  name='dailybreak[]' class='form-control datepicker dailybreak'  style="width: 100px;margin: auto; display: block; text-align: center;" readonly value='<?= $tsheet['daily_break']; ?>'    >
-                                    </td> -->
+                                  
                                     <td class="hours-worked">
                                         <input readonly name="sum[]" class="timeSum" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                     </td>

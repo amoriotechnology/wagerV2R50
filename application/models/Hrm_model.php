@@ -2782,15 +2782,14 @@ $data['create_by']=$this->session->userdata('user_id');
 return $this->db->insert('designation',$data);
 
 }
-public function designation_info($postData){
-        $data=array(
+    public function designation_info($postData){
+        $data = array(
             'designation' => $postData,
             'create_by' => $this->session->userdata('user_id')
         );
         $this->db->insert('designation', $data);
-       // echo $this->db->last_query();die();
-        $this->db->select('*');
-        $this->db->from('designation');
+
+        $this->db->select('*')->from('designation');
         $this->db->where('create_by' ,$this->session->userdata('user_id'));
        //   $this->db->order_by('payment_type','desc');
         $query = $this->db->get();
@@ -3258,7 +3257,11 @@ public function payroll_editdata($id){
 
         return $query->row();
 
+    }
 
+    public function headcode_bank(){
+        $query=$this->db->query("SELECT MAX(HeadCode) as HeadCode FROM acc_coa WHERE HeadLevel='4' And HeadCode LIKE '1020102%'");
+        return $query->row();
 
     }
 
@@ -3330,13 +3333,13 @@ public function getTaxdetailsdata($tax){
 
         $this->db->delete('employee_history');
 
-        $this->db->where('id', $id);
+        // $this->db->where('id', $id);
 
-        $this->db->delete('payroll_type');
+        // $this->db->delete('payroll_type');
 
-        $this->db->where('id', $id);
+        // $this->db->where('id', $id);
 
-        $this->db->delete('employee_type');
+        // $this->db->delete('employee_type');
 
         return true;
     }
@@ -3390,7 +3393,7 @@ public function getTaxdetailsdata($tax){
       public function employee_detl($id){
         $this->db->select('*');
         $this->db->from('employee_history a');
-         $this->db->join('designation b','a.designation = b.id');
+         $this->db->join('designation b','a.designation = b.designation');
         $this->db->where('a.id', $id);
            $this->db->where('a.create_by',$this->session->userdata('user_id'));
         $query = $this->db->get();
@@ -4784,6 +4787,23 @@ public function retrieve_companydata($user_id)
     }
 }
 
+public function insertData($table, $data) {
+    $this->db->insert($table, $data);
+    return $this->db->insert_id();
+}
+
+
+public function bank_entry($data) {
+    $this->db->insert('bank_add', $data);
+    $this->db->select('bank_name');
+    $this->db->from('bank_add');
+    $this->db->where('created_by', $this->session->userdata('user_id'));
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        return $query->result_array();
+    }
+}
+
 
 //Latest code - Surya - Starts //
 
@@ -4825,7 +4845,7 @@ public function get_state_details($find, $table, $where, $state, $user_id)
 // To get the state tax details - Used in state_tax function
 public function working_state_tax($employee_status,$final,$local_tax_range, $stateTax="",$user_id)
 {
-    $this->db->select('employee,employer');
+    $this->db->select('employee,employer,tax');
     $this->db->from('state_localtax');
     $this->db->where($employee_status,$local_tax_range);
     if($stateTax !=""){

@@ -304,4 +304,3 @@ td{
 
 <script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/timesheet/moment.min.js"></script>
 <script type="text/javascript" charset="utf8" src="<?= base_url(); ?>assets/js/timesheet/daterangepicker.min.js"></script>
-

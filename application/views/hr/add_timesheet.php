@@ -436,6 +436,7 @@ $(function() {
     function cb(start, end) {
         $('#reportrange').val(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
     }
+
     var start_week = "<?php echo (!empty($setting_detail[0]['start_week'])) ? $setting_detail[0]['start_week'] : 'Monday'; ?>";
     var end_week = "<?php echo (!empty($setting_detail[0]['end_week']) ? $setting_detail[0]['end_week'] : 'Friday'); ?>";
     var weeks = {'Sunday' : 0, 'Monday' : 1, 'Tuesday': 2, 'Wednesday' : 3, 'Thusday' : 4, 'Friday' : 5, 'Saturday' : 6};
@@ -520,6 +521,8 @@ $('body').on('input select change','#reportrange',function() {
     var Date1 = new Date (s_split[2]+'/'+s_split[0]+'/'+s_split[1]);
     var Date2 = new Date (e_split[2]+'/'+e_split[0]+'/'+e_split[1]);
     var Days = Math.round((Date2.getTime() - Date1.getTime())/(1000*60*60*24));
+    
+    console.log(Date1, Date2, Days);
 
     // console.log(s_split[2]+"/"+ s_split[1]+"/"+ s_split[0]+"/"+Days);
     const validDate = new Date(chosenDate);
