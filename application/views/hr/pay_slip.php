@@ -227,6 +227,17 @@
             text-align: center;
             }
           </style>
+          <?php
+function add_time($time1, $time2) {
+    list($hours1, $minutes1) = explode(':', $time1);
+    list($hours2, $minutes2) = explode(':', $time2);
+  $total_minutes = ($hours1 * 60 + $minutes1) + ($hours2 * 60 + $minutes2);
+ $hours = floor($total_minutes / 60);
+    $minutes = $total_minutes % 60;
+ return sprintf('%02d:%02d', $hours, $minutes);
+}
+
+?>
           <table class="table" style='margin-bottom:0px;'>
             <tr class='btnclr'>
               <th style='font-size:12px;'>EARNINGS</th>
@@ -247,129 +258,55 @@
                 echo "HRS/ UNITS";
                 } ?> </th>
               <th>RATE</th>
-              <th>THIS PERIOD(<?php echo $setting[0][
-                "currency"
-                ]; ?>)</th>
-              <th> <?php if (
-                $employee_info[0]["payroll_type"] ==
-                    "Hourly" ||
-                $employee_info[0]["payroll_type"] ==
-                    "Salaried-weekly" ||
-                $employee_info[0]["payroll_type"] ==
-                    "Salaried-BiWeekly" ||
-                $employee_info[0]["payroll_type"] ==
-                    "Salaried-Monthly" ||
-                $employee_info[0]["payroll_type"] ==
-                    "Salaried-BiMonthly"
-                ) {
+              <th>THIS PERIOD(<?php echo $setting[0]["currency"]; ?>)</th>
+              <th> <?php if ($employee_info[0]["payroll_type"] =="Hourly" ||$employee_info[0]["payroll_type"] =="Salaried-weekly" ||
+                $employee_info[0]["payroll_type"] == "Salaried-BiWeekly" ||$employee_info[0]["payroll_type"] =="Salaried-Monthly" ||
+                $employee_info[0]["payroll_type"] =="Salaried-BiMonthly") {
                 echo "YTD DAYS";
                 } else {
                 echo "HRS/HOURS";
                 } ?> </th>
-              <th>YTD(<?php echo $setting[0][
-                "currency"
-                ]; ?>)</th>
+              <th>YTD(<?php echo $setting[0]["currency"]; ?>)</th>
             </tr>
             <tr>
               <td>Salary</td>
-              <td><?php echo $timesheet_info[0][
-                "extra_hour"
-                ]; ?></td>
-              <td><?php echo $timesheet_info[0][
-                "extra_rate"
-                ]; ?></td>
-              <td id="total_period"><?php echo round(
-                $timesheet_info[0]["extra_thisrate"],
-                2
-                ); ?></td>
-              <td style="display:none;" id="total_period"><?php echo $ytd[
-                "ytd_salary"
-                ]; ?></td>
-              <td><?php echo $ytd[
-                "ytd_hours_excl_overtime_in_time"
-                ]; ?></td>
-              <td id="total_ytd"><?php echo $ytd[
-                "ytd_salary"
-                ]; ?></td>
-              <td style="display:none;" id="total_ytd"><?php echo $ytd[
-                "ytd_salary"
-                ] + $ytd["ytd_overtime_salary"]; ?></td>
+              <td><?php echo $timesheet_info[0]["hour"]; ?></td>
+              <td><?php echo $timesheet_info[0]["h_rate"]; ?></td>
+              <td id="total_period"><?php echo round($timesheet_info[0]["amount"],2); ?></td>
+              <td style="display:none;" id="total_period"><?php echo $ytd["ytd_salary"]; ?></td>
+              <td><?php 
+               $hours = substr($ytd["ytd_hours_excl_overtime_in_time"], 0, 5);
+              echo  isset($hours) ?  $hours : "00:00";
+               ?></td>
+              <td id="total_ytd"><?php echo $ytd["ytd_salary" ]; ?></td>
+              <!-- <td style="display:none;" id="total_ytd"><?php echo $ytd["ytd_salary"] + $ytd["ytd_overtime_salary"]; ?></td> -->
             </tr>
             <?php if ($employee_info[0]["payroll_type"] == "Hourly") { ?> 
             <tr>
               <td>Over Time</td>
-              <td> <?php if ($timesheet_info[0]["total_hours"] > $overtime_hour) {
-                echo $timesheet_info[0]["extra_hour"];
-                } else {
-                echo "0";
-                } ?> </td>
-              <td> <?php if ($timesheet_info[0]["total_hours"] > $overtime_hour) {
-                echo $timesheet_info[0]["extra_rate"];
-                } else {
-                echo "0";
-                } ?> </td>
-              <td id="above_over_this_period"> <?php if ($timesheet_info[0]["total_hours"] > $overtime_hour) {
-                echo $timesheet_info[0]["extra_thisrate"];
-                } else {
-                echo "0";
-                } ?> </td>
-              <td> <?php if ($ytd["total_hours"] > $overtime_hour) {
-                echo $ytd["ytd_hours_only_overtime"];
-                } else {
-                echo "0";
-                } ?> </td>
-              <td id="final_over_ytd"> <?php if ($ytd["total_hours"] > $overtime_hour) {
-                if ($ytd["ytd_days"]) {
-                    echo $ytd["ytd_days"];
-                } else {
-                    echo "0";
-                }
-                } ?> </td>
+              <td> <?php  echo $timesheet_info[0]["extra_hour"]; ?> </td>
+              <td> <?php echo $timesheet_info[0]["extra_rate"]; ?> </td>
+              <td id="above_over_this_period"> <?php echo  $timesheet_info[0]["extra_amount"]?> </td>
+              <td> <?php 
+        $hoursExclOvertime = substr($ytd["ytd_hours_only_overtime"], 0, 5);
+          echo  isset($hoursExclOvertime) ?  $hoursExclOvertime : "00:00";
+       ?> </td>
+              <td id="final_over_ytd"> <?php 
+        $salary = (is_numeric($ytd["ytd_overtime_salary"]) ? $ytd["ytd_overtime_salary"] : 0);echo number_format($salary, 2); 
+    ?> </td>
             </tr>
             <?php } ?> 
             <tr>
               <th><strong>TOTAL :</strong></td>
-              <th> <?php
-                list($hours1, $minutes1) = explode(
-                    ":",
-                    $timesheet_info[0]["above_extra_beforehours"]
-                );
-                if (
-                    !empty($timesheet_info[0]["extra_this_hour"]) &&
-                    preg_match(
-                        '/^\d{1,2}:\d{2}$/',
-                        $timesheet_info[0]["extra_this_hour"]
-                    )
-                ) {
-                    list($hours2, $minutes2) = explode(
-                        ":",
-                        $timesheet_info[0]["extra_this_hour"]
-                    );
-                } else {
-                    $hours2 = 0;
-                    $minutes2 = "00";
-                }
-                $totalMinutes = $hours1 * 60 + $minutes1 + ($hours2 * 60 + $minutes2);
-                $finalHours = floor($totalMinutes / 60);
-                $finalMinutes = $totalMinutes % 60;
-                $result = sprintf("%02d:%02d", $finalHours, $finalMinutes);
-                
-                echo $result;
-                ?> </th>
+              <th> <?php echo $timesheet_info[0]["total_hours"];?> </th>
               <th></th>
-              <th><?php echo $timesheet_info[0]["above_extra_sum"]; ?></th>
+              <th><?php echo  $timesheet_info[0]["amount"]+ $timesheet_info[0]["extra_amount"]?></th>
               <th><?php
-                list($hours1, $minutes1) = explode(
-                    ":",
-                    $ytd["ytd_hours_excl_overtime_in_time"]
-                );
+                list($hours1, $minutes1) = explode(":",$ytd["ytd_hours_excl_overtime_in_time"]);
                 $totalMinutes1 = $hours1 * 60 + $minutes1;
                 $totalMinutes2 = 0;
                 if ($ytd["ytd_hours_only_overtime"]) {
-                    list($hours2, $minutes2) = explode(
-                        ":",
-                        $ytd["ytd_hours_only_overtime"]
-                    );
+                    list($hours2, $minutes2) = explode(":",$ytd["ytd_hours_only_overtime"]);
                     $totalMinutes2 = $hours2 * 60 + $minutes2;
                 }
                 $totalMinutes = $totalMinutes1 + $totalMinutes2;
@@ -654,7 +591,7 @@
             <table class="table">
               <tr class='btnclr' style="outline: thin solid" rowspan="3">
                 <th colspan="3">NET PAY ALLOCATION</th>
-              </tr>   
+              </tr>
               <tr>
                 <th style="text-align:left;"><strong>DESCRIPTION</strong></th>
                 <th><strong>THIS PERIOD(<?php echo $setting[0][

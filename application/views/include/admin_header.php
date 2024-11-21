@@ -325,7 +325,7 @@
 
       <!-- Human Resource New menu start -->
       <li class="treeview  ">
-         <a href="#">
+         <a href="javascript:void(0)>
             <i class="fa fa-balance-scale"></i><span><?php  echo display('hrm_management'); ?></span>
             <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
