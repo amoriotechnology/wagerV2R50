@@ -2,32 +2,27 @@
 <?php
    $CI = & get_instance();
    $CI->load->model('Web_settings');
-
    $CI->load->model('Users');
-     $CI->load->model('Hrm_model');
+   $CI->load->model('Hrm_model');
    $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
    
    // print_r($Web_settings); 
    
    $retrieve_user_data = $CI->Web_settings->retrieve_user_data();
-   
    $retrieve_admin_data = $CI->Web_settings->retrieve_admin_data();
     $state_tax_list = $CI->Hrm_model->state_tax_list();
     $state_tax_list_employer = $CI->Hrm_model->state_tax_list_employer();
-$state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
+   $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
    $state_tax_list_employer = is_array($state_tax_list_employer) ? $state_tax_list_employer : [];
    function compare_tax($a, $b) {
-       return strcmp($a['tax'], $b['tax']);
+      return strcmp($a['tax'], $b['tax']);
    }
    $unique_taxes = array_udiff($state_tax_list_employer, $state_tax_list, 'compare_tax');
    
-   
    $retrieve_company_data = $CI->Web_settings->retrieve_companyall_data();
    $users = $CI->Users->profile_edit_data();
-   
-   
-   
-   ?>
+?>
+
 <style>
    .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
    position: absolute;
@@ -135,12 +130,7 @@ $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
                </a>
             </li>
             
-            <li class="dropdown notifications-menu">
-               <a href="<?php echo base_url('Cinvoice/addCart') ?>">
-               <i class="pe-7s-cart" title="View Cart"></i>
-               <span class="label total-count"></span>
-               </a>
-            </li>
+           
             <li class="dropdown notifications-menu">
                <a href="<?php echo base_url('Cservice/help_desk_show') ?>" >
                <i class="pe-7s-help1" title="Help"></i>
@@ -238,10 +228,12 @@ $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
       <!-- Sidebar user panel -->
       <div class="user-panel text-center row" style="display: flex; align-items: center;">
          <div class="image col-md-6">
-            <?php if($_SESSION['u_type']==1){ ?>
+            <?php 
+               if($_SESSION['u_type']==1)
+                   { ?>
             <img src="<?php
                if (isset($users[0]['logo'])) {
-                  echo base_url().html_escape($users[0]['logo']);
+                   echo base_url().html_escape($users[0]['logo']);
                }
                ?>" class="img-circle" alt="User Image">
             <?php  } 
@@ -342,8 +334,8 @@ $state_tax_list = is_array($state_tax_list) ? $state_tax_list : [];
             <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/manage_timesheet?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Time sheet');?></a></li>
 
             <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/pay_slip_list?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Pay slip / Checks per user');?></a></li>
-            <!-- <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/expense_list"><?php echo display("expense");?></a></li>
-            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/manage_officeloan"><?php echo display("office_loan");?></a></li> -->
+            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/expense_list"><?php echo display("expense");?></a></li>
+            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/manage_officeloan"><?php echo display("office_loan");?></a></li>
            <li class="treeview ">
             <a href="#">
                <i class=""></i> <span><?php echo ('Reports'); ?></span>

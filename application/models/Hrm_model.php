@@ -727,7 +727,7 @@ public function working_state_tax_report_search($tax_name = null, $emp_name = nu
   $query = $this->db->get();
 
   // No need to echo last query (optional)
- // echo $this->db->last_query();
+
 
   return $query->result_array();
 }
@@ -2539,41 +2539,41 @@ public function administrator_info($ads_id){
 
 
 
-public function time_sheet_data($id){
+public function time_sheet_data($id, $decodedId=null){
     $this->db->select('*');
     $this->db->from('timesheet_info a');
     $this->db->join('timesheet_info_details b' , 'a.timesheet_id = b.timesheet_id');
     $this->db->where('a.timesheet_id' , $id);
-    // $this->db->where('a.created_by' ,$this->session->userdata('user_id'));
+    $this->db->where('a.create_by' ,$decodedId);
     $query = $this->db->get();
+    // echo $this->db->last_query(); die;
 
     if ($query->num_rows() > 0) {
         return $query->result_array();
     }
 }
 
-    public function administrator_data(){
-
+    public function administrator_data($user_id)
+    {
         $this->db->select('*');
         $this->db->from('administrator');
-         $this->db->where('create_by',$this->session->userdata('user_id'));
-         $query = $this->db->get();
-        //  echo $this->db->last_query(); die();
-         if ($query->num_rows() > 0) {
+        $this->db->where('create_by',$user_id);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0) {
            return $query->result_array();
-         }
-         return false;
+        }
+        return false;
     }
     
 
 
 
 
-    public function employee_name1() {
+    public function employee_name1($user_id) {
 
         $this->db->select('*');
         $this->db->from('employee_history');
-          $this->db->where('create_by',$this->session->userdata('user_id'));
+          $this->db->where('create_by',$user_id);
      
          $query = $this->db->get();
      //  echo $this->db->last_query();die();
@@ -2604,20 +2604,20 @@ public function employee_partner($id) {
 
 
 
-public function employee_name($id) {
- $this->db->select('a.*,a.id as emp_id,b.designation');
-        $this->db->from('employee_history a');
-        $this->db->where('a.id', $id);
-           $this->db->join('designation  b', 'b.designation =a.designation');
-             $this->db->where('a.create_by',$this->session->userdata('user_id'));
-            $query = $this->db->get();
+public function employee_name($id, $user_id=null) 
+{
+    $this->db->select('a.*,a.id as emp_id,b.designation');
+    $this->db->from('employee_history a');
+    $this->db->where('a.id', $id);
+    $this->db->join('designation  b', 'b.designation =a.designation');
+    $this->db->where('a.create_by',$user_id);
+    $query = $this->db->get();
      
        if ($query->num_rows() > 0) {
         return $query->result_array();
     }
         return false;
-    }
-
+}
 
 
     
@@ -2662,11 +2662,11 @@ public function employee_name($id) {
 
 
 
-    public function get_payment_terms(){
+    public function get_payment_terms($user_id){
 
         $this->db->select('*');
         $this->db->from('payment_terms');
-        $this->db->where('create_by' ,$this->session->userdata('user_id'));
+        $this->db->where('create_by' ,$user_id);
         $query = $this->db->get();
        // echo $this->db->last_query();
          return $query->result_array();
@@ -2688,21 +2688,21 @@ public function employee_name($id) {
         return $query->result_array();
     }
 
-    public function get_dailybreak(){
-    
+    public function get_dailybreak($user_id)
+    {
         $this->db->select('*');
         $this->db->from('dailybreak');
-        $this->db->where('create_by' ,$this->session->userdata('user_id'));
+        $this->db->where('create_by' ,$user_id);
         $query = $this->db->get();
         return $query->result_array();
     }
     
 
-    public function get_duration_data(){
-        
+    public function get_duration_data($user_id)
+    {
         $this->db->select('*');
         $this->db->from('duration');
-        $this->db->where('create_by' ,$this->session->userdata('user_id'));
+        $this->db->where('create_by' ,$user_id);
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -4814,13 +4814,23 @@ public function get_state_details($find, $table, $where, $state, $user_id)
     $this->db->select($find)->from($table)->where($where, $state)->where('created_by', $user_id);
     $query = $this->db->get();
     if ($query->num_rows() > 0) {
-
         $result = $query->result_array();
-
         return $result;
     }
     return [];
 }
+
+public function getadminStatedetails($find, $table, $where, $state, $user_id)
+{
+    $this->db->select($find)->from($table)->where($where, $state)->where('created_by', $user_id);
+    $query = $this->db->get();
+    if ($query->num_rows() > 0) {
+        $result = $query->result_array();
+        return $result;
+    }
+    return [];
+}
+
 
 // To get the state tax details - Used in state_tax function
 public function working_state_tax($employee_status,$final,$local_tax_range, $stateTax="",$user_id)
@@ -4833,6 +4843,7 @@ public function working_state_tax($employee_status,$final,$local_tax_range, $sta
     }
     $this->db->where('created_by', $user_id);  
     $query = $this->db->get();
+     // echo $this->db->last_query(); die;
 
    if ($query->num_rows() > 0) {
        return $query->result_array();

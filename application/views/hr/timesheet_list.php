@@ -74,7 +74,7 @@
          <div class="row">
             <div class="col-sm-12">
                <div class="panel panel-bd lobidrag">
-                  <div class="panel-body" style="border: 3px solid #D7D4D6;">
+                  <div class="table-responsive panel-body" style="border: 3px solid #D7D4D6;">
                      <table class="table table-bordered" cellspacing="0" width="100%" id="managetimesheetList">
                         <thead>
                            <tr class="btnclr">

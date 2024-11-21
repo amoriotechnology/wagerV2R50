@@ -1,188 +1,8 @@
-
-<link rel="stylesheet" type="text/css" href="<?= base_url()?>my-assets/css/css.css" /> 
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" /> 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-<link href="<?= base_url() ?>assets/css/daterangepicker.css" rel="stylesheet">
-<link href="<?= base_url() ?>assets/css/style.css" rel="stylesheet">
-
-<style>
-.switch {
-  margin-top: 5px;
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-  width: 56px;
-  height: 20px;
-  padding: 3px;
-  background-color: white;
-  border-radius: 18px;
-  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  background-image: -webkit-linear-gradient(top, #EEEEEE, white 25px);
-  background-image: -moz-linear-gradient(top, #EEEEEE, white 25px);
-  background-image: -o-linear-gradient(top, #EEEEEE, white 25px);
-  background-image: linear-gradient(to bottom, #EEEEEE, white 25px);
-}
-.switch-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-}
-.switch-label {
-  position: relative;
-  display: block;
-  height: inherit;
-  font-size: 10px;
-  text-transform: uppercase;
-  background: #ECEEEF;
-  border-radius: inherit;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
-  -webkit-transition: 0.15s ease-out;
-  -moz-transition: 0.15s ease-out;
-  -o-transition: 0.15s ease-out;
-  transition: 0.15s ease-out;
-  -webkit-transition-property: opacity background;
-  -moz-transition-property: opacity background;
-  -o-transition-property: opacity background;
-  transition-property: opacity background;
-}
-.switch-label:before, .switch-label:after {
-  position: absolute;
-  top: 50%;
-  margin-top: -.5em;
-  line-height: 1;
-  -webkit-transition: inherit;
-  -moz-transition: inherit;
-  -o-transition: inherit;
-  transition: inherit;
-}
-.switch-label:before {
-  content: attr(data-off);
-  right: 11px;
-  color: #aaa;
-  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
-}
-.switch-label:after {
-  content: attr(data-on);
-  left: 11px;
-  color: white;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-}
-.switch-input:checked ~ .switch-label {
-  background: #38469F;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
-}
-.switch-input:checked ~ .switch-label:before {
-  opacity: 0;
-}
-.switch-input:checked ~ .switch-label:after {
-  opacity: 1;
-}
-.switch-handle {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 18px;
-  height: 18px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-  background-image: -webkit-linear-gradient(top, white 40%, #F0F0F0);
-  background-image: -moz-linear-gradient(top, white 40%, #F0F0F0);
-  background-image: -o-linear-gradient(top, white 40%, #F0F0F0);
-  background-image: linear-gradient(to bottom, white 40%, #F0F0F0);
-  -webkit-transition: left 0.15s ease-out;
-  -moz-transition: left 0.15s ease-out;
-  -o-transition: left 0.15s ease-out;
-  transition: left 0.15s ease-out;
-}
-.switch-handle:before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -6px 0 0 -6px;
-  width: 12px;
-  height: 12px;
-  background: #F9F9F9;
-  border-radius: 6px;
-  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
-  background-image: -webkit-linear-gradient(top, #EEEEEE, white);
-  background-image: -moz-linear-gradient(top, #EEEEEE, white);
-  background-image: -o-linear-gradient(top, #EEEEEE, white);
-  background-image: linear-gradient(to bottom, #EEEEEE, white);
-}
-.switch-input:checked ~ .switch-handle {
-  left: 85px;
-  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
-}
-.switch-green > .switch-input:checked ~ .switch-label {
-  background: #4FB845;
-}
- .btnclr ,th{
-   background-color:<?= $setting_detail[0]['button_color']; ?>;
-   color: white;
-   }
-a.disabled {
-  pointer-events: none;
-  cursor: default;
-}
-.table {
-    width: 100%; /* Set the table width */
-    table-layout: fixed; /* Use a fixed layout */
-}
-
-.table th,
-.table td {
-    width: auto; /* Or set the width as per your requirement */
-    /* Additional styling properties */
-    border: 1px solid #ccc;
-    padding: 8px;
-    /* Other styling properties */
-}
-.table input[type="text"],input[type="time"] {
-    text-align:center;
-    background-color: inherit; /* Set your desired background color */
-    /* Additional styling properties */
-    /*border: 1px solid #ccc;*/
-    border-radius: 4px;
-    padding: 8px;
-    /* Other styling properties */
-}
-
-.btnclr{
-    background-color:<?= $setting_detail[0]['button_color']; ?>;
-    color: white;
-}
-
-input {border:0;outline:0;}
-.work_table td {
-    height: 36px;
-}
-th,td{
-    text-align:center;
-}
-.select2-selection{
-    display :none;
-}
-</style>
-
 <div class="content-wrapper">
-
     <section class="content-header" style="height:70px;">
         <div class="header-icon">
             <i class="pe-7s-note2"></i>
         </div>
-
         <div class="header-title">
             <h1>Edit TimeSheet</h1>
             <small></small>
@@ -193,7 +13,6 @@ th,td{
             </ol>
         </div>
     </section>
-
     <section class="content">
         <!-- New category -->
         <div class="row">
@@ -204,9 +23,7 @@ th,td{
                             <a style="float:right;color:white;" href="<?php echo base_url('Chrm/manage_timesheet?id=' . $_GET['id']); ?>" class="btnclr btn  m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo "Manage TimeSheet" ?> </a>
                         </div>
                     </div>
-                  
                     <?php echo form_open_multipart('Chrm/pay_slip?id=' . $_GET['id'], 'id="validate"'); ?>
-                  
                     <div class="panel-body">
                         <input type="hidden" name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
 
@@ -270,12 +87,12 @@ th,td{
 								</thead>
 
                                 <?php 
-                                // Function to compare dates for sorting
+                               
                                 function compareDates($a, $b) {
                                     $dateA = DateTime::createFromFormat('d/m/Y', $a['Date']);
                                     $dateB = DateTime::createFromFormat('d/m/Y', $b['Date']);
                                     if ($dateA === false || $dateB === false) {
-                                        return 0; // Handle invalid dates here if needed
+                                        return 0; 
                                     }
                                     return $dateA <=> $dateB;
                                 }
@@ -292,17 +109,17 @@ th,td{
 
 								<tbody id="tBody">
                                 <?php
-                                    // Sorting the $time_sheet_data array based on the 'Date' field
+                                    
                                     usort($time_sheet_data, 'compareDates');
 
-                                    // Variable to track printed dates
+                                    
                                     $printedDates = array();
 
-                                    // Rendering the sorted table rows
+                                    
                                     foreach($time_sheet_data as $tsheet) {
                                         $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                         if( !empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                            // Add the date to the printed dates array
+                                            
                                             $printedDates[] = $tsheet['Date'];
                                         }
                                     }
@@ -336,9 +153,7 @@ th,td{
                                     <td class="finish-time">
                                         <input <?php if ($timesheetdata[$date]['edit'] == 1) { echo 'readonly'; } ?> name="end[]" class="hasTimepicker end" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['end']; ?>" type="time">
                                     </td>
-                                    <!-- <td style="text-align:center;"  readonly class="daily-break">
-                                        <input  name='dailybreak[]' class='form-control datepicker dailybreak'  style="width: 100px;margin: auto; display: block; text-align: center;" readonly value='<?= $tsheet['daily_break']; ?>'    >
-                                    </td> -->
+                                   
                                     <td class="hours-worked">
                                         <input readonly name="sum[]" class="timeSum" value="<?= empty($timesheetdata[$date]['day']) ? 'readonly' : $timesheetdata[$date]['per_hour']; ?>" type="text">
                                     </td>
@@ -353,18 +168,15 @@ th,td{
 
                             <tbody id="tBody">
                             <?php
-                                // Initialize $i before the loop starts
+                               
                                 $i = 0;
-                                
-                                // Sorting the $time_sheet_data array based on the 'Date' field
                                 usort($time_sheet_data, 'compareDates');
-                                // Variable to track printed dates
                                 $printedDates = array();
-                                // Rendering the sorted table rows
+                                
                                 foreach($time_sheet_data as $tsheet) {
                                     $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                     if( empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                        // Add the date to the printed dates array
+                                       
                                         $printedDates[] = $tsheet['Date'];
                                     }
                                 }
@@ -399,17 +211,14 @@ th,td{
                                 <?php } ?>
                             </tr>
                             <?php
-                            // Increment $i after each iteration
+                            
                             $i++;
                         } ?>
                 </tbody>
                 <?php } ?>
 
                 <tfoot>
-            <!-- <tr style="text-align:end"> 
-                    <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours :</td>  
-                    <td style="text-align: center;"> <input  type="text"    style="text-align:center;"  id="total_net" value="<?= $time_sheet_data[0]['total_hours'] ; ?>" name="total_net" />    </td> 
-                </tr>  -->
+           
                 <tr style="text-align:end"> 
                     <?php if ($employee_name[0]['payroll_type'] == 'Hourly') { ?>
                     <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours :</td> 
@@ -434,66 +243,15 @@ th,td{
             }  ?>
             <input type="submit" style="<?php if($time_sheet_data[0]['uneditable']==1){ echo 'display:none;';}  ?>color:white;" value="Submit" class="btnclr btn btn-info"/> 
         </div>               
-        <!-- <?php //echo form_close() ?> -->
     <?= form_close() ?>
 
-        <!-- </form> -->
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-
 </div>
 
-<!------ add new Duration-->  
-<div class="modal fade" id="add_admst" role="dialog">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?= ('Add New Administrator ') ?></h4>
-        </div>
-
-        <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="insert_adm" method="post">
-                
-                <div class="panel-body">
-                <input type ="hidden" name="csrf_test_name" id="" value="<?= $this->security->get_csrf_hash();?>">
-
-                <div class="form-group row">
-                    <label for="adms_name" class="col-sm-4 col-form-label" ><?= ('Administrator Name') ?> <i class="text-danger">*</i></label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name ="adms_name" id="adms_name" type="text" placeholder="Administrator Name"   required="" tabindex="1">
-                    </div>
-                </div>
-                <input type ="hidden" name="csrf_test_name" id="" value="<?= $this->security->get_csrf_hash();?>">
-
-                <div class="form-group row">
-                    <label for="address" class="col-sm-4 col-form-label" ><?= ('Administrator Address') ?> </label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name ="address" id="address" type="text" placeholder="Administrator Adress"   required="" tabindex="1">
-                    </div>
-                </div>
-
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <a href="#" class="btn" style="color:white;background-color:#38469f;" data-dismiss="modal"><?= display('Close') ?> </a>
-                <input type="submit" class="btn" style="color:white;background-color: #38469f;" value=<?= display('Submit') ?>>
-            </div>
-
-        </form>
-
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
 <script>
     var csrfName = '<?= $this->security->get_csrf_token_name();?>';
     var csrfHash = '<?= $this->security->get_csrf_hash();?>';
@@ -528,27 +286,7 @@ th,td{
     var csrfName = '<?= $this->security->get_csrf_token_name();?>';
     var csrfHash = '<?= $this->security->get_csrf_hash();?>';
 
-    // $(function() {
-
-    // // //
-
-    // $('#reportrange').daterangepicker({
-    //     startDate: start,
-    //     endDate: end,
-    //     ranges: {
-    //        'Today': [moment(), moment()],
-    //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //     }
-    // }, //cb
-    // );
-
-    // //cb(start, end);
-
-    // });
+   
 
 $('body').on('input select change','#reportrange',function(){
     var date = $(this).val();
@@ -568,16 +306,12 @@ $('body').on('input select change','#reportrange',function(){
     let newDate;
     const monStartWeekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
     
-    for(let i = 0; i <= Days; i++) { //iterate through each weekday
-        newDate = new Date(validDate); //create date object
-        newDate.setDate(validDate.getDate() + i); //increment set date
+    for(let i = 0; i <= Days; i++) { 
+        newDate = new Date(validDate); 
+        newDate.setDate(validDate.getDate() + i); 
         //append results to table
         var date=$('#date_'+i).html();
-        // date=date.replace(/ /g,"");
-        // var end=document.getElementById(`finishTime${monStartWeekDays[i]}`).value;
-        //      var sum=document.getElementById(`hoursWorked${monStartWeekDays[i]}`).value;
         var day=$('#day_'+i).html();
-        //   day=day.replace("/","");
         $('#tBody').append(
             `<tr>
                 <td  class="date" id="date_`+i+`"><input type="hidden" value="`+`${newDate.getDate()}/${newDate.getMonth() + 1}/${newDate.getFullYear()}" name="date[]"   />`+`${newDate.getDate()} / ${newDate.getMonth() + 1} / ${newDate.getFullYear()}</td>
@@ -732,33 +466,10 @@ $('body').on('input select change','#reportrange',function(){
 
 
     $(document).on('input','.timeSum', function () {
-        // $(".timeSum").change(function(){
         var $addtotal = $(this).closest('tr').find('.timeSum').val();
-        // alert($addtotal);
     });
 
 
-        // var timeOptions = {
-        //   interval: 15,
-        //   dropdown: true,
-        //   change: function(time) {
-        //   sumHours();
-        // }
-    // }
-
-
-    // $begin.timepicker(timeOptions);
-    // $end.timepicker(timeOptions);
-
-
-    // $(document).on('focus', $end, function() {
-    // $(this).select();  // select entire text on focus
-    // });
-
-
-    // $begin.on("click, focus", function () {
-    // $(this).select();
-    // });
 
     $('body').on('keyup','.end',function(){
 
@@ -767,7 +478,6 @@ $('body').on('input select change','#reportrange',function(){
         var breakv=$('#dailybreak').val();
         var calculate=parseInt(start)+parseInt(end);
         var final =calculate-parseInt(breakv);
-        // $(this).closest('tr').find('.hours-worked').html(final);
     });
 
 
@@ -797,9 +507,6 @@ $('body').on('input select change','#reportrange',function(){
 
         if ( time1 && time2 ) {
         if ( time1 > time2 ) {
-            //Correct the day so second entry is always 
-            //after first, as in midnight shift. Use a new 
-            //date object so original is not incremented.
             v = new Date(time2);
             v.setDate(v.getDate() + 1);
         } else {
@@ -826,7 +533,7 @@ $('body').on('input select change','#reportrange',function(){
         });
 
     });
-    //   console.log(total_net.toFixed(3));
+   
     $('#total_net').val(total_net.toFixed(2)).trigger('change');
     var firstDate = $('.date input').first().val(); // Get the value of the first date input
         var lastDate = $('.date input').last().val(); // Get the value of the last date input

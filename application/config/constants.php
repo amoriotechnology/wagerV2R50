@@ -91,5 +91,6 @@ define('BOOTSTRAP_MODALS', array(
     'add_city_info' => 'add_city_info',
     'add_city_tax' => 'add_city_tax',
     'add_county_info' => 'add_county_info',
-    'add_county_tax' => 'add_county_tax'
+    'add_county_tax' => 'add_county_tax',
+    'dailybreak_add' => 'dailybreak_add'
 ));

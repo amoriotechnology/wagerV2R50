@@ -84,33 +84,7 @@
                            </tr>
                         </thead>
                         <tbody class="sortableTable__body">
-                           <!-- <?php  // print_r($company_info); ?>  -->
-                           <!--<tr class="task-list-row">-->
-                           <!--   <td class="1 value" data-col="1">-->
-                           <!--      1-->
-                           <!--   </td>-->
-                           <!--   <td class="2 value" data-col="2">-->
-                           <!--      <?php  echo $company_info[0]['company_name'];   ?>-->
-                           <!--   </td>-->
-                           <!--   <td class="3 value" data-col="3">-->
-                           <!--      <?php  echo $company_info[0]["address"];   ?>-->
-                           <!--   </td>-->
-                           <!--   <td class="4 value" data-col="4">-->
-                           <!--      <?php   echo$company_info[0]["mobile"];   ?>-->
-                           <!--   </td>-->
-                           <!--   <td class="5 value" data-col="5">-->
-                           <!--      <?php  echo $company_info[0]["website"];   ?>-->
-                           <!--   </td>-->
-                           <!--   <td class="6 value" data-col="6">-->
-                           <!--   <center>-->
-                           <!--      <?php// echo form_open()?>-->
-                 
-                           <!--      <a href="<?php// echo base_url().'Company_setup/company_update_form/{company_id}'; ?>" class="btnclr btn m-b-5 m-r-2" data-toggle="tooltip" data-placement="left" title="" data-original-title="<?php echo display('update') ?>"><i class="fa fa-pencil" aria-hidden="true"></i></a>	-->
-                  
-                           <!--      <?php //echo form_close()?>-->
-                           <!--   </center>-->
-                           <!--</td>-->
-                           <!--</tr>-->
+                           
                            <?php 
                               if ($company_admin_info) {
                               	$i =1;
