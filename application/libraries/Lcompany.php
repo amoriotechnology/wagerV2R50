@@ -28,7 +28,7 @@ class Lcompany {
 			'title'        => display('manage_company'),
 			'company_list' => $company_list,
 			'company_info' => $company_info,
-			'company_id' =>$company_info[0]['company_id'],
+			'company_id' => $company_info[0]['company_id'],
 			'company_admin_info' => $this->CI->Companies->company_admin_info(),
 			'links'        => $links,
 			'setting_detail' => $this->CI->Web_settings->retrieve_setting_editdata()
@@ -93,7 +93,7 @@ class Lcompany {
 
 		$setting_detail = $this->CI->Web_settings->retrieve_setting_editdata();
 		$data = array(
-			'c_id' =>$company_id,
+			'c_id' => $company_id,
 			'title' 		=> display('company_edit'),
 			'company_id' 	=> $company_detail[0]['company_id'],
 			'company_name' 	=> $company_detail[0]['company_name'],
@@ -113,7 +113,6 @@ class Lcompany {
 			'url_st' 		=> $url_st,
 			'url_lctx' 		=> $url_lctx,
 			'url_sstx' 		=> $url_sstx,
-			// 'url1' 		=> $company_detail[0]['url1'],
 			'st_tax_id' => $company_detail[0]['st_tax_id'],
 			'lc_tax_id' => $company_detail[0]['lc_tax_id'],
 			'State_Sales_Tax_Number' => $company_detail[0]['State_Sales_Tax_Number'],

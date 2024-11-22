@@ -1161,25 +1161,13 @@ public function add_taxname_data(){
 
 
     public function payslip_setting() {
-        $data['title'] = display('payslip');
-<<<<<<< HEAD
-      
+        $data['title'] = display('payslip');      
         $this->CI->load->model('Web_settings');
         $this->CI->load->model('Invoice_content');
        $setting_detail = $this->CI->Web_settings->retrieve_setting_editdata();
        $dataw = $this->CI->Invoice_content->get_data_payslip();
         $datacontent = $this->CI->Invoice_content->retrieve_data();
-=======
-        $CI = & get_instance();
-        $CD = & get_instance();
-        $CD->load->model('Companies');
-        $CI->load->model('Web_settings');
-        $CI->load->model('Invoice_content');
-       $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-       $dataw = $CI->Invoice_content->get_data_payslip();
-       $datac = $CD->Companies->company_details();
-           $datacontent = $CI->Invoice_content->retrieve_data();
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
+
        $data= array(
         'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
         'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : '') ,
@@ -1189,10 +1177,6 @@ public function add_taxname_data(){
         'cname'=>(!empty($datacontent[0]['business_name']) ? $datacontent[0]['business_name'] : '') ,
         'mobile'=>(!empty($datacontent[0]['phone']) ? $datacontent[0]['phone'] : '') ,
         'email'=>(!empty($datacontent[0]['email']) ? $datacontent[0]['email'] : '') ,
-<<<<<<< HEAD
-=======
-
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
         'template'=> (!empty($dataw[0]['template']) ? $dataw[0]['template'] : '')
    );
         $content = $this->parser->parse('hr/payslip_view', $data, true);
@@ -1299,11 +1283,7 @@ public function employee_update_form() {
         $data["state_tx"]            = $this->Hrm_model->state_tax($decodedId);
         $data["cty_tax"]             = $this->Hrm_model->state_tax($decodedId);
         $data["designation"]         = $this->Hrm_model->getdesignation($data["employee_data"][0]["designation"], $decodedId);
-<<<<<<< HEAD
         $data["country_data"]         = $this->Hrm_model->getDatas('country', '*', ['id !=' => '']);
-      
-=======
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
         $data["desig"]               = $this->Hrm_model->designation_dropdown($decodedId);
         $content                     = $this->parser->parse("hr/employee_updateform", $data, true);
         $this->template->full_admin_html_view($content);
@@ -1338,11 +1318,9 @@ public function employee_update_form() {
             $response['status'] = 'failure';
             $response['msg']    = validation_errors();
         } else {
-<<<<<<< HEAD
 
             $form_type = $this->input->post('form_type');
-=======
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
+
             if (isset($_FILES["files"]) && is_array($_FILES["files"]["name"])) {
                 $no_files = count($_FILES["files"]["name"]);
                 $images = [];
@@ -1479,13 +1457,11 @@ public function employee_update_form() {
                 "emergencycontactnum"    => $this->input->post("emergencycontactnum",true),
                 "profile_image"          => !empty($profile_image) ? $profile_image : $this->input->post("old_profileimage", true),
                 "payroll_type"           => $this->input->post("payroll_type"),
-<<<<<<< HEAD
                 "account_number"         => $this->input->post("account_number"),
                 "employee_type"         => $this->input->post("employee_type"),
                 "bank_name"             => $this->input->post("bank_name"),
 
-=======
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
+
                 "working_state_tax"     => $state_tax,
                 "working_city_tax"     => $city_tax,
                 "working_county_tax"     => $county_tax,
@@ -1626,28 +1602,21 @@ public function employee_update_form() {
                   $this->template->full_admin_html_view($content);   
            }
 public function timesheed_inserted_data() {
-<<<<<<< HEAD
+
 
     $this->auth->check_admin_auth();
     $this->load->model('Web_settings');
     $this->load->model('Hrm_model');
 
-=======
-    $this->auth->check_admin_auth();
-    $this->load->model('Web_settings');
-    $this->load->model('Hrm_model');
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
     $type = $this->input->get('type');
     $emp_data = [];
     $setting =  $this->CI->Web_settings->retrieve_setting_editdata();
     $company_info = $this->CI->Web_settings->retrieve_companysetting_editdata();
   if($type == 'emp_data') {
     $id = $this->input->get('employee');
-<<<<<<< HEAD
     $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]); 
-=======
-    $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]);
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
+
+
   } else {
     /* return timesheet_info and employee history datas */
     $id = $this->input->get('timesheet_id');
@@ -3420,9 +3389,13 @@ public function manage_workinghours()
       $uid = $this->session->userdata('user_id');
       $start_week = $this->input->post('start_week');
       $end_week = $this->input->post('end_week');
+
+      $url_id = $this->input->post('url_id');
+      $url_admin_id = $this->input->post('url_admin_id');
+
       $CI->Hrm_model->updateData('web_setting', ['start_week' => $start_week, 'end_week' => $end_week], ['create_by' => $uid]);
       $this->session->set_flashdata("message", display("successfully_updated"));
-      redirect(base_url("Chrm/week_setting"));
+      redirect(base_url("Chrm/week_setting?id=".$url_id.'&admin_id='.$url_admin_id));
     }
     // Get Quater Function - Madhu
     public function getQuarter($month) 
@@ -3521,10 +3494,7 @@ public function manage_workinghours()
                 '<i class="fa-solid fa-pen text-warning" style="font-size: 11px;"></i>' : 
                 '<i class="fa-solid fa-check text-success"></i>'
             );
-<<<<<<< HEAD
 
-=======
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
             $row = [
                 "id"  => $i,
                 "c_date" => $status . ' ' . $item["c_date"],

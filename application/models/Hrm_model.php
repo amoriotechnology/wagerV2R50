@@ -3880,7 +3880,6 @@ public function get_overtime_data($id = null)
     return false;
 }
 
-<<<<<<< HEAD
 
 public function add_payment_type($postData){
     $data=array(
@@ -3898,7 +3897,4 @@ public function add_payment_type($postData){
 }
 
 
-
-=======
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
 }

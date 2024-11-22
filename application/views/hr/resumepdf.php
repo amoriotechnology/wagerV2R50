@@ -1,14 +1,8 @@
 <?php error_reporting(1);  ?>
-
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<link href="<?php echo base_url() ?>assets/css/style.css" rel="stylesheet">
-
-<link rel="stylesheet" type="text/css" href="<?php echo base_url('my-assets/css/css.css')?>" />
-<link rel="stylesheet" href="<?php echo base_url('my-assets/css/style.css') ?>">
-
 <link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/bootstrap.min.css'); ?>" />
 <link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/font-awesome.min.css'); ?>" />
 <link rel="stylesheet" type="text/css" href="<?= base_url('asset/css/themify-icons.css'); ?>" />
+<link href="<?php echo base_url('assets/css/style.css') ?>" rel="stylesheet">
 
 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
 
@@ -79,7 +73,7 @@ label {
       <!-- Sales report -->
       <div class="row">
          <div class="col-md-12">
-            <a style="float:right;color:white;" href="<?= base_url('Chrm/manage_employee') ?>" class="btnclr btn">
+            <a style="float:right;color:white;" href="<?= base_url('Chrm/manage_employee?id='.$_GET['id'].'&admin_id='.$_GET['admin_id']) ?>" class="btnclr btn">
                <i class="ti-align-justify"> </i>Manage Employee
             </a>
          </div>

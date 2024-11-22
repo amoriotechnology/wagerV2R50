@@ -56,8 +56,9 @@ class Company_setup extends CI_Controller {
 	}
 
 	#===============Company update form================#
-	public function company_update_form($company_id)
+	public function company_update_form()
 	{	
+		$company_id = $_GET['company_id'];
 		$content = $this->lcompany->company_edit_data($company_id);
 		$this->template->full_admin_html_view($content);
 	}

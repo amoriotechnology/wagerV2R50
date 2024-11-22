@@ -1,3 +1,6 @@
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/toastr.min.css" />
+<script src="<?php echo base_url()?>assets/js/toastr.min.js" ></script>
+
 <!-- Company List Start -->
 <style>
 .btnclr{
@@ -5,7 +8,6 @@
    color: white;
 }
 </style>
-
 
 <div class="content-wrapper">
    <section class="content-header">
@@ -27,24 +29,18 @@
    <section class="content">
       <!-- Alert Message -->
       <?php
-         $message = $this->session->userdata('message');
-         if (isset($message)) {
-         ?>
-      <div class="alert alert-info alert-dismissable">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?= $message ?>                    
-      </div>
-      <?php 
-         $this->session->unset_userdata('message');
-         }
-         $error_message = $this->session->userdata('error_message');
-         if (isset($error_message)) {
-         ?>
-      <div class="alert alert-danger alert-dismissable">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?= $error_message ?>                    
-      </div>
-      <?php $this->session->unset_userdata('error_message'); } ?>
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
 
       <!-- Company List -->
       <div class="row">
@@ -52,7 +48,7 @@
             <div class="panel panel-bd lobidrag">
                <div class="panel-heading">
                   <div class="panel-title">
-                      <a href="<?= base_url('company_setup/company_branch'); ?>" class="btnclr btn m-b-5 m-r-2" style="color:white;" ><i class="ti-plus"> </i> <?= display('Add Company') ?>  </a>
+                      <a href="<?= base_url('company_setup/company_branch?id='.$_GET['id'].'&admin_id='.$_GET['admin_id']); ?>" class="btnclr btn m-b-5 m-r-2" style="color:white;" ><i class="ti-plus"> </i> <?= display('Add Company') ?>  </a>
                   </div>
                </div>
                <div class="panel-body">
@@ -60,7 +56,7 @@
                      <div class="sortableTable__container">
                      <div class="sortableTable__discard">
                      </div>
-                     <table  id="ProfarmaInvList" class="table table-bordered table-striped table-hover">
+                     <table  id="" class="table table-bordered table-striped table-hover">
                         <thead class="sortableTable">
                            <tr class="sortableTable__header btnclr">
                               <th class="1 value" data-col="1"><?= display('sl') ?></th>
@@ -87,7 +83,7 @@
                            <td class="6 value" data-col="6">
                               <center>
                               <?= form_open()?>
-                                 <a href="<?= base_url().'Company_setup/company_update_form/'.$list['company_id']; ?>" class="btnclr btn m-b-5 m-r-2" data-toggle="tooltip" data-placement="left" title="" data-original-title="<?= display('update') ?>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                 <a href="<?= base_url().'Company_setup/company_update_form?id='.$_GET['id'].'&admin_id='.$_GET['admin_id'].'&company_id='.$list['company_id']; ?>" class="btnclr btn m-b-5 m-r-2" data-toggle="tooltip" data-placement="left" title="" data-original-title="<?= display('update') ?>"><i class="fa fa-pencil" aria-hidden="true"></i></a>
                               <?= form_close()?>
                               </center>
                            </td>
@@ -106,47 +102,3 @@
    </section>
 </div>
 <!-- Company List End -->
-
-
-<script type="text/javascript">
-   $(document).ready(function() {
-      // Function to store the visibility state of rows in localStorage
-      function storeVisibilityState() {
-         var ManageCompanylistvisibilityStates = {};
-         $("#ProfarmaInvList tr").each(function(index, element) {
-               var row = $(element);
-               var rowID = index;
-               var isVisible = row.is(':visible');
-               ManageCompanylistvisibilityStates[rowID] = isVisible;
-         });
-         // Store the visibility states in localStorage
-         localStorage.setItem("ManageCompanylistvisibilityStates", JSON.stringify(ManageCompanylistvisibilityStates));
-      }
-
-      // Apply the stored visibility state on page load
-      function applyVisibilityState() {
-         var storedVisibilityStates = JSON.parse(localStorage.getItem("ManageCompanylistvisibilityStates")) || {};
-         $("#ProfarmaInvList tr").each(function(index, element) {
-               var row = $(element);
-               var rowID = index;
-               if (storedVisibilityStates.hasOwnProperty(rowID) && !storedVisibilityStates[rowID]) {
-                  row.hide();
-               } else {
-                  row.show();
-               }
-         });
-      }
-
-      // Event listener for row clicks to toggle row visibility
-      $(".bank_edit").on('click', function() {
-         var row = $(this);
-         row.toggle();
-         storeVisibilityState(); // Store the updated visibility state
-      });
-
-      applyVisibilityState(); 
-
-
-   });
-
-</script>
