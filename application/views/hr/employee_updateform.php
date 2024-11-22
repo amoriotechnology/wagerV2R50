@@ -156,10 +156,12 @@
                            <label for="designation" class="col-sm-4 col-form-label"> <?= display('designation') ?> <i class="text-danger">*</i> </label>
                            <div class="col-sm-8">
                               <select name="designation" id="designation" class="form-control"  required>
-                                 <option value="<?= html_escape($employee_data[0]['designation'])?>"><?= html_escape($employee_data[0]['designation'])?></option>
-                                 <?php  foreach($desig as $ds){ ?>
-                                 <option value="<?= $ds['designation'] ;?>"><?= $ds['designation'] ;?></option>
-                                 <?php  } ?>
+                                 <?php foreach($desig as $ds): ?>
+                                     <option value="<?= $ds['id']; ?>" 
+                                         <?= ($ds['id'] == $employee_data[0]['designation']) ? 'selected' : ''; ?>>
+                                         <?= $ds['designation']; ?>
+                                     </option>
+                                 <?php endforeach; ?>
                               </select>
                            </div>
                         </div>

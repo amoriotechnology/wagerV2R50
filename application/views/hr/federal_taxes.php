@@ -1,84 +1,7 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/toastr.min.css" />
 <script src="<?php echo base_url()?>assets/js/toastr.min.js" /></script>
 <?php  error_reporting(1); ?>
-<!-- Manage Invoice Start -->
-<style>
-table.table.table-hover.table-borderless td {
-   border: 0;
-}
-.select2{
-   display:none;
-}
-
-.btnclr{
-   background-color:<?php echo $setting_detail[0]['button_color']; ?>;
-   color: white;
-}
-
-.logo-9 i{
-   font-size:80px;
-   position:absolute;
-   z-index:0;
-   text-align:center;
-   width:100%;
-   left:0;
-   top:-10px;
-   color:#34495e;
-   -webkit-animation:ring 2s ease infinite;
-   animation:ring 2s ease infinite;
-}
-
-.logo-9 h1{
-   font-family: 'Lora', serif;
-   font-weight:600;
-   text-transform:uppercase;
-   font-size:40px;
-   position:relative;
-   z-index:1;
-   color:#e74c3c;
-   text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
-}
-   
-.logo-9{
-   position:relative;
-} 
-   
-/*//side*/
-.bar {
-  float: left;
-  width: 25px;
-  height: 3px;
-  border-radius: 4px;
-  background-color: #4b9cdb;
-}
-
-
-.load-10 .bar {
-  animation: loadingJ 2s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
-}
-
-
-@keyframes loadingJ {
-  0%,
-  100% {
-   transform: translate(0, 0);
-  }
-
-  50% {
-   transform: translate(80px, 0);
-   background-color: #f5634a;
-   width: 120px;
-  }
-}
-
-tr.noBorder td {
-   border: 0;
-}
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
-   border-top:none;
-}
-</style>
- 
 
 <div class="content-wrapper">
    <section class="content-header">
@@ -122,20 +45,19 @@ tr.noBorder td {
             <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
                <div class="panel-body">
                   <div class="row">
-                     <!-- <h3 class="col-sm-3" style="margin: 0;">//Federal Taxes </h3> -->
+                    
                         <div>
                            <select class="btnclr btn" id="timesheetSelect"  style="margin-left:25px;" >
                               <option>W2 Form - Select Employee</option>
                               <?php 
-                              $addedIds = []; // Array to keep track of IDs that have been added
+                              $addedIds = []; 
                               foreach ($timesheet_data_emp as $time) {
-                                 // Check if the ID has already been added
+                                 
                                  if (!in_array($time['id'], $addedIds)) {
-                                       // If not, display the option and mark the ID as added
                                        echo '<option style="color:white;" value="' . htmlspecialchars($time['id']) . '">'
                                           . htmlspecialchars($time['first_name']) . ' ' . htmlspecialchars($time['last_name'])
                                           . '</option>';
-                                       $addedIds[] = $time['id']; // Mark this ID as added
+                                       $addedIds[] = $time['id']; 
                                  }
                               } ?>
                            </select>
@@ -145,7 +67,7 @@ tr.noBorder td {
                                  var selectedId = this.value;
                                  var baseLink = '<?php echo base_url('chrm/w2Form/'); ?>';
                                  var link = selectedId ? baseLink + selectedId : baseLink;
-                                 window.location.href = link; // Redirect to the new URL
+                                 window.location.href = link; 
                               });
                            </script>
 
@@ -168,7 +90,7 @@ tr.noBorder td {
                               var selectedId = this.value;
                               var baseLink = '<?php echo base_url('chrm/form941Form/'); ?>';
                               var link = selectedId ? baseLink + selectedId : baseLink;
-                              window.location.href = link; // Redirect to the new URL
+                              window.location.href = link; 
                            });
                         </script>
 
@@ -199,11 +121,11 @@ tr.noBorder td {
                      <select class="btnclr btn" id="timesheetSelecttwo"  style="margin-left:1092px;position:absolute;top:18px;" >
                         <option>F1099-NEC-Select Employee</option>
                         <?php 
-                        $addedIds = []; // Array to keep track of IDs that have been added
+                        $addedIds = []; 
                         foreach ($merged_data_salespartner as $sales) {
                               if (!in_array($sales['id'], $addedIds)) {        
                               echo '<option style="color:white;" value="' . htmlspecialchars($sales['id']) . '">' . htmlspecialchars($sales['first_name']) . ' ' . htmlspecialchars($sales['middle_name']) . ' ' . htmlspecialchars($sales['last_name']) . '</option>';
-                                 $addedIds[] = $sales['id']; // Mark this ID as added
+                                 $addedIds[] = $sales['id']; 
                            }
                         } ?>
                      </select>
@@ -213,7 +135,7 @@ tr.noBorder td {
                            var selectedId = this.value;
                            var baseLink = '<?php echo base_url('chrm/formfl099nec/'); ?>';
                            var link = selectedId ? baseLink + selectedId : baseLink;
-                           window.location.href = link; // Redirect to the new URL
+                           window.location.href = link; 
                         });
                      </script>
                      </div>
@@ -230,7 +152,7 @@ tr.noBorder td {
                   <div class="row">
                      <h3 class="col-sm-3" style="margin: 0;">Federal Taxes</h3>
                      <div class="col-sm-9 text-right">
-                        <!-- <a href="#" data-toggle="modal" data-target="#add_city" class="btnclr btn"> Add City </a> -->
+                        
                      </div>
                      <br>
 
@@ -244,7 +166,7 @@ tr.noBorder td {
                                           <tr style="height:25px;">
                                              <th class='btnclr' style="width: 170px;"><?php echo display('sl') ?></th>
                                              <th class='btnclr' class="text-center" style="text-align: justify;" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax Name</th>
-                                             <!-- <th class="text-center"><?php echo display('action') ?></th> -->
+                                             
                                           </tr>
                                        </thead>
                                        <tbody>
@@ -283,11 +205,7 @@ tr.noBorder td {
                                              </td>
                                           </tr>
                                        </tbody>
-                                       <!-- <tfoot>
-                                          <th></th>
-                                          <th></th>
-                                          <th></th>
-                                       </tfoot> -->
+                                      
                                     </table>
                                  </form>
                               </div>
@@ -382,7 +300,6 @@ tr.noBorder td {
         
       </div> 
 
-<!-- //////////////////////////////////////////////////////Citynameinff//////////////////////////////////////////// -->
    <div class="row">
          <div class="col-sm-12">
             <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
@@ -442,97 +359,14 @@ tr.noBorder td {
             </div>
          </div>
       </div>
-<!-- /////////////////////////////////////the end///////////////////////////////////////////////////////////////// -->
 
-
-<!-- //////////////////////////////////////////////////////County tax//////////////////////////////////////////// -->
-      <div class="row">
-         <div class="col-sm-12">
-            <div class="panel panel-default" style="border:3px solid #d7d4d6;" >
-               <div class="panel-body">
-                  <div class="row">
-                     <h3 class="col-sm-3" style="margin: 0;">County  Taxes</h3>
-                     <div class="col-sm-9 text-right">
-                        <!-- <a href="#" data-toggle="modal" data-target="#add_city" class="btnclr btn"> Add City </a> -->
-                        <a href="#" data-toggle="modal" data-target="#add_county_info"   class="btnclr btn"> Add County </a>
-                        <a href="#" data-toggle="modal" data-target="#add_county_tax"   class="btnclr btn">Add County Tax </a>
-                     </div>
-
-                     <div class="col-sm-12">
-                        <div class="panel panel-bd lobidrag">
-                        
-                           <div class="panel-body" >
-                           <!-- style="overflow-y: auto;height:500px;" -->
-                              <div class="table-responsive" >
-                                 <?php 
-                                    echo "<table border='0' class='table table-striped' cellspacing='0' cellpadding='0' style='table-layout:fixed;
-                                    
-                                    border-collapse:collapse;'>
-                                    <thead style='height:25px;'>
-                                       <th class='btnclr' style='text-align:center;border: 1px solid #d7d4d6;width: 170px;'>".display('sl')."</th>
-                                       <th class='btnclr' style='text-align:center;border: 1px solid #d7d4d6;'>County Name</th>
-                                       <th class='btnclr'  style=' text-align: center;border: 1px solid #d7d4d6;'>County Taxes</th>
-                                    </thead><tbody>";
-                                    $k=1;
-                                    for($i=0; $i < sizeof($county_list); $i++) {
-                                       // echo $states_list[$i];
-                                       $splt=explode(",",$county_list[$i]['tax']);
-                                       $j=1;
-                                       echo "<tr style='border: 1px solid #d7d4d6;background: white;' ><td style='text-align:center;' >".$k."</td><td class='county_name' style='text-align:center;font-weight:bold;border: 1px solid #d7d4d6;background: white;' rowspan='".$j."'>". $county_list[$i]['state']."</td> <td><table>";
-
-                                       foreach($splt as $sp){
-                                             
-                                          if(!empty($sp) && $sp !==','){
-                                             $sp_url= str_replace(" "," ",$sp);
-                                             echo "<tr><td style='display:none' class='county_name'>". $county_list[$i]['state']."</td><td style='width:450px;text-align:center;' class='countytax_value'>".$sp."</td> <td>  <a  href=".base_url('Chrm/add_state_taxes_detail?tax='.urlencode($county_list[$i]['state'])."-".urlencode($sp_url))." class='btn btnclr btn-sm' data-toggle='tooltip' data-placement='left'  data-original-title='Add Taxes Detail'><i class='fa fa-window-restore' aria-hidden='true'></i></a>
-                                                <a  class='delete_itemcounty btn btnclr btn-sm' onclick='return confirm('Are you sure you want to delete this?');'><i class='fa fa-trash' aria-hidden='true'></i></a>     </td></tr></td>";
-                                          } else {
-                                             echo "<tr><td style='display:none' class='county_name'>". $county_list[$i]['state']."</td><td style='width:485px;' style='display:none'>&nbsp</td> <td>  
-                                             <a   class='delete_itemcounty btn btnclr btn-sm' onclick='return confirm('Are you sure you want to delete this?');'><i class='fa fa-trash' aria-hidden='true'></i></a>     </td></tr></td>";
-                                             break;
-                                          }
-                                       }
-                                       echo "</table></tr>";
-                                       $j++;$k++;
-                                    }
-                                    echo "</table>"; ?>
-                              </div>
-                           </div>
-            
-                        </div>
-                        <input type="hidden" id="total_invoice" value="<?php echo $total_invoice;?>" name="">
-                        <input type="hidden" id="currency" value="{currency}" name="">
-                     </div>
-
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </section>   
-
-<!-- Manage Invoice End -->
-<div class="modal fade" id="myModal1" role="dialog" >
-   <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content" style="margin-top: 190px;">
-         <div class="modal-header" style="color:white;background-color:#38469f;">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">HR</h4>
-         </div>
-         <div class="modal-body" id="bodyModal1" style="text-align:center;font-weight:bold;">
-         </div>
-         <div class="modal-footer">
-         </div>
-      </div>
-   </div>
-</div>
+   </section>  
 
 </div>
 
 
 <?php 
-   $modaldata['bootstrap_modal'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax');
+   $modaldata['bootstrap_modals'] = array('add_states', 'add_state_tax', 'add_city_info', 'add_city_tax', 'add_county_info', 'add_county_tax');
    $this->load->view('include/bootstrap_modal', $modaldata);
 ?>
 
@@ -632,7 +466,6 @@ tr.noBorder td {
            data: {[csrfName]: csrfHash, city:city},
            dataType:"json",
            success:function(response){
-            //  console.log(response);
              swal({
                title: 'City saved successfully',
                icon: 'success',
@@ -647,7 +480,6 @@ tr.noBorder td {
             });
            },
            error: function(xhr, status, error) {
-             // console.log(error);
            }
          });
        });
@@ -663,8 +495,6 @@ tr.noBorder td {
         var row = $(this).closest('tr');
         var cityId = row.find('.city_ids').val();
         var newCity = row.find('.city-edit').val();
-        // alert(newCity);
-        // Perform AJAX to update the city in the database
         $.ajax({
             type: "POST",
             url: "<?php echo base_url(); ?>Chrm/editCity",
@@ -672,16 +502,13 @@ tr.noBorder td {
             dataType:"json",
             success: function(response) {
                console.log(response);
-                // Handle success, update UI if needed
                 row.find('.city-value').text(newCity).show();
                 row.find('.city-edit').hide();
                 row.find('.invoice_edit').show();
                 row.find('.invoice_save').hide();
                 $('.city_button').show();
-                // location.reload();
             },
             error: function(xhr, status, error) {
-                // Handle error
                 console.log(error);
             }
         });
@@ -757,9 +584,6 @@ tr.noBorder td {
 $(".delete_itemcounty").click(function () {
     var countytax = $(this).closest('tr').find('td.countytax_value').text();
     var county = $(this).closest('tr').find('td.county_name').text();
-    
-   //  alert(countytax);
-   //  alert(county);
    if (confirm("Are you sure you want to delete this?")) {
     var dataString = {
       countytax: countytax,
