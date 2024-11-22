@@ -2,7 +2,7 @@
     $CI = & get_instance();
     $CI->load->model('Web_settings');
     $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
-    date_default_timezone_set($Web_settings[0]['timezone']);
+    // date_default_timezone_set($Web_settings[0]['timezone']);
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">

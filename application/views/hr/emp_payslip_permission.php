@@ -46,6 +46,8 @@
                                 <input type="text" name="job_title" id="job_title" readonly placeholder="Job title" value="<?= empty($employee_name[0]['designation']) ? 'Sales Partner' : $employee_name[0]['designation']; ?>" class="form-control">
 
                                 <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
+                                
+                                <input type ="hidden"  id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
                             </div>
                         </div>
                     </div>
@@ -66,7 +68,7 @@
                         </div>
                     </div>
                     
-                    <!-------------- Time Sheet table Start here -------------------->
+                   
                     <div class="table-responsive work_table col-md-12">
                         <table class="table table-striped table-bordered" cellspacing="0" width="100%" id="PurList"> 
                             <thead class="btnclr">
@@ -85,7 +87,7 @@
                                         <th style='height:25px;' class="col-md-1">Day</th>
                                         <th style='height:25px;' class="col-md-1">Present / Absent</th>
                                     <?php } elseif ($employee_name[0]['payroll_type'] == 'SalesCommission') { ?>
-                                        <!-- Your code for 'SalesCommission' payroll type here, if any -->
+                                       
                                     <?php } ?>
                                 </tr>
                             </thead>

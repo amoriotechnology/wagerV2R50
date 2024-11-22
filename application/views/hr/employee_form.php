@@ -1,6 +1,10 @@
 
 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/daterangepicker.css'); ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/toastr.min.css')?>" />
+<script src="<?php echo base_url('assets/js/toastr.min.js')?>" ></script>
+
+
 <div class="content-wrapper">
    <section class="content-header">
       <div class="header-icon">
@@ -94,6 +98,19 @@
 
    <!-- <div class="row"> -->
    <div class="col-sm-12">
+   <?php
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
       <div class="panel panel-bd lobidrag">
          <div class="panel-heading">
             <div class="panel-title" style="height:35px;">
@@ -149,11 +166,11 @@
                   <div class="form-group row" id="designation">
                      <label for="designation" class="col-sm-4 col-form-label"> <?php echo display('designation') ?> <i class="text-danger">*</i> </label>
                      <div class="col-sm-7">
-                        <select name="designation"  id="desig"  class="form-control" style="width: 100%;"required>
+                        <select name="designation" id="desig" class="form-control" style="width: 100%;"required>
                            <option value="">Select Designation</option>
-                           <?php  foreach($desig as $ds){ ?>
-                           <option value="<?php  echo $ds['designation'] ;?>"><?php  echo $ds['designation'] ;?></option>
-                           <?php  } ?>
+                           <?php foreach($desig as $ds){ ?>
+                           <option value="<?php echo $ds['id'] ;?>"><?php echo $ds['designation'] ;?></option>
+                           <?php } ?>
                         </select>
                      </div>
                      <div class="col-sm-1">
@@ -568,10 +585,8 @@
                         <div class="col-sm-6">
                            <p>
                               <label for="attachment">
-                              <a class="btnclr btn   text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
+                              <a class="btnclr btn text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
                               </label>
-                                 <!-- <p id="msg"></p> -->
-                                 <!-- <input type="hidden" name="sub_menu" value="ocean_export_tracking"> -->
                               <input type="file" name="files[]" class="upload" id="attachment" style="visibility: hidden; position: absolute;" multiple/>
                            </p>
                            <p id="files-area">
@@ -581,27 +596,6 @@
                            </p>
                         </div>
                   </div>
-                 <!--  <div class="form-group row" id="employee_type">
-                     <label for="employee_type" class="col-sm-4 col-form-label">
-                     Attachments <i class="text-danger">*</i>
-                     </label>
-                     <div class="col-sm-8">
-                        <input type="file" name="files[]" class="form-control" placeholder="<?php echo display('picture') ?>" id="image" multiple>
-                        <input type="hidden" name="old_image" value="">
-                        <br>
-                        <?php
-                           echo '<div class="file-container">';
-                              foreach ($employee_data as $attachment) {
-                                  $Final_files = explode(",", $attachment['files']);
-                                  foreach ($Final_files as $file) {
-                                      $encoded_file = rawurlencode(trim($file));
-                                      echo '<p><a href="' . base_url() . 'uploads/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
-                                  } 
-                              }
-                              echo '</div>';
-                           ?>
-                     </div>
-                  </div> -->
 
                   <div class="form-group row"  id="payrolltype">
                      <label for="profile_image" class="col-sm-4 col-form-label">
@@ -707,7 +701,7 @@
                         <select name="country" class="form-control">
                            <option value="">Select Country</option>
                            <?php foreach($country_data as $value) { ?>
-                              <option value="<?= $value['name']; ?>"> <?= $value['name']; ?> </option>
+                              <option value="<?= $value['nickname']; ?>"> <?= $value['name']; ?> </option>
                            <?php } ?>
                         </select>
                      </div>
@@ -728,35 +722,12 @@
                </div>
                <!-- Right Side -->
                <div class="col-sm-6">
-                  <!--<div class="form-group row">-->
-                  <!--   <label for="employee_type" class="col-sm-4 col-form-div">-->
-                  <!--   Employee Type <i class="text-danger">*</i>-->
-                  <!--   </label>-->
-                  <!--   <div class="col-sm-7">-->
-                  <!--      <select  name="employee_type" id="emp_type" class="required form-control" required>-->
-                  <!--         <option value="">Select Employee Type</option>-->
-                  <!--         <option value="Full Time (W4)">Full Time (W4)</option>-->
-                           <!-- <option value="Contractor (W9)">Contractor (W9)</option> -->
-                  <!--         <option value="Part time">Part time</option>-->
-                  <!--         <?php //foreach($emp_data as $emp_type){ ?>-->
-                  <!--         <option value="<?php  //echo $emp_type['employee_type'] ;?>"><?php  //echo $emp_type['employee_type'] ;?></option>-->
-                  <!--         <?php  //} ?>-->
-                  <!--      </select>-->
-                  <!--   </div>-->
-                  <!--   <div class="col-sm-1">-->
-                  <!--      <a  class="btnclr client-add-btn btn" aria-hidden="true"   data-toggle="modal" data-target="#employees_type" ><i class="fa fa-plus"></i></a>-->
-                  <!--   </div>-->
-                  <!--</div>-->
                   <div class="form-group row" id="payment_from">
                      <label for="city" class="col-sm-4 col-form-div"><?php echo  ('Sales Commission') ?></label>
                      <div class="col-sm-8">
                         <input name="sc" class="form-control" type="text" placeholder="<?php echo 'sales commission percentage' ?>">
                      </div>
-
-
                   </div>
-
-
                   <div class="form-group row" id="payment_from">
                         <label for="choice" class="col-sm-4 col-form-div">Commission Withholding</label>
                      <div class="col-sm-8">
@@ -991,9 +962,6 @@
                               <label for="stateTax2Dropdown">Other Work Tax<i class="text-danger">*</i></label>
                               <input list="magic_state_tax_2" name="other_working_tax" id="stateTax2Dropdown" class="form-control">
                               <datalist id="magic_state_tax_2">
-                                 <!--<?php //foreach ($state_tx as $st) { ?>-->
-                                 <!--    <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
-                                 <!--<?php // } ?>-->
                                  <option value="Not Applicable">Not Applicable</option>
                               </datalist>
                            </div>
@@ -1036,9 +1004,6 @@
                               <label for="livingOtherTax">Other living Tax<i class="text-danger">*</i></label>
                               <input list="magic_living_other_tax" name="other_living_tax" id="livingOtherTax" class="form-control">
                               <datalist id="magic_living_other_tax">
-                                 <!--<?php //foreach ($state_tx as $st) { ?>-->
-                                 <!--    <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
-                                 <!--<?php //} ?>-->
                                  <option value="Not Applicable">Not Applicable</option>
                               </datalist>
                            </div>
@@ -1059,25 +1024,22 @@
                         <button type="button" class="btnclr btn" id="showPopupsalespartner">Add Withholding Tax</button>
                      </div>
                   </div>
+
                   <div class="form-group row">
                      <label for="ETA" class="col-sm-4 col-form-label"><?php echo display('Attachments ') ?></label>
                         <div class="col-sm-6">
-                            <input type="file" name="files[]" class="form-control" multiple/>
-                           <!--<p>-->
-                           <!--   <label for="attachment">-->
-                           <!--   <a class="btnclr btn   text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>-->
-                           <!--   </label>-->
-                                 <!-- <p id="msg"></p> -->
-                                 <!-- <input type="hidden" name="sub_menu" value="ocean_export_tracking"> -->
-                           <!--   <input type="file" name="files[]" class="upload" id="attachment" style="visibility: hidden; position: absolute;" multiple/>-->
-                           <!--</p>-->
-                           <!--<p id="files-area">-->
-                           <!--   <span id="filesList">-->
-                           <!--   <span id="files-names"></span>-->
-                           <!--      </span>-->
-                           <!--</p>-->
+                           <p>
+                              <label for="attachment">
+                              <a class="btnclr btn text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
+                              </label>
+                              <input type="file" name="files[]" class="upload" style="visibility: hidden; position: absolute;" multiple/>
+                           </p>
+                           <p id="files-area">
+                              <span id="filesList"><span id="files-names"></span></span>
+                           </p>
                         </div>
                   </div>
+
                   <div class="form-group row"  id="payrolltype">
                      <label for="profile_image" class="col-sm-4 col-form-label">
                      Profile Image
@@ -1099,11 +1061,9 @@
             <?php echo form_close() ?>
          </div>
       </div>
-      <!-- </div> -->
    </div>
    </section>
 </div>
-
 
 <div class="modal fade" id="myModal1" role="dialog" >
    <div class="modal-dialog">
@@ -1126,318 +1086,22 @@
    $this->load->view('include/bootstrap_modal', $modaldata);
 ?>
 
-<script>
-   var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
-   var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
 
-   $(document).ready(function () {
-        $('#add_city_tax').submit(function (e) {
-            e.preventDefault();
-            var formData = $("#add_city_tax").serialize();
-            formData += "&" + $.param({ csrf_test_name: csrfHash });
-            $.ajax({
-                type: 'POST',
-                data: formData,
-                dataType: "json",
-                url: '<?php echo base_url(); ?>Cinvoice/add_city_tax',
-                success: function (data1, statut) {
-                    var $datalist = $('#magic_city_tax');
-                    // Clear existing options
-                    $datalist.empty();
-                    // Add new options
-                    for (var i = 0; i < data1.length; i++) {
-                        var option = $('<option/>').attr('value', data1[i].city_tax).text(data1[i].city_tax);
-                        $datalist.append(option);
-                    }
-                    $('#new_city_tax').val('');
-                    $("#bodyModal1").html("City Tax Added Successfully");
-                    $('#city_tax').modal('hide');
-                    $('#citytx').show();
-                    $('#myModal1').modal('show');
-                    window.setTimeout(function () {
-                        $('#city_tax').modal('hide');
-                        $('#myModal1').modal('hide');
-                    }, 2000);
-                }
-            });
-        });
-    });
-   5.
-   // Payroll Insert Data
-     $('#add_payroll_type').submit(function(e){
-       e.preventDefault();
-         var data = {
-           data : $("#add_payroll_type").serialize()
-         };
-         data[csrfName] = csrfHash;
-         $.ajax({
-             type:'POST',
-             data: $("#add_payroll_type").serialize(),
-            dataType:"json",
-             url:'<?php echo base_url();?>Cinvoice/add_paymentroll_type',
-             success: function(data2, statut) {
-          var $select = $('select#payroll_type');
-               $select.empty();
-               console.log(data);
-                 for(var i = 0; i < data2.length; i++) {
-                    console.log(data2);
-           var option = $('<option/>').attr('value', data2[i].proll_type).text(data2[i].proll_type);
-           $select.append(option); // append new options
-       }
-         $('#new_payroll_type').val('');
-         $("#bodyModal1").html("Payroll Added Successfully");
-         $('#proll_type').modal('hide');
-         $('#payroll_type').show();
-          $('#myModal1').modal('show');
-         window.setTimeout(function(){
-           $('#proll_type').modal('hide');
-          $('#myModal1').modal('hide');
-       }, 2000);
-        }
-         });
-     });
-   
-   
-     $('#add_pay_type').submit(function(e){
-      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
-      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
-       e.preventDefault();
-         var data = {
-           data : $("#add_pay_type").serialize()
-         
-         };
-         data[csrfName] = csrfHash;
-     
-         $.ajax({
-             type:'POST',
-             data: $("#add_pay_type").serialize(), 
-            dataType:"json",
-             url:'<?php echo base_url();?>Chrm/add_payment_type',
-             success: function(data1, statut) {
-        
-          var $select = $('select#paytype');
-      
-               $select.empty();
-               console.log(data);
-                 for(var i = 0; i < data1.length; i++) {
-           var option = $('<option/>').attr('value', data1[i].payment_type).text(data1[i].payment_type);
-           $select.append(option); // append new options
-       }
-         $('#new_payment_type').val('');
-         $("#bodyModal1").html("Payment Added Successfully");
-         $('#payment_type').modal('hide');
-         
-         $('#paytype').show();
-          $('#myModal1').modal('show');
-         window.setTimeout(function(){
-           $('#payment_type').modal('hide');
-        
-          $('#myModal1').modal('hide');
-      
-       }, 2000);
-       
-        }
-         });
-     });
-     
-     
-     // Insert Employeee Type
-   
-     $('#add_employee_type').submit(function(e){
-      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
-      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
-
-       e.preventDefault();
-         var data = {
-           data : $("#add_employee_type").serialize()
-         };
-         data[csrfName] = csrfHash;
-     
-         $.ajax({
-             type:'POST',
-             data: $("#add_employee_type").serialize(), 
-            dataType:"json",
-            url:'<?php echo base_url();?>Chrm/add_employee_type',
-            success: function(data2, statut) {
-        
-               var $select = $('select#emp_type');
-               $select.empty();
-               console.log(data);
-                 for(var i = 0; i < data2.length; i++) {
-                    console.log(data2);
-           var option = $('<option/>').attr('value', data2[i].employee_type).text(data2[i].employee_type);
-           $select.append(option); // append new options
-       }
-         $('#emps_type').val('');
-         $("#bodyModal1").html("Employee Type Added Successfully");
-         $('#employees_type').modal('hide');
-         
-         $('#emp_type').show();
-          $('#myModal1').modal('show');
-         window.setTimeout(function(){
-           $('#employees_type').modal('hide');
-        
-          $('#myModal1').modal('hide');
-      
-       }, 2000);
-       
-        }
-         });
-     });
-   
-   
-     // End Employee Type
-     
-     $(function() {  
-       $("#instuc_p2").hide();
-       $(".emply_form").hide();
-       
-       $(".next_pg").click(function(){  
-       $("#instuc_p2").show();
-       $("#instuc_p1").hide();
-   });  
-   
-   $(".emply_form_btn").click(function(){
-       $(".emply_form").show();
-       $("#instuc_p2").hide();
-       $("#instuc_p1").hide();
-       
-   
-   })
-   });  
-     // Payroll Insert Data
-   
-     $('#add_payroll_type').submit(function(e){
-       e.preventDefault();
-         var data = {
-           data : $("#add_payroll_type").serialize()
-         };
-         data[csrfName] = csrfHash;
-     
-         $.ajax({
-             type:'POST',
-             data: $("#add_payroll_type").serialize(), 
-            dataType:"json",
-             url:'<?php echo base_url();?>Cinvoice/add_paymentroll_type',
-             success: function(data2, statut) {
-        
-          var $select = $('select#payrolltype');
-      
-               $select.empty();
-               console.log(data);
-                 for(var i = 0; i < data2.length; i++) {
-                    console.log(data2);
-           var option = $('<option/>').attr('value', data2[i].payroll_type).text(data2[i].payroll_type);
-           $select.append(option); // append new options
-       }
-         $('#new_payroll_type').val('');
-         $("#bodyModal1").html("Payroll Added Successfully");
-         $('#payroll_type').modal('hide');
-         
-         $('#payrolltype').show();
-          $('#myModal1').modal('show');
-         window.setTimeout(function(){
-           $('#payroll_type').modal('hide');
-          $('#myModal1').modal('hide');
-      
-       }, 2000);
-       
-        }
-         });
-     });
-   
-     // End Payroll Type
-   
-   
-     $('#add_designation').submit(function(e){
-       e.preventDefault();
-         var data = {
-           data : $("#add_designation").serialize()
-         };
-         data[csrfName] = csrfHash;
-     
-         $.ajax({
-            type:'POST',
-            data: $("#add_designation").serialize(),
-            dataType:"json",
-            url:'<?php echo base_url();?>Chrm/add_designation_data',
-            success: function(data1, statut) {
-               var $select = $('select#desig');      
-               $select.empty();
-               for(var i = 0; i < data1.length; i++) {
-                  var option = $('<option/>').attr('value', data1[i].id).text(data1[i].designation);
-                  $select.append(option); // append new options
-               }
-               $('#designation').val('');
-               //    $('#desig').append(result).selectmenu('refresh',true);
-               $("#bodyModal1").html("Designation  Added Successfully");
-               $('#designation_modal').modal('hide');
-               $('#desig').show();
-               $('#myModal1').modal('show');
-               window.setTimeout(function() {
-               $('#designation_modal').modal('hide');
-               $('#myModal1').modal('hide');
-            }, 2000);
-            
-            }, error:function(res) {
-               console.log('error = '+res);
-            }
-         });
-     });
-   
-   
-   $('#add_bank').submit(function (event) {
-      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
-      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
-
-      var dataString = {
-         dataString : $("#add_bank").serialize()
-      };
-   dataString[csrfName] = csrfHash;
-   $.ajax({
-      type:"POST",
-      dataType:"json",
-      url:"<?php echo base_url(); ?>cHRM/add_new_bank",
-      data:$("#add_bank").serialize(),
-      success: function (data) {
-       $.each(data, function (i, item) {
-           result = '<option value=' + data[i].bank_name + '>' + data[i].bank_name + '</option>';
-       });
-       $('.bankpayment').selectmenu(); 
-       $('.bankpayment').append(result).selectmenu('refresh',true);
-      $("#bodyModal1").html("Bank Added Successfully");
-      $('#myModal3').modal('hide');
-      $('#add_bank_info').modal('hide');
-      $('#bank').show();
-       $('#myModal1').modal('show');
-      window.setTimeout(function(){
-       $('#myModal5').modal('hide');
-       $('#myModal1').modal('hide');
-    }, 2000);
-     }
-   });
-   event.preventDefault();
-   });
-   
-   
-</script>
 <script type="text/javascript">
    var payrollTypeSelect = document.getElementById('payroll_type');
-       var asteriskSpan = document.getElementById('asterisk');
-    
-       payrollTypeSelect.addEventListener('change', function() {
-           var hrateInput = document.getElementById('hrate');
-           if (this.value === 'SalesCommission') {
-               hrateInput.removeAttribute('required');
-              
-           } else {
-               hrateInput.setAttribute('required', '');
-            
-           }
-       });
+   var asteriskSpan = document.getElementById('asterisk');
    
-       // Trigger change event on page load to initialize the asterisk
-       payrollTypeSelect.dispatchEvent(new Event('change'));
+   payrollTypeSelect.addEventListener('change', function() {
+      var hrateInput = document.getElementById('hrate');
+      if (this.value === 'SalesCommission') {
+         hrateInput.removeAttribute('required');
+      } else {
+         hrateInput.setAttribute('required', '');
+      }
+   });
+   
+   // Trigger change event on page load to initialize the asterisk
+   payrollTypeSelect.dispatchEvent(new Event('change'));
    $(document).ready(function(){
        $('#payroll_type').change(function(){
            var selectedOption = $(this).val();
@@ -1455,10 +1119,8 @@
    });
    
    
-      const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
-      
+      const dt = new DataTransfer();
       $("#attachment").on('change', function(e){
-          // alert('hi');
           for(var i = 0; i < this.files.length; i++){
               let fileBloc = $('<span/>', {class: 'file-block'}),
                    fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
@@ -1466,50 +1128,40 @@
                   .append(fileName);
               $("#filesList > #files-names").append(fileBloc);
           };
-          // Ajout des fichiers dans l'objet DataTransfer
           for (let file of this.files) {
               dt.items.add(file);
           }
-          // Mise à jour des fichiers de l'input file après ajout
           this.files = dt.files;
       
-          // EventListener pour le bouton de suppression créé
           $('span.file-delete').click(function(){
               let name = $(this).next('span.name').text();
-              // Supprimer l'affichage du nom de fichier
               $(this).parent().remove();
               for(let i = 0; i < dt.items.length; i++){
-                  // Correspondance du fichier et du nom
                   if(name === dt.items[i].getAsFile().name){
-                      // Suppression du fichier dans l'objet DataTransfer
                       dt.items.remove(i);
                       continue;
                   }
               }
-              // Mise à jour des fichiers de l'input file après suppression
               document.getElementById('attachment').files = dt.files;
           });
       });
       
-       // JavaScript to show the popup
-    
+         // JavaScript to show the popup
+      document.getElementById("showPopup").addEventListener("click", function() {
+         document.getElementById("popup").style.display = "block";
+      });
    
-       document.getElementById("showPopup").addEventListener("click", function() {
-       document.getElementById("popup").style.display = "block";
-       });
+      function closeModal() {
+         document.getElementById("showPopup").style.display = "none";
+      }
    
-       function closeModal() {
-       document.getElementById("showPopup").style.display = "none";
-       }
-   
-       document.getElementById("addPopupData").addEventListener("click", function() {
-           document.getElementById("popup").style.display = "none";
+      document.getElementById("addPopupData").addEventListener("click", function() {
+         document.getElementById("popup").style.display = "none";
        });
       
-        function closeModal() {
-           document.getElementById("popup").style.display = "none";
-       }
-
+      function closeModal() {
+         document.getElementById("popup").style.display = "none";
+      }
 
       // Sales Partner
       document.getElementById("showPopupsalespartner").addEventListener("click", function() {
@@ -1524,8 +1176,8 @@
            document.getElementById("popupsalespartner").style.display = "none";
        });
       
-        function closeModalsalepartner() {
-           document.getElementById("popupsalespartner").style.display = "none";
+      function closeModalsalepartner() {
+         document.getElementById("popupsalespartner").style.display = "none";
        }
        
    
@@ -1561,18 +1213,15 @@
                   document.getElementById("validateemails").style.color = "red";
                   document.getElementById("validateemails").textContent = "Invalid email address";
                   submitButton.disabled = true;
-
               }
           });
       }
    
       // Allow Numbers
       function validateInput(input) {
-         // Remove any non-numeric and non-decimal characters from the input value
          input.value = input.value.replace(/[^0-9.]/g, '');
       }
    
-      // Allow Numbers Remove Decimal
       function exitnumbers(input, maxLength) {
          input.value = input.value.replace(/\D/g, '');
          if (input.value.length > maxLength) {
@@ -1636,7 +1285,6 @@
 
 <style>
    #files-area{
-      /*  width: 30%;*/
       margin: 0 auto;
    }
    .file-block{
@@ -1675,9 +1323,9 @@
       margin-bottom: 15px;
    }
    .fg label {
-      width: 40%; /* Adjust the width as needed */
+      width: 40%;
    }
    .fg input {
-      width: 60%; /* Adjust the width as needed */
+      width: 60%;
    }
 </style>

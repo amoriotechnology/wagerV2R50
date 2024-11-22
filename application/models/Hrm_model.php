@@ -48,25 +48,26 @@ public function statetaxreport($employee_name=null,$url,$date=null)
     return $query->result_array();
 }
   public function getPaginatedEmployee($limit, $offset, $orderField, $orderDirection, $search, $Id) {
-        $this->db->select('id,first_name,middle_name,last_name, designation, phone, email, social_security_number, employee_type, payroll_type,routing_number,  account_number ,employee_tax ,created_date ');
-        $this->db->from('employee_history');
+        $this->db->select('e.*,d.designation as des_name');
+        $this->db->from('employee_history e');
+        $this->db->join('designation d', 'd.id = e.designation'); 
         if ($search != "") {
             $this->db->group_start();
             $this->db->like('first_name', $search);
-            $this->db->or_like('designation', $search);
-            $this->db->or_like('phone', $search);
-            $this->db->or_like('email', $search);
-            $this->db->or_like('social_security_number', $search);
-            $this->db->or_like('employee_type', $search);
-            $this->db->or_like('payroll_type', $search);
-            $this->db->or_like('routing_number', $search);
-            $this->db->or_like('account_number', $search);
-            $this->db->or_like('employee_tax', $search);
-            $this->db->or_like('created_date', $search);
+            $this->db->or_like('d.designation', $search);
+            $this->db->or_like('e.phone', $search);
+            $this->db->or_like('e.email', $search);
+            $this->db->or_like('e.social_security_number', $search);
+            $this->db->or_like('e.employee_type', $search);
+            $this->db->or_like('e.payroll_type', $search);
+            $this->db->or_like('e.routing_number', $search);
+            $this->db->or_like('e.account_number', $search);
+            $this->db->or_like('e.employee_tax', $search);
+            $this->db->or_like('e.created_date', $search);
             $this->db->group_end();
         }
-        $this->db->where('is_deleted', 0);
-        $this->db->where('create_by', $Id);
+        $this->db->where('e.is_deleted', 0);
+        $this->db->where('e.create_by', $Id);
         $this->db->limit($limit);
         $this->db->order_by($orderField, $orderDirection);
         $query  = $this->db->get();
@@ -88,15 +89,17 @@ public function statetaxreport($employee_name=null,$url,$date=null)
         $query = $this->db->get();
         return $query->result_array();
     }
-   public function getTotalEmployee($search, $Id) {
-        $this->db->select('first_name,middle_name,last_name');
-        $this->db->from('employee_history');
+   public function getTotalEmployee($search, $Id) 
+   {
+        $this->db->select('e.first_name,e.middle_name,e.last_name,d.id,d.designation as des_name');
+        $this->db->from('employee_history e');
+        $this->db->join('designation d', 'd.id = e.designation'); 
         if ($search != "") {
-            $this->db->or_like(array('first_name' => $search, 'designation'            => $search, 'phone'         => $search, 'email'        => $search,
-                'zip' => $search, 'social_security_number' => $search, 'employee_type' => $search, 'payroll_type' => $search));
+            $this->db->or_like(array('e.first_name' => $search, 'd.designation'            => $search, 'e.phone'         => $search, 'e.email'        => $search,
+                'e.zip' => $search, 'e.social_security_number' => $search, 'e.employee_type' => $search, 'e.payroll_type' => $search));
         }
-        $this->db->where('is_deleted', 0);
-        $this->db->where('create_by', $Id);
+        $this->db->where('e.is_deleted', 0);
+        $this->db->where('e.create_by', $Id);
         $query = $this->db->get();
         return $query->num_rows();
     }
@@ -1581,10 +1584,11 @@ public function state_tax(){
          return false;
     }
 // Retrieve Federal Tax - Madhu
-public function federal_tax_info($employee_status,$final,$federal_range, $user_id)
+public function federal_tax_info($tax_type,$employee_status,$final,$federal_range, $user_id)
 {
-    $this->db->select('employee');
+    $this->db->select('employee, employer');
     $this->db->from('federal_tax');
+    $this->db->like('tax',$tax_type);
     $this->db->where($employee_status,$federal_range);
     $this->db->where('created_by',$user_id);
     $query = $this->db->get();
@@ -2007,9 +2011,10 @@ public function employee_name($id) {
  $this->db->select('a.*,a.id as emp_id,b.designation');
         $this->db->from('employee_history a');
         $this->db->where('a.id', $id);
-           $this->db->join('designation  b', 'b.designation =a.designation');
+           $this->db->join('designation  b', 'b.id =a.designation');
              $this->db->where('a.create_by',$this->session->userdata('user_id'));
             $query = $this->db->get();
+            // echo $this->db->last_query(); die;
        if ($query->num_rows() > 0) {
         return $query->result_array();
     }
@@ -2066,12 +2071,13 @@ public function employee_name($id) {
         $query = $this->db->get();
         return $query->result_array();
     }
- public function getemp_data($value){
+    public function getemp_data($value)
+    {
         $this->db->select('a.*,b.*');
         $this->db->from('employee_history a');
         $this->db->where('a.id', $value);
-           $this->db->join('designation  b', 'b.designation =a.designation');
-            $this->db->where('a.create_by',$this->session->userdata('user_id'));
+        $this->db->join('designation  b', 'b.id =a.designation');
+        $this->db->where('a.create_by',$this->session->userdata('user_id'));
         $query = $this->db->get()->result();
         return $query;
     }
@@ -2147,7 +2153,8 @@ public function paytype_dropdown(){
                  return $query->result_array();
              }
             }
-public function designation_dropdown(){
+    public function designation_dropdown()
+    {
         $this->db->select('*');
         $this->db->from('designation');
         $this->db->where('create_by',$this->session->userdata('user_id'));
@@ -2281,14 +2288,15 @@ public function delete_tax($tax = null, $state) {
         }
         return $query->result_array();
     }
-        public function getdesignation($id, $decodedId) {
-        $this->db->select("designation");
+        public function getdesignation($id, $decodedId) 
+        {
+        $this->db->select("*");
         $this->db->from("designation");
-        $this->db->where("designation", $id);
+        $this->db->where("id", $id);
         $this->db->where("create_by", $decodedId);
         $query = $this->db->get();
         if ($query->num_rows() > 0) {
-            return $query->row()->designation;
+            return $query->result_array();
         } else {
             return null;
         }
@@ -2377,24 +2385,10 @@ public function payroll_editdata($id){
         return $query->row();
     }
 // update employee
-    public function update_employee($data = [],$headname,$emp_data,$pay_data){
-        $this->db->where('id', $data['id']);
-        $this->db->update('employee_history',$data);
-        $this->db->where('id', $emp_data['id']);
-        $this->db->update('employee_type',$emp_data);
-        $this->db->where('id', $pay_data['id']);
-        $this->db->update('payroll_type',$pay_data);
-     $id = $data['id'];
-    $up_headname = $id.'-'.$data['first_name'].''.$data['last_name'];
-    $updatedby   = $this->session->userdata('user_id');
-    $updateddate = date('Y-m-d H:i:s');
-    $employee_coa = [
-             'HeadName'         => $up_headname,
-             'UpdateBy'         => $updatedby,
-             'UpdateDate'       => $updateddate,
-        ];
-        $this->db->where('HeadName', $headname);
-        $this->db->update('acc_coa',$employee_coa);
+    public function update_employee($id, $postData)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('employee_history',$postData);
         return true;
     }
 public function getTaxdetailsdata($tax){
@@ -3594,4 +3588,20 @@ public function get_overtime_data($id = null)
     }
     return false;
 }
+
+public function add_payment_type($postData){
+    $data=array(
+        'payment_type' => $postData,
+        'create_by' => $this->session->userdata('user_id')
+    );
+    $this->db->insert('payment_type', $data);
+
+    $this->db->select('*');
+    $this->db->from('payment_type');
+    $this->db->where('create_by' ,$this->session->userdata('user_id'));
+    $this->db->order_by('payment_type', 'asc');
+    $query = $this->db->get();
+    return $query->result_array();
+}
+
 }
