@@ -765,7 +765,10 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
 <!-- /.modal -->
 
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
+<?php
+}
+if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
+
 
 <!-- Add States -->
 <div class="modal fade modal-success" id="add_states" role="dialog">

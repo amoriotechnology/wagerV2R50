@@ -85,7 +85,7 @@
 <script type="text/javascript">
 var payslipDataTable;
 $(document).ready(function() {
-$(".sidebar-mini").addClass('sidebar-collapse') ;
+
     if ($.fn.DataTable.isDataTable('#payslip_list')) {
         $('#payslip_list').DataTable().clear().destroy();
     }
@@ -186,11 +186,9 @@ function convertToHHMM(totalHours) {
    
     var totalOvertimeFormatted = convertToHHMM(totalOvertimeHours);
 
-    // Display the totals in the footer
-    
-    $(api.column(5).footer()).html(totalAmount.toFixed(2)); // Column index for tot_amt, formatted to 2 decimal places
-    $(api.column(6).footer()).html(totalOvertimeFormatted); // Column index for overtime
-    $(api.column(7).footer()).html(totalSalesCommission.toFixed(2)); // Column index for sales_comm, formatted to 2 decimal places
+    $(api.column(5).footer()).html(totalAmount.toFixed(2)); 
+    $(api.column(6).footer()).html(totalOvertimeFormatted); 
+    $(api.column(7).footer()).html(totalSalesCommission.toFixed(2)); 
 },
 
         "stateSaveCallback": function(settings, data) {
@@ -297,60 +295,3 @@ function convertToHHMM(totalHours) {
 
 </script>
 
-<style type="text/css">
-.search {
-position: relative;
-color: #aaa;
-font-size: 16px;
-}
-
-.search {display: inline-block;}
-
-.search input {
-  width: 260px;
-  height: 34px;
-  background: #fff;
-  border: 1px solid #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 3px #ccc, 0 10px 15px #fff inset;
-  color: #000;
-}
-
-.search input { text-indent: 32px;}
-
-.search .fa-search { 
-  position: absolute;
-  top: 8px;
-  left: 10px;
-}
-
-.search .fa-search {left: auto; right: 10px;}
-
-.btnclr{
-    background-color: #424f5c;
-    color: #fff;
-}
-
-.select2-container{
-    display: none !important;
-}
-.form-control{
-    width: 40% !important;
-}
-
-.table.dataTable thead th{
-    border-bottom: 1px solid #e1e6ef  !important;
-}
-
-.table.dataTable tfoot th{
-    border-top: 1px solid #e1e6ef  !important;
-}
-
-tbody{
-    text-align: center !important;
-}
-
-.error-border {
-    border: 2px solid red;
-}
-</style>

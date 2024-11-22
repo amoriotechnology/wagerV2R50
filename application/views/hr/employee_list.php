@@ -56,9 +56,9 @@
         
     <section class="content">
         <div class="panel panel-bd lobidrag">
-            <div class="panel-heading" >
+            <div class="panel-heading" style='height:50px;'>
                 <div class="panel">
-                    <div class="panel-body">
+                    <div class="panel-body" style='padding:0px !important'>
                         <div class="col-sm-12">
                         <?php 
                             foreach ($this->session->userdata('admin_data') as $test) {

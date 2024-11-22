@@ -42,7 +42,7 @@
       <div class="panel panel-bd lobidrag">
          <div class="panel-heading" style="height: 60px;border: 3px solid #D7D4D6;">
             <div class="col-sm-12" style="height:69px;">
-                <div class="col-sm-4" style="display: flex; justify-content: space-between; align-items: left;">
+                <div class="col-sm-2" style="display: flex; justify-content: space-between; align-items: left;">
                 <?php  foreach(  $this->session->userdata('admin_data') as $test){
                     $split=explode('-',$test);
                     if(trim($split[0])=='hrm' && $_SESSION['u_type'] ==3 && trim($split[1])=='1000'){
@@ -98,16 +98,14 @@
 </div>
 
 
-<script src='<?php echo base_url();?>assets/js/moment.min.js'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-debug.js'></script>
-<script  src="<?php echo base_url() ?>assets/js/scripts.js"></script> 
+
 <script type="text/javascript">
 var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
 var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
 
 var manageTimesheetdata;
 $(document).ready(function() {
-$(".sidebar-mini").addClass('sidebar-collapse') ;
+
     if ($.fn.DataTable.isDataTable('#managetimesheetList')) {
         $('#managetimesheetList').DataTable().clear().destroy();
     }
@@ -272,57 +270,12 @@ function deleteTimesheetdata(id, month)
 </script>
 
 <style type="text/css">
-.search {
-position: relative;
-color: #aaa;
-font-size: 16px;
-}
 
-.search {display: inline-block;}
 
-.search input {
-  width: 260px;
-  height: 34px;
-  background: #fff;
-  border: 1px solid #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 3px #ccc, 0 10px 15px #fff inset;
-  color: #000;
-}
-
-.search input { text-indent: 32px;}
-
-.search .fa-search { 
-  position: absolute;
-  top: 8px;
-  left: 10px;
-}
-
-.search .fa-search {left: auto; right: 10px;}
-
-.btnclr{
-    background-color: #424f5c;
-    color: #fff;
-}
-
-.select2-container{
-    display: none !important;
-}
 .form-control{
     width: 40% !important;
 }
 
-.table.dataTable thead th{
-    border-bottom: 1px solid #e1e6ef  !important;
-}
-
-.table.dataTable tfoot th{
-    border-top: 1px solid #e1e6ef  !important;
-}
-
-tbody{
-    text-align: center !important;
-}
 
 .error-border {
     border: 2px solid red;
