@@ -764,8 +764,9 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
 </div>
 <!-- /.modal -->
 
-
-if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
+<?php
+}
+if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
 
 <!-- Add States -->
 <div class="modal fade modal-success" id="add_states" role="dialog">
@@ -803,7 +804,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modals)){ ?>
  
  <!-- Add New State Tax  -->
 <div class="modal fade modal-success" id="add_state_tax" role="dialog">
@@ -850,7 +851,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modals)){ ?>
 
 <!-- Add New City -->
 <div class="modal fade modal-success" id="add_city_info" role="dialog">
@@ -884,7 +885,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_city_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_city_tax'],$bootstrap_modals)){ ?>
 
 <!-- Add New City Tax -->
 
@@ -930,7 +931,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_county_info'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_county_info'],$bootstrap_modals)){ ?>
 
 <!-- Add County -->
 <div class="modal fade modal-success" id="add_county_info" role="dialog">
@@ -964,7 +965,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['add_county_tax'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['add_county_tax'],$bootstrap_modals)){ ?>
 
 <!-- Add New County Tax -->
 <div class="modal fade modal-success" id="add_county_tax" role="dialog">
@@ -1009,7 +1010,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modal)){ ?>
    </div>
 </div>
 
-<?php } if(in_array(BOOTSTRAP_MODALS['daily_break'],$bootstrap_modal)){ ?>
+<?php } if(in_array(BOOTSTRAP_MODALS['daily_break'],$bootstrap_modals)){ ?>
 
 <div class="modal fade" id="dailybreak_add" role="dialog">
 <div class="modal-dialog" role="document">
