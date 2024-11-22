@@ -5,9 +5,6 @@
    $CI->load->model('Users');
    $CI->load->model('Hrm_model');
    $Web_settings = $CI->Web_settings->retrieve_setting_editdata();
-   
-   // print_r($Web_settings); 
-   
    $retrieve_user_data = $CI->Web_settings->retrieve_user_data();
    $retrieve_admin_data = $CI->Web_settings->retrieve_admin_data();
     $state_tax_list = $CI->Hrm_model->state_tax_list();
@@ -18,11 +15,9 @@
       return strcmp($a['tax'], $b['tax']);
    }
    $unique_taxes = array_udiff($state_tax_list_employer, $state_tax_list, 'compare_tax');
-   
    $retrieve_company_data = $CI->Web_settings->retrieve_companyall_data();
    $users = $CI->Users->profile_edit_data();
 ?>
-
 <style>
    .navbar-custom-menu>.navbar-nav>li>.dropdown-menu {
    position: absolute;
@@ -32,7 +27,6 @@
    top: 111%;
    padding: 20px;
    border-radius: 10px;
-   /*background-color: #fff;*/
    }
    ul.dropdown-submenu {
    padding: 0;
@@ -55,7 +49,6 @@
    font-weight: 500;
    }
    ul.dropdown-submenu>li>a:hover{
-   /*background-color: #e1e3e9;*/
    color: #333;
    }
    ul.dropdown-submenu>li>a>i {
@@ -67,7 +60,6 @@
    <a href="<?php echo base_url() ?>" class="logo">
       <!-- Logo -->
       <span class="logo-mini">
-         <!--<b>A</b>BD-->
          <img src="<?php
             if (isset($Web_settings[0]['favicon'])) {
                 echo html_escape($Web_settings[0]['favicon']);
@@ -114,7 +106,6 @@
          if(trim($split[0])=='accounts'){
           ?>
       <?php }} ?>
-
       <?php 
          foreach(  $this->session->userdata('admin_data') as $admtest){
          $split=explode('-',$admtest);
@@ -129,7 +120,6 @@
                <span class="label total-alerts" id="total-alerts" style="background-color: #e53952;"></span>
                </a>
             </li>
-            
             <li class="dropdown notifications-menu">
                <a href="<?php echo base_url('Cinvoice/addCart') ?>">
                <i class="pe-7s-cart" title="View Cart"></i>
@@ -162,12 +152,10 @@
                            <?php break; } } ?>
                         </ul>
                      </div>
-                
                      <div class="menuCol col-xl-3 col-lg-3 col-md-12">
                         <ul class="dropdown-submenu">
                          <li class="menu-title" style="color:#17202a"><b><?php echo ('User Details');  ?></b></li>
                            <li><a href="<?php echo base_url('Company_setup/manage_company') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Manage My Company</a></li>
-                         
                            <li><a href="<?php echo base_url('User/manage_user') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Manage Users </a></li>
                            <li><a href="<?php echo base_url('Admin_dashboard/edit_profile') ?>"><i class="pe-7s-users"></i> <?php  echo  display('user_profile'); ?></a></li>
                          <li><a href=" <?php echo base_url('Admin_dashboard/change_password_form') ?>"><i class="pe-7s-settings"></i><?php   echo display('Change Password'); ?></a></li>
@@ -183,10 +171,8 @@
                            <li class="menu-title" style="color:#17202a"><b><?php echo display('Admin Details');  ?></b></li>
                            <li><a href="<?php echo base_url('Currency/currency_form') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;<?php echo display('currency');  ?></a></li>
                            <li><a href="<?php echo base_url('/Cweb_setting') ?>"><i class="ti-settings"></i>&nbsp;&nbsp;Setting </a></li>
-                          
                            <li><a href=" <?php echo base_url('Admin_dashboard/dashboardsetting') ?>"><i class="ti-dashboard"></i>Dashboard Settings</a></li>
                            <br>
-                          
                            <?php            
                               break;
                               }
@@ -316,13 +302,11 @@
          </span>
          </a>
       </li>
-
       <?php 
          foreach(  $this->session->userdata('admin_data') as $admtest){
          $split=explode('-',$admtest);
          if(trim($split[0])=='hrm'){
       ?>
-
       <!-- Human Resource New menu start -->
       <li class="treeview  ">
          <a href="javascript:void(0)>
@@ -333,12 +317,8 @@
          </a>
          <ul class="treeview-menu">
             <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/manage_employee?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Employee Info (W4 form)');?></a></li>
-            
             <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/manage_timesheet?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Time sheet');?></a></li>
-
             <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/pay_slip_list?id=<?php echo $encode_com_id . '&admin_id=' . $encode_admin_id; ?>"><?php  echo display('Pay slip / Checks per user');?></a></li>
-            <!-- <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/expense_list"><?php echo display("expense");?></a></li>
-            <li class="treeview  "><a href="<?php echo base_url(); ?>/Chrm/manage_officeloan"><?php echo display("office_loan");?></a></li> -->
            <li class="treeview ">
             <a href="#">
                <i class=""></i> <span><?php echo ('Reports'); ?></span>
@@ -389,7 +369,6 @@
                <li class="treeview  "><a href="<?php echo base_url(); ?>Chrm/OverallSummary?id=<?php echo $encode_com_id; ?>"><?php echo ('Overall Summary');?></a></li>
             </ul>
          </li>
-
          <li class="treeview ">
             <a href="#">
                <i class=""></i> <span>Settings</span>
@@ -402,12 +381,10 @@
                <li class="treeview  "><a href="<?= base_url('Chrm/week_setting'); ?>">Week Setting</a></li>
             </ul>
          </li>
-
       </ul>
    </li>
    <!-- Human Resource New menu end -->
    <?php break; } } ?> 
-    
    <?php } if($_SESSION['u_type']==3) { ?>
       <ul class="sidebar-menu">
          <li class="active">
@@ -417,13 +394,11 @@
             </span>
             </a>
          </li>
-
          <?php 
             foreach(  $this->session->userdata('perm_data') as $test){
             $split=explode('-',$test);
             if(trim($split[0])=='hrm'){
          ?>
-         <!-- Human Resource New menu start -->
          <li class="treeview  ">
             <a href="#">
             <i class="fa fa-balance-scale"></i><span><?php  echo display('hrm_management'); ?></span>
@@ -439,8 +414,6 @@
          </li>
          <?php break; } } ?>              
       </ul>
-      <!-- /.User 3 -->
    </div>
-   <!-- /.sidebar -->
    <?php } ?>
 </aside>

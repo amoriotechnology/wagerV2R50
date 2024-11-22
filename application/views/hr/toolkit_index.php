@@ -717,28 +717,6 @@ Should undue or recurrent absence and tardiness become apparent, the employee wi
 This policy is not intended to restrict an employee’s right to discuss, or act together to improve, wages,benefits and working conditions with co-workers or in any way restrict employees’ rights under the National Labor Relations Act.
 
 </pre>
-<!-- <table><tr><td>
-<button id='button'>
-<a href = 'https://dev.to/letsgodev/centering-div-headache-1a22'>
-DEV.to
-</a>
-</button>
-</td></tr>
-  
-<tr><td>
-<button id='button'>
-<div class="col">
-<span>Name</span>
-<p> name</p>
-<button class="edit-btn">edit</button>
-<div class="edit-box">
-edit 2
-</div>
-</div>
-</button>
-</td></tr>
-</table> -->
-
 </div>
 </div>
 </div>

@@ -9,13 +9,10 @@
          <div class="logo-holder logo-9">
          <h1>Generated Pay Slips List</h1>
          </div>
-
-
             <ol class="breadcrumb" style=" border: 3px solid #d7d4d6;" >
                <li><a href="<?php echo base_url()?>"><i class="pe-7s-home"></i> <?php echo display('home') ?></a></li>
                <li><a href="#"><?php echo 'Hr'; ?></a></li>
                <li class="active" style="color:orange"><?php echo 'Payslip List';?></li>
-    
          </ol>
       </div>
    </section>
@@ -67,7 +64,6 @@
                         <tfoot>
                             <tr class="btnclr">
                                 <th colspan="5" style="text-align:right">Total:</th>
-                              
                                 <th class="text-center"></th>
                                 <th class="text-center"></th>
                                 <th class="text-center"></th>
@@ -85,7 +81,6 @@
 <script type="text/javascript">
 var payslipDataTable;
 $(document).ready(function() {
-
     if ($.fn.DataTable.isDataTable('#payslip_list')) {
         $('#payslip_list').DataTable().clear().destroy();
     }
@@ -163,7 +158,6 @@ footerCallback: function(row, data, start, end, display) {
     var totalAmount = 0;
     var totalOvertimeHours = 0;
     var totalSalesCommission = 0;
-
     function convertToHours(overtime) {
     if (!overtime) return 0; 
     var timeParts = overtime.split(':');
@@ -182,15 +176,11 @@ function convertToHHMM(totalHours) {
         totalOvertimeHours += convertToHours(rowData.overtime); 
         totalSalesCommission += parseFloat(rowData.sales_comm) || 0;
     });
-
-   
     var totalOvertimeFormatted = convertToHHMM(totalOvertimeHours);
-
     $(api.column(5).footer()).html(totalAmount.toFixed(2)); 
     $(api.column(6).footer()).html(totalOvertimeFormatted); 
     $(api.column(7).footer()).html(totalSalesCommission.toFixed(2)); 
 },
-
         "stateSaveCallback": function(settings, data) {
             localStorage.setItem('quotation', JSON.stringify(data));
         },
@@ -228,32 +218,26 @@ function convertToHHMM(totalHours) {
                     $(win.document.body)
                         .css('font-size', '10pt')
                         .prepend('<div style="text-align:center;"><h3>Generated Pay Slips List</h3></div>');
-
                     $(win.document.body).find('table')
                         .addClass('compact')
                         .css('font-size', 'inherit');
-
                     var rows = $(win.document.body).find('table tbody tr');
                     rows.each(function() {
                         if ($(this).find('td').length === 0) {
                             $(this).remove();
                         }
                     });
-
                     var totalAmount = 0;
                     var totalOvertime = 0;
                     var totalSalesCommission = 0;
-
                     $(win.document.body).find('table tbody tr').each(function() {
                         var amount = parseFloat($(this).find('td:eq(5)').text()) || 0; 
                         var overtime = parseFloat($(this).find('td:eq(6)').text()) || 0; 
                         var salesCommission = parseFloat($(this).find('td:eq(7)').text()) || 0;
-
                         totalAmount += amount;
                         totalOvertime += overtime;
                         totalSalesCommission += salesCommission;
                     });
-
                     $(win.document.body).find('table tbody').append(
                         '<tr>' +
                             '<th colspan="5" style="text-align:right; font-weight: bold;">Total</th>' +
@@ -262,26 +246,20 @@ function convertToHHMM(totalHours) {
                             '<th style="text-align:center; font-weight: bold;">' + totalSalesCommission.toFixed(2) + '</th>' +
                         '</tr>'
                     );
-
                     $(win.document.body).find('div:last-child').css('page-break-after', 'auto');
                 }
             },
-
             {
                "extend": "colvis",
                "className": "btn-sm"
             }
         ]
     });
-    
     $('.employee_name').on('change', function() {
         payslipDataTable.ajax.reload();
     });
-
     $('#searchtrans').on('click', function() {
-
         var dateValue = $('.dateSearch').val();
-
         if (dateValue === '') {
             toastr.error('Please select a date before searching.', 'Error');
             $('.dateSearch').addClass('error-border');
@@ -292,6 +270,4 @@ function convertToHHMM(totalHours) {
         payslipDataTable.draw();
     });
 });
-
 </script>
-

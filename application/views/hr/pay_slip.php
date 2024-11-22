@@ -1,9 +1,5 @@
-
-
-
 <style>
-  th,
-  td {
+  th,td {
   padding: 2px;
   font-size: 12px;
   }
@@ -12,7 +8,6 @@
   padding: 35px;
   position: relative;
   }
-
 </style>
 <div class="content-wrapper">
 <section class="content-header" style="height:70px;">
@@ -23,9 +18,7 @@
     <h1>Employee Payslip</h1>
     <small></small>
     <ol class="breadcrumb">
-      <li><a href="#"><i class="pe-7s-home"></i> <?php echo display(
-        "home"
-        ); ?></a></li>
+      <li><a href="#"><i class="pe-7s-home"></i> <?php echo display("home"); ?></a></li>
       <li><a href="#">Payslip</a></li>
       <li class="active">Add Employee Payslip</li>
     </ol>
@@ -35,16 +28,10 @@
 <div class="row">
 <div class="col-sm-12">
 <div class="panel panel-default thumbnail">
-  <?php $arr = preg_split(
-    "/\s+(?=\S*+$)/",
-    $company_info[0]["address"]
-    ); ?> 
+  <?php $arr = preg_split( "/\s+(?=\S*+$)/", $company_info[0]["address"] ); ?> 
   <div class="panel-body">
     <p align="right"> <a id="download" style="color:white;background-color:#38469f;"
-      class='btn btn-primary'> <i class="fa fa-download"></i><?php echo display(
-      "Download"
-      ); ?></a>
-     
+      class='btn btn-primary'> <i class="fa fa-download"></i><?php echo display("Download" ); ?></a>
     </p>
     <div id="content" style="margin-left:12px;padding:10px;">
       <div class="row" style="padding:0px;width:780px;">
@@ -53,20 +40,13 @@
           id="downloadLink">
           <div class="second_section" style="width: 100%;">
             <p></p>
-            <?php $fs = strtoupper(
-              $employee_info[0]["first_name"]
-              ); ?> 
+            <?php $fs = strtoupper($employee_info[0]["first_name"] ); ?> 
             <div class="r">
-              <p style="padding-left:430px;margin-top: 50px;"><?php echo date(
-                "m-d-Y"
-                ); ?></p>
+              <p style="padding-left:430px;margin-top: 50px;"><?php echo date( "m-d-Y" ); ?></p>
             </div>
             <div class="r" style="height:23px;">
-              <p style="width: 385px;margin-top: 53px;  display: block;"><?php echo $fs .
-                " " .
-                strtoupper($employee_info[0]["middle_name"]) .
-                " " .
-                strtoupper($employee_info[0]["last_name"]); ?></p>
+              <p style="width: 385px;margin-top: 53px;  display: block;"><?php echo $fs ." " .strtoupper($employee_info[0]["middle_name"]) .
+                " " .strtoupper($employee_info[0]["last_name"]); ?></p>
             </div>
             <div class="r amount_word" style="width: 535px;float:center"></div>
             <div class="custom-row net_period" style="float:right"></div>
@@ -82,37 +62,19 @@
       <div class="payTop_details row">
         <div class="col-md-6">
           <p style='font-size:12px;'>
-            <strong style='font-size:18px;'><?php echo $company_info[0][
-              "company_name"
-              ]; ?></strong><br> <?php echo $arr[0] . " " . $arr[1]; ?><br> Email :
-            <?php echo $company_info[0]["email"]; ?><br> Tel
-            :<?php echo " " . $company_info[0]["mobile"]; ?>
+            <strong style='font-size:18px;'><?php echo $company_info[0][ "company_name"]; ?></strong><br> <?php echo $arr[0] . " " . $arr[1]; ?><br> Email :
+            <?php echo $company_info[0]["email"]; ?><br> Tel:<?php echo " " . $company_info[0]["mobile"]; ?>
           </p>
         </div>
         <div class="col-md-6">
           <p style='float:right;font-size:12px;'>
-            <strong style='font-size:18px;'><?php echo isset(
-              $employee_info[0]["first_name"]
-              )
-              ? $employee_info[0]["first_name"] . " "
-              : ""; ?> <?php echo isset($employee_info[0]["middle_name"])
-              ? $employee_info[0]["middle_name"] . " "
-              : ""; ?> <?php echo isset($employee_info[0]["last_name"])
-              ? $employee_info[0]["last_name"]
-              : ""; ?></strong><br> <?php echo htmlspecialchars(
-              $employee_info[0]["address_line_1"]
-              ) .
-              " " .
-              htmlspecialchars($employee_info[0]["city"]) .
-              " " .
-              htmlspecialchars($employee_info[0]["zip"]); ?> <br />
-            <span style="display: inline-block; ">Designation : <?php echo $employee_info[0][
-              "designation"
-              ]; ?></span>
+            <strong style='font-size:18px;'><?php echo isset($employee_info[0]["first_name"]) ? $employee_info[0]["first_name"] . " " : ""; ?> 
+              <?php echo isset($employee_info[0]["middle_name"])? $employee_info[0]["middle_name"] . " ": ""; ?> <?php echo isset($employee_info[0]["last_name"])
+              ? $employee_info[0]["last_name"] : ""; ?></strong><br> <?php echo htmlspecialchars($employee_info[0]["address_line_1"]
+              ) ." " . htmlspecialchars($employee_info[0]["city"]) . " " .  htmlspecialchars($employee_info[0]["zip"]); ?> <br />
+            <span style="display: inline-block; ">Designation : <?php echo $employee_info[0]["designation"]; ?></span>
             <br />
-            <span style="display: inline-block; ">Employee ID : <?php echo $employee_info[0][
-              "id"
-              ]; ?></span>
+            <span style="display: inline-block; ">Employee ID : <?php echo $employee_info[0]["id"]; ?></span>
           </p>
         </div>
         <div class="col-md-12" style="float:center;">
@@ -146,7 +108,6 @@ function add_time($time1, $time2) {
     $minutes = $total_minutes % 60;
  return sprintf('%02d:%02d', $hours, $minutes);
 }
-
 ?>
           <table class="table" style='margin-bottom:0px;'>
             <tr class='btnclr'>
@@ -186,7 +147,6 @@ function add_time($time1, $time2) {
               <td style="display:none;" id="total_period"><?php echo $ytd["ytd_salary"]; ?></td>
               <td><?php 
             if ($employee_info[0]["payroll_type"] == "Hourly") {
-            
                $hours = substr($ytd["ytd_hours_excl_overtime_in_time"], 0, 5);
               echo  isset($hours) ?  $hours : "00:00";
             }else{  
@@ -194,8 +154,7 @@ function add_time($time1, $time2) {
             }
                ?></td>
               <td id="total_ytd"><?php echo $ytd["ytd_salary" ]; ?></td>
-              <!-- <td style="display:none;" id="total_ytd"><?php echo $ytd["ytd_salary"] + $ytd["ytd_overtime_salary"]; ?></td> -->
-            </tr>
+           </tr>
             <?php if ($employee_info[0]["payroll_type"] == "Hourly") { ?> 
             <tr>
               <td>Over Time</td>
@@ -223,9 +182,9 @@ echo "00:00";
               <th><?php  $amount = $timesheet_info[0]["amount"];
     $extra_amount = $timesheet_info[0]["extra_amount"];
     if ($extra_amount == 0) {
-        echo $amount; // If extra_amount is zero, just show amount
+        echo $amount; 
     } else {
-        echo $amount + $extra_amount; // Else, show the sum of both
+        echo $amount + $extra_amount;
     }?></th>
               <th><?php
                 list($hours1, $minutes1) = explode(":",$ytd["ytd_hours_excl_overtime_in_time"]);
@@ -259,12 +218,8 @@ echo "00:00";
               <tr>
                 <th style="text-align:left;">DESCRIPTION</th>
                 <th>FILING STATUS</th>
-                <th>THIS PERIOD(<?php echo $setting[0][
-                  "currency"
-                  ]; ?>)</th>
-                <th>YTD(<?php echo $setting[0][
-                  "currency"
-                  ]; ?>)</th>
+                <th>THIS PERIOD(<?php echo $setting[0][ "currency" ]; ?>)</th>
+                <th>YTD(<?php echo $setting[0]["currency" ]; ?>)</th>
               </tr>
               <?php if (
                 $employee_info[0]["payroll_type"] == "Hourly" ||
@@ -280,89 +235,41 @@ echo "00:00";
               <tr>
                 <td style="text-align:left;"> Social Security</td>
                 <td>S O</td>
-                <td class="current"><?php if (
-                  $this_social["tax_value"]
-                  ) {
-                  echo "-" .
-                      round($this_social["tax_value"], 3);
-                  } ?></td>
-                <td class="ytd"><?php if (
-                  $this_social["tax_data"]["t_s_tax"]
-                  ) {
-                  echo round(
-                      $this_social["tax_data"]["t_s_tax"],
-                      3
-                  );
+                <td class="current"><?php if ($this_social["tax_value"] ) { echo "-" . round($this_social["tax_value"], 3); } ?></td>
+                <td class="ytd"><?php if ($this_social["tax_data"]["t_s_tax"] ) { echo round( $this_social["tax_data"]["t_s_tax"],3);
                   } ?></td>
               </tr>
-              <?php } ?> <?php if (
-                $this_medicare["tax_data"]["t_m_tax"]
-                ) { ?> 
+              <?php } ?> <?php if ($this_medicare["tax_data"]["t_m_tax"]) { ?> 
               <tr>
                 <td style="text-align:left;">Medicare</td>
                 <td>SMCU O</td>
-                <td class="current"><?php if (
-                  $this_medicare["tax_value"]
-                  ) {
-                  echo "-" .
-                      round($this_medicare["tax_value"], 3);
+                <td class="current"><?php if ($this_medicare["tax_value"]) {echo "-" .round($this_medicare["tax_value"], 3);
                   } ?></td>
-                <td class="ytd"><?php if (
-                  $this_medicare["tax_data"]["t_m_tax"]
-                  ) {
-                  echo round(
-                      $this_medicare["tax_data"][
-                          "t_m_tax"
-                      ],
-                      3
-                  );
+                <td class="ytd"><?php if ($this_medicare["tax_data"]["t_m_tax"] ) {
+                  echo round( $this_medicare["tax_data"]["t_m_tax"], 3);
                   } ?></td>
               </tr>
-              <?php } ?> <?php } ?> <?php if (
-                $this_federal["tax_data"]["t_f_tax"]
-                ) { ?> 
+              <?php } ?> <?php } ?> <?php if ( $this_federal["tax_data"]["t_f_tax"]) { ?> 
               <tr>
                 <td style="text-align:left;">Fed Income Tax</td>
                 <td></td>
                 <td class="current"><?php if (
-                  $this_federal["tax_value"]
-                  ) {
-                  echo "-" .
-                      round($this_federal["tax_value"], 3);
-                  } ?></td>
-                <td class="ytd"><?php if (
-                  $this_federal["tax_data"]["t_f_tax"]
-                  ) {
-                  echo round(
-                      $this_federal["tax_data"][
-                          "t_f_tax"
-                      ],
-                      3
-                  );
+                  $this_federal["tax_value"] ) {echo "-" . round($this_federal["tax_value"], 3); } ?></td>
+                <td class="ytd"><?php if ( $this_federal["tax_data"]["t_f_tax"]) {echo round( $this_federal["tax_data"]["t_f_tax" ],3);
                   } ?></td>
               </tr>
               <?php } ?> <?php if ($this_unemp["tax_data"]["t_u_tax"]) { ?> 
               <tr>
                 <td style="text-align:left;">Unemployment Tax</td>
                 <td></td>
-                <td class="current"><?php if (
-                  $this_unemp["tax_value"]
-                  ) {
-                  echo "-" .
-                      round($this_unemp["tax_value"], 3);
+                <td class="current"><?php if ($this_unemp["tax_value"] ) {echo "-" .round($this_unemp["tax_value"], 3);
                   } ?></td>
-                <td class="ytd"><?php if (
-                  $this_unemp["tax_data"]["t_u_tax"]
-                  ) {
-                  echo round(
-                      $this_unemp["tax_data"]["t_u_tax"],
-                      3
-                  );
+                <td class="ytd"><?php if ($this_unemp["tax_data"]["t_u_tax"]) {
+                  echo round($this_unemp["tax_data"]["t_u_tax"], 3 );
                   } ?></td>
               </tr>
               <?php } ?> <?php foreach ($working_state["this_perid_state_tax"] as $k => $v) {
                 if ($v) {
-                
                     $split = explode("-", $k);
                     $title = str_replace("'employee_", "", $split[0]);
                     $rep = str_replace("'", "", $split[1]);
@@ -377,12 +284,8 @@ echo "00:00";
                   echo $rep;
                   } ?></td>
                 <td></td>
-                <td class="current"> <?php echo "-" .
-                  round($v, 3); ?></td>
-                <td class="ytd"><?php echo round(
-                  $working_state["overall_state_tax"][$k],
-                  3
-                  ); ?></td>
+                <td class="current"> <?php echo "-" .round($v, 3); ?></td>
+                <td class="ytd"><?php echo round($working_state["overall_state_tax"][$k],3); ?></td>
               </tr>
               <?php
                 }
@@ -390,12 +293,8 @@ echo "00:00";
                 if(!empty($living_state["this_perid_state_tax"])){
                 foreach ($living_state["this_perid_state_tax"]as $k => $v) {
                 if ($v) {
-                
                     $split = explode("-", $k);
-                    $title = str_replace(
-                        "'employee_",
-                        "",
-                        $split[0]
+                    $title = str_replace( "'employee_","", $split[0]
                     );
                     $rep = str_replace("'", "", $split[1]);
                     ?> 
@@ -411,10 +310,7 @@ echo "00:00";
                 <td></td>
                 <td class="current"> <?php echo "-" .
                   round($v, 3); ?></td>
-                <td class="ytd"><?php echo round(
-                  $living_state["overall_state_tax"][$k],
-                  3
-                  ); ?></td>
+                <td class="ytd"><?php echo round($living_state["overall_state_tax"][$k],3 ); ?></td>
               </tr>
               <?php
                 }
@@ -437,11 +333,7 @@ echo "00:00";
                     $phone_number = $employee_info[0]["social_security_number"];
                     if (strlen($phone_number) >= 4) {
                         $last_four_digits = substr($phone_number, -4);
-                        $masked_number = substr_replace(
-                            $phone_number,
-                            str_repeat("X", 4),
-                            -4
-                        );
+                        $masked_number = substr_replace($phone_number,str_repeat("X", 4),-4 );
                         echo $masked_number;
                     }
                     ?>
@@ -463,9 +355,7 @@ echo "00:00";
               </tr>
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Authorized Name</td>
-                <td style="width: 60%;"><?php echo $admin[0][
-                  "adm_name"
-                  ]; ?></td>
+                <td style="width: 60%;"><?php echo $admin[0]["adm_name" ]; ?></td>
               </tr>
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Title</td>
@@ -473,39 +363,27 @@ echo "00:00";
               </tr>
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Admin ID</td>
-                <td style="width: 60%;"><?php echo $admin[0][
-                  "adm_id"
-                  ]; ?></td>
+                <td style="width: 60%;"><?php echo $admin[0]["adm_id" ]; ?></td>
               </tr>
               <?php if (
                 !empty($timesheet_info[0]["cheque_date"])
                 ) { ?> 
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Chq Date</td>
-                <td style="width: 60%;"><?php echo $timesheet_info[0][
-                  "cheque_date"
-                  ]; ?></td>
+                <td style="width: 60%;"><?php echo $timesheet_info[0]["cheque_date" ]; ?></td>
               </tr>
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Chq No</td>
-                <td style="width: 60%;"><?php echo $timesheet_info[0][
-                  "cheque_no"
-                  ]; ?></td>
+                <td style="width: 60%;"><?php echo $timesheet_info[0]["cheque_no"]; ?></td>
               </tr>
-              <?php } elseif (
-                !empty($timesheet_info[0]["bank_name"])
-                ) { ?> 
+              <?php } elseif (!empty($timesheet_info[0]["bank_name"]) ) { ?> 
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Bank Name</td>
-                <td style="width: 60%;"><?php echo $timesheet_info[0][
-                  "bank_name"
-                  ]; ?></td>
+                <td style="width: 60%;"><?php echo $timesheet_info[0]["bank_name" ]; ?></td>
               </tr>
               <tr style="text-align:left;">
                 <td style="font-weight:bold;width:20%;">Ref No</td>
-                <td style="width: 60%;"><?php echo $timesheet_info[0][
-                  "payment_ref_no"
-                  ]; ?></td>
+                <td style="width: 60%;"><?php echo $timesheet_info[0]["payment_ref_no" ]; ?></td>
               </tr>
               <?php } else { ?> 
               <tr style="text-align:left;">
@@ -520,17 +398,12 @@ echo "00:00";
               </tr>
               <tr>
                 <th style="text-align:left;"><strong>DESCRIPTION</strong></th>
-                <th><strong>THIS PERIOD(<?php echo $setting[0][
-                  "currency"
-                  ]; ?>)</strong></th>
-                <th><strong>YTD(<?php echo $setting[0][
-                  "currency"
-                  ]; ?>)</strong></th>
+                <th><strong>THIS PERIOD(<?php echo $setting[0]["currency"]; ?>)</strong></th>
+                <th><strong>YTD(<?php echo $setting[0]["currency" ]; ?>)</strong></th>
               </tr>
               <tr>
                 <td style="text-align:left;"><strong>Check Amount</strong></td>
-                <td class="net_period"> <strong style="
-                  padding-top: 2px;">765.10</strong></td>
+                <td class="net_period"> <strong style="padding-top: 2px;">765.10</strong></td>
                 <td class="net_ytd"></td>
               </tr>
               <tr>
@@ -552,10 +425,9 @@ echo "00:00";
   </div>
 </div>
                 <script>
-                     $('#download').on('click',function () {
+          $('#download').on('click',function () {
          $('#downloadLink').css('display', 'block');
          $('#separator_line').css('display', 'block');
-         
          function first(callback1,callback2){
          setTimeout( function(){
           var pdf = new jsPDF('p','pt','a4');
@@ -606,7 +478,6 @@ echo "00:00";
         }
          first(second,third);
          });
-         
                 function capitalize(str) {
                     return str.charAt(0).toUpperCase() + str.slice(1);
                 }
@@ -723,7 +594,6 @@ echo "00:00";
                     const value = currentElement.textContent.trim();
                     currentElement.textContent = '-' + value;
                 });
-
                 function readURL(input, imgControlName) {
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
@@ -756,13 +626,11 @@ echo "00:00";
     filter: brightness(150%);
     background-position: center;
 }
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-
 .top_para {
     font-size: 7px;
     color: #10489d;
@@ -772,7 +640,6 @@ echo "00:00";
     width: 100%;
     text-align: center;
 }
-
 .slanted-text p {
     transform: rotate(269deg);
     margin: 0;
@@ -780,7 +647,6 @@ echo "00:00";
     top: 110px;
     left: -48px;
 }
-
 .slanted-text1 p {
     transform: rotate(90deg);
     margin: 0;
@@ -788,19 +654,13 @@ echo "00:00";
     top: 110px;
     right: -48px;
 }
-
 .footer_number {
-    background-image: url('<?php echo base_url(
-"/assets/images/logo/footer.png"
-        );
+    background-image: url('<?php echo base_url("/assets/images/logo/footer.png"  );
     ?>');  
-
 }
-
 .separator .sep-line {
     border-color: #000;
 }
-
 .separator .sep-line {
     height: 300px;
     display: block;
