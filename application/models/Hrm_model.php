@@ -1665,10 +1665,11 @@ public function state_tax(){
          return false;
     }
 // Retrieve Federal Tax - Madhu
-public function federal_tax_info($employee_status,$final,$federal_range, $user_id)
+public function federal_tax_info($tax_type,$employee_status,$final,$federal_range, $user_id)
 {
-    $this->db->select('employee');
+    $this->db->select('employee, employer');
     $this->db->from('federal_tax');
+    $this->db->like('tax',$tax_type);
     $this->db->where($employee_status,$federal_range);
     $this->db->where('created_by',$user_id);
     $query = $this->db->get();

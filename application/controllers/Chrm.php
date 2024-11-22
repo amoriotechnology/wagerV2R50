@@ -988,12 +988,20 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                         if ($row == 1) {
                         $result = $this->Hrm_model->get_tax_history($tax_type, $search_tax[1], $timesheet_id);
                         if(empty($result)) {
+
                         $f = $this->countryTax('Federal Income tax', $employee_tax, $this_period, $employee_id, 'f_tax', $user_id, $endDate,  $timesheet_id);
+
                         $s = $this->countryTax('Social Security', $employee_tax, $this_period, $employee_id, 's_tax', $user_id, $endDate,  $timesheet_id);
+
                         $m = $this->countryTax('Medicare', $employee_tax, $this_period, $employee_id, 'm_tax', $user_id, $endDate,  $timesheet_id);
+
                         $u = $this->countryTax('Federal unemployment',$employee_tax, $this_period, $employee_id, 'u_tax', $user_id, $endDate, $timesheet_id);
+                        
+
                         $tax_name = trim(substr($contribution['tax'], strpos($contribution['tax'], '-') + 1, strrpos($contribution['tax'], '-') - strpos($contribution['tax'], '-') - 1));
+
                         $code = trim(substr($contribution['tax'], strrpos($contribution['tax'], '-') + 1));
+
                         if($employee_contribution){    
                         $tax_history_employee=array(
                             'employee_id' => $employee_id,
@@ -1017,8 +1025,8 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                             'time_sheet_id' => $timesheet_id,
                             's_tax' =>$s['tax_value'],
                             'm_tax' =>$m['tax_value'],
-                            'f_tax' =>$f['tax_value'],
-                            'u_tax' =>$u['tax_value'],
+                            'f_tax' =>$f['tax_value_employer'],
+                            'u_tax' =>$u['tax_value_employer'],
                             'tax_type' => $tax_type,
                             'code' => $code,
                             'tax' => $tax_name,
@@ -1067,6 +1075,7 @@ public function state_tax($endDate, $employee_id, $employee_tax, $working_state_
                 }
                 }
             }
+
         }
     }
  $data=array(
@@ -1909,8 +1918,6 @@ public function adminApprove()
        $data_timesheet['payroll_type'] = $this->input->post('payroll_type');
       // $data_timesheet['payment_term'] = $this->input->post('payment_term');
        $extra_hour = $this->input->post('extra_hour');
-
-
    
   
     $data_timesheet['ytd'] = $this->input->post('above_extra_ytd');
@@ -2076,35 +2083,61 @@ public function countryTax($tax_type, $employee_tax_column, $final, $templ_name,
 {
     $tax = $this->db->select('*')->from('federal_tax')->where('tax', $tax_type)->where('created_by', $user_id)->get()->result_array();
     $tax_range = '';
-    $ytd=[];
-    $tax_value = '';
+    $ytd = [];
+    $tax_value = 0; 
+    $tax_value_employer = 0; 
+    $tax_employer = 0;
+    
     foreach ($tax as $amt) {
         $split = explode('-', $amt[$employee_tax_column]);
-        if ($final >= $split[0] && $final <= $split[1]) {
+        if (count($split) == 2 && $final >= $split[0] && $final <= $split[1]) {
             $tax_range = $split[0] . "-" . $split[1];
+            break; 
         }
     }
+    
     $tax_info_method = strtolower(str_replace(' ', '_', $tax_type)) . '_tax_info';
-    $data[$tax_type] = $this->Hrm_model->federal_tax_info($employee_tax_column, $final, $tax_range, $user_id);
-    if (!empty($data[$tax_type][0]['employee'])) {
+
+    $data[$tax_type] = $this->Hrm_model->federal_tax_info($tax_type, $employee_tax_column, $final, $tax_range, $user_id);
+
+    if (isset($data[$tax_type][0]['employee']) && is_numeric($data[$tax_type][0]['employee'])) {
         $tax_employee = $data[$tax_type][0]['employee'];
         $tax_value = round(($tax_employee / 100) * $final, 3);
     }
-    // YTD Sum Amount
-    $sum_of_country_tax = $this->Hrm_model->sum_of_country_tax($endDate, $templ_name, $timesheet_id,$user_id);
-    $ytd['ytd_days'] = $sum_of_country_tax[0]['ytd_days'];
-    $ytd['ytd_salary'] = $sum_of_country_tax[0]['ytd_salary'];
-    $ytd['ytd_overtime_salary'] = $sum_of_country_tax[0]['ytd_overtime_salary'];
-    $ytd['ytd_hours_only_overtime'] = $sum_of_country_tax[0]['ytd_hours_only_overtime'];
-    $ytd['ytd_hours_excl_overtime'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime'];
-    $ytd['total_hours'] = $sum_of_country_tax[0]['total_hours'];
-    $ytd['ytd_hours_excl_overtime_in_time'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime_in_time'];
-    $data['t_s_tax'] = $sum_of_country_tax[0]['t_s_tax'];
-    $data['t_m_tax'] = $sum_of_country_tax[0]['t_m_tax'];
-    $data['t_f_tax'] = $sum_of_country_tax[0]['t_f_tax'];
-    $data['t_u_tax'] = $sum_of_country_tax[0]['t_u_tax'];
-    return ['ytd' => $ytd ,'tax_data' => $data, 'tax_value' => $tax_value];
+   
+    if (isset($data[$tax_type][0]['employer']) && is_numeric($data[$tax_type][0]['employer'])) {
+        $tax_employer = $data[$tax_type][0]['employer'];
+        $tax_value_employer = round(($tax_employer / 100) * $final, 3);
+    }
+
+    $sum_of_country_tax = $this->Hrm_model->sum_of_country_tax($endDate, $templ_name, $timesheet_id, $user_id);
+
+    if (!empty($sum_of_country_tax)) {
+        $ytd['ytd_days'] = $sum_of_country_tax[0]['ytd_days'] ?? 0;
+        $ytd['ytd_salary'] = $sum_of_country_tax[0]['ytd_salary'] ?? 0;
+        $ytd['ytd_overtime_salary'] = $sum_of_country_tax[0]['ytd_overtime_salary'] ?? 0;
+        $ytd['ytd_hours_only_overtime'] = $sum_of_country_tax[0]['ytd_hours_only_overtime'] ?? 0;
+        $ytd['ytd_hours_excl_overtime'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime'] ?? 0;
+        $ytd['total_hours'] = $sum_of_country_tax[0]['total_hours'] ?? 0;
+        $ytd['ytd_hours_excl_overtime_in_time'] = $sum_of_country_tax[0]['ytd_hours_excl_overtime_in_time'] ?? 0;
+        
+        
+        $data['t_s_tax'] = $sum_of_country_tax[0]['t_s_tax'] ?? 0;
+        $data['t_m_tax'] = $sum_of_country_tax[0]['t_m_tax'] ?? 0;
+        $data['t_f_tax'] = $sum_of_country_tax[0]['t_f_tax'] ?? 0;
+        $data['t_u_tax'] = $sum_of_country_tax[0]['t_u_tax'] ?? 0;
+    }
+
+    return [
+        'ytd' => $ytd,
+        'tax_data' => $data,
+        'tax_value' => $tax_value,
+        'tax_value_employer' => $tax_value_employer
+    ];
 }
+
+
+
 public function  payroll_reports() {
       $this->load->model('Hrm_model');
       $CI = & get_instance();

@@ -13,7 +13,6 @@
     </section>
 
     <section class="content">
-        <!-- New category -->
         <div class="row">
             <div class="col-sm-12">                
                 <div class="panel panel-bd lobidrag">
@@ -22,8 +21,6 @@
                             <a style="float:right;color:white;" href="<?php echo base_url('Chrm/manage_timesheet?id=' . $_GET['id'] . '&admin_id=' . $_GET['admin_id']); ?>" class="btnclr btn m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo "Manage TimeSheet" ?> </a>
                         </div>
                     </div>
-                    <?php //echo form_open('Cquotation/insert_quotation', array('class' => 'form-vertical', 'id' => 'insert_quotation')) ?>
-                    <!-- <form id="insert_timesheet"  method="post">   -->
                 <?php echo form_open_multipart('Chrm/pay_slip?id=' . $_GET['id'], 'id="validate"'); ?>
                   <?php  $id=random_int(100000, 999999); ?>
                   <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
@@ -85,128 +82,17 @@
 
                         <input type="submit" value="Submit" class="sub_btn btnclr btn text-center"/> 
                     </div>               
-                    <!-- <?php //echo form_close() ?> -->
                     <?php echo form_close() ?>
-                    <!-- </form> -->
                 </div>
             </div>
         </div>
     </section>
-
-
-
-<div class="modal fade" id="myModal1" role="dialog" >
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content" style="margin-top: 190px;text-align:center;">
-        <div class="modal-header btnclr"  >
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Time Sheet</h4>
-        </div>
-        <div class="modal-body" id="bodyModal1" style="text-align:center;font-weight:bold;"></div>
-        <div class="modal-footer"></div>
-      </div>
-    </div>
-</div>
-
-<!------ add new Duration-->  
-<div class="modal fade" id="duration_add" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="margin-top: 190px;text-align:center;">
-            <div class="modal-header btnclr"  >
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                <h4 class="modal-title"> Add New Duration </h4>
-            </div>
-            <div class="modal-body">
-                <div id="customeMessage" class="alert hide"></div>
-                <form id="add_duration" method="post">
-                    <div class="panel-body">
-                        <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                        <div class="form-group row">
-                            <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;"><?php echo ('Duration') ?> <i class="text-danger">*</i></label>
-                            <div class="col-sm-6">
-                                <input class="form-control" name ="duration_name" id="duration_name" type="text" placeholder="Duration"  required="" tabindex="1">
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="btn btnclr"  data-dismiss="modal"><?php echo display('Close') ?> </a>
-                <input type="submit" class="btn btnclr"  value=<?php echo display('Submit') ?>>
-            </div>
-        </form>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<!------ add new dailybreak-->  
-<div class="modal fade" id="dailybreak_add" role="dialog">
-<div class="modal-dialog" role="document">
-    <div class="modal-content" style="margin-top: 190px;text-align:center;">
-        <div class="modal-header btnclr"  >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title">Add New Daily Break</h4>
-        </div>
-        <div class="modal-body">
-            <div id="customeMessage" class="alert hide"></div>
-            <form id="insert_daily_break" method="post">
-                <div class="panel-body">
-                    <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                    <div class="form-group row">
-                        <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">Daily Break<i class="text-danger">*</i></label>
-                        <div class="col-sm-6">
-                            <!-- <input class="form-control"  name="dbreak" id="dbreak" type="text" placeholder="Daily Break"  required="" tabindex="1"> -->
-                            <input type="text"   class="decimal form-control" name ="dbreak" id="dbreak" placeholder="Integer and decimal only"/>
-                        </div>
-                    </div>
-                </div>
-        </div>
-        <div class="modal-footer">
-            <a href="#" class="btn btnclr "   data-dismiss="modal"><?php echo display('Close') ?> </a>
-            <input type="submit" class="btn btnclr "  value=<?php echo display('Submit') ?>>
-        </div>
-    </form>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<!------ add new Payment Type -->
-<div class="modal fade" id="payment_type" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="margin-top: 190px;text-align:center;">
-            <div class="modal-header btnclr"  >
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                <h4 class="modal-title"> <?php echo display('Add New Payment Terms') ?> </h4>
-            </div>
-            <div class="modal-body">
-                <div id="customeMessage" class="alert hide"></div>
-                <form id="add_pay_terms" method="post">
-                    <div class="panel-body">
-                    <input type ="hidden" name="csrf_test_name" id="" value="<?php echo $this->security->get_csrf_hash();?>">
-                        <div class="form-group row">
-                            <label for="customer_name" style="width: auto;" class="col-sm-3 col-form-label"><?php echo display('New Payment Terms') ?> <i class="text-danger">*</i></label>
-                            <div class="col-sm-6">
-                                <input class="form-control" name ="new_payment_terms" id="new_payment_terms" type="text" placeholder="New Payment Terms"  required="" tabindex="1">
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="btn btnclr"   data-dismiss="modal"><?php echo display('Close') ?> </a>
-                <input type="submit" class="btn btnclr"   value=<?php echo display('Submit') ?>>
-            </div>
-        </form>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 </div>
 <br><br>
 
 <script>
 $('.decimal').keydown(function (e) {
-  //Get the occurence of decimal operator
   var match = $(this).val().match(/\./g);
   if(match!=null){
      if ($.inArray(e.keyCode, [46,8, 9, 27, 13, 110]) !== -1 ||
@@ -229,7 +115,7 @@ $('.decimal').keydown(function (e) {
   }
 });
 
-//Allow Upto Two decimal places value only
+
 $('.decimal').keyup(function () {
   if ($(this).val().indexOf('.') != -1) {
     if ($(this).val().split(".")[1].length > 2) {
@@ -254,10 +140,10 @@ $('#add_pay_terms').submit(function(e){
         success: function(data1, statut) {
             var $select = $('select#terms');
             $select.empty();
-            // console.log(data);
+            
             for(var i = 0; i < data1.length; i++) {
                 var option = $('<option/>').attr('value', data1[i].payment_terms).text(data1[i].payment_terms);
-                $select.append(option); // append new options
+                $select.append(option); 
             }
             $('#new_payment_terms').val('');
             $("#bodyModal1").html("Payment Terms Added Successfully");
@@ -280,7 +166,6 @@ $('body').on('keyup','.end',function(){
     var breakv = $('#dailybreak').val();
     var calculate = parseInt(start)+parseInt(end);
     var final = calculate-parseInt(breakv);
-    // console.log(start+"/"+end+"/"+breakv);
     $(this).closest('tr').find('.hours-worked').html(final);
 });
 
@@ -364,7 +249,6 @@ $('#insert_daily_break').submit(function(e){
         success: function(data1, statut) {
             var $select = $('select#dailybreak');
             $select.empty();
-            // console.log(data);
             for(var i = 0; i < data1.length; i++) {
                 var option = $('<option/>').attr('value', data1[i].dailybreak_name).text(data1[i].dailybreak_name);
                 $select.append(option); 
@@ -465,9 +349,7 @@ $(function() {
         LastWeek: LastWeekStart,
         beforeWeek:BeforeLastWeekStart,
         ranges: {
-            //    'Last Week Before': [moment().subtract(2,  'week').startOf('week') , moment().subtract(2, 'week').endOf('week')],
-            //    'Last Week': [startOfLastWeek, endOfLastWeek],
-            //    'This Week': [moment().startOf('week'), moment().endOf('week')],
+           
             'Last Week Before': [BeforeLastWeekStart , moment(BeforeLastWeekStart).add(diffDays(weeks[start_week], weeks[end_week], weeks[end_week]), 'days')],
             'Last Week': [LastWeekStart , moment(LastWeekStart).add(diffDays(weeks[start_week], weeks[end_week], weeks[end_week]), 'days')],
             'This Week': [ThisWeekStart, moment(ThisWeekStart).add(diffDays(weeks[start_week], weeks[end_week], weeks[end_week]), 'days')],
@@ -481,7 +363,7 @@ $(function() {
       
     var data= {
         selectedDate: $('#reportrange').val(),
-        employeeId: $('#templ_name').val() // You'll need to capture the selected employee ID
+        employeeId: $('#templ_name').val() 
     };
     data[csrfName] = csrfHash;
     $.ajax({
@@ -522,9 +404,6 @@ $('body').on('input select change','#reportrange',function() {
     var Date2 = new Date (e_split[2]+'/'+e_split[0]+'/'+e_split[1]);
     var Days = Math.round((Date2.getTime() - Date1.getTime())/(1000*60*60*24));
     
-    console.log(Date1, Date2, Days);
-
-    // console.log(s_split[2]+"/"+ s_split[1]+"/"+ s_split[0]+"/"+Days);
     const validDate = new Date(chosenDate);
     let newDate;
     const monStartWeekDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -649,14 +528,7 @@ $('body').on('input select change','#reportrange',function() {
                             <input type="hidden" name="block[]" id="block_`+i+`" />              
                         </td>
                     </tr>`);
-                    // if(end_week == dayString) {
-                    //     $('#tBody').append(`<tr> 
-                    //         <td colspan="2" class="text-right" style="font-weight:bold;"> Weekly Total Hours:</td> 
-                    //         <td> <input type="text" name="weekly_total" class="gendral_weekly_total`+data_id+`" value="`+ total_pres +`" readonly /> </td>
-                    //     </tr>`);
-                    //     total_pres = 0;
-                    //     data_id++;
-                    // }
+                    
             } else if (response.includes('Hourly')) {
                 $('#tBody').append(`
                     <tr> 
@@ -717,15 +589,7 @@ $('body').on('input select change','#reportrange',function() {
                         <a style="color:white;" class="delete_day btnclr btn  m-b-5 m-r-2"><i class="fa fa-trash" aria-hidden="true"></i> </a>
                     </td> 
                 </tr>`);
-                // if(end_week == dayString) {
-                //     $('#tBody').append(`<tr> 
-                //         <td colspan="5" class="text-right" style="font-weight:bold;"> Weekly Total Hours:</td> 
-                //         <td class="sales_week_total">
-                //             <input type="text" name="sales_weekly_total" id="sales_`+data_id+`" value="" readonly />
-                //         </td>
-                //     </tr>`);
-                //     data_id++;
-                // }
+                
             }
         }
     },
@@ -749,12 +613,12 @@ $(document).ready(function() {
         $('#total_net').val(sumOfDays);
     }
 
-    // Use event delegation for dynamically added checkboxes
+   
     $(document).on('change', 'input[type="checkbox"].present', function() {
         updateCounter();
     });
 
-    // Initial update in case some checkboxes are checked by default on page load
+    
     updateCounter();
 });
 
@@ -780,7 +644,7 @@ $(document).on('select change', '.end','.dailybreak', function () {
     var hours = Math.floor(totalMinutes / 60);
     var minutes = totalMinutes % 60;
     var formattedTime = hours.toString().padStart(2, '0') + '.' + minutes.toString().padStart(2, '0');
-    // $(this).closest('tr').find('.timeSum').val(formattedTime);
+    
     if (isNaN(parseFloat(formattedTime))) {
         $(this).closest('tr').find('.timeSum').val('00.00');
     } else {
@@ -789,7 +653,6 @@ $(document).on('select change', '.end','.dailybreak', function () {
 
     var data_id = $(this).data('id');
     
-    //var total_net = 0;
     var total_netH = 0;
     var total_netM = 0;
     var week_netH = 0;
@@ -808,7 +671,7 @@ $(document).on('select change', '.end','.dailybreak', function () {
             var total_week = $(this).val();
             if (!isNaN(total_week) && total_week.length !== 0) {
                 var [weekhour, weekmin] = total_week.split('.').map(parseFloat);
-                //weekTotal += weekhour + weekmin / 100; // Dividing minutes by 100 to get the correct decimal value
+               
                 weekHours += weekhour;
                 weekMinutes += weekmin;
             }
@@ -820,7 +683,7 @@ $(document).on('select change', '.end','.dailybreak', function () {
             var precio = $(this).val();
             if (!isNaN(precio) && precio.length !== 0) {
                 var [hours, minutes] = precio.split('.').map(parseFloat);
-                //tableTotal += hours + minutes / 100; // Dividing minutes by 100 to get the correct decimal value
+                
                 tableHours += hours;
                 tableMinutes += minutes;
             }
@@ -855,8 +718,6 @@ $(document).on('select change', '.start','.dailybreak', function () {
     }
 
     var data_id = $(this).data('id');
-
-    //var total_net = 0;
     var total_netH = 0;
     var total_netM = 0;
     var week_netH = 0;
@@ -875,7 +736,6 @@ $(document).on('select change', '.start','.dailybreak', function () {
             var total_week = $(this).val();
             if (!isNaN(total_week) && total_week.length !== 0) {
                 var [weekhour, weekmin] = total_week.split('.').map(parseFloat);
-                //weekTotal += weekhour + weekmin / 100; // Dividing minutes by 100 to get the correct decimal value
                 weekHours += weekhour;
                 weekMinutes += weekmin;
             }
@@ -887,23 +747,13 @@ $(document).on('select change', '.start','.dailybreak', function () {
             var precio = $(this).val();
             if (!isNaN(precio) && precio.length !== 0) {
                 var [hours, minutes] = precio.split('.').map(parseFloat);
-                //tableTotal += hours + minutes / 100; // Dividing minutes by 100 to get the correct decimal value
                 tableHours += hours;
                 tableMinutes += minutes;
             }
         });
-        //total_net += tableTotal;
         total_netH += tableHours;
         total_netM += tableMinutes;
     });
-    /*alert('total_net:'+total_netH+'.'+total_netM);
-    // Convert the total back to hours and minutes format
-    var hours = Math.floor(total_net);
-    var minutes = Math.round((total_net % 1) * 100); // Multiply by 100 to get the minutes
-    if (minutes === 100) {
-        hours += 1;
-        minutes = 0;
-    }*/
     var timeConvertion = convertToTime(week_netH, week_netM);
     $('#hourly_'+data_id).val(timeConvertion).trigger('change');
 
@@ -913,9 +763,7 @@ $(document).on('select change', '.start','.dailybreak', function () {
 
 
 $(document).on('input','.timeSum', function () {
-    // $(".timeSum").change(function(){
     var $addtotal = $(this).closest('tr').find('.timeSum').val();
-    // alert($addtotal);
 });
 
 function sumHours () {
@@ -948,8 +796,6 @@ $('#total_net').on('keyup',function(){
 
 $(document).on('click', '.delete_day', function() {
     $(this).closest('tr').remove();
-
-    // Recalculate the total net after deleting a row
     var total_netH = 0;
     var total_netM = 0;
 
@@ -964,11 +810,9 @@ $(document).on('click', '.delete_day', function() {
         });
     });
 
-    // Convert total hours and minutes to the correct format
     var timeConversion = convertToTime(total_netH, total_netM);
     $('#total_net').val(timeConversion).trigger('change');
 
-    // Update the date range if necessary
     var firstDate = $('.date input').first().val(); 
     var lastDate = $('.date input').last().val(); 
     function convertDateFormat(dateStr) {
@@ -989,10 +833,9 @@ $(function() {
                 method: 'POST',
                 data: {
                     selectedDate: date,
-                    employeeId: $('#templ_name').val() // You'll need to capture the selected employee ID
+                    employeeId: $('#templ_name').val() 
                 },
                 success: function(response) {
-                    // console.log(response);
                 },
                 error: function(xhr, status, error) {
                 }
@@ -1016,7 +859,8 @@ document.getElementById('validate').addEventListener('submit', function(event) {
 });
 
 
-function convertToTime(hr,min) {
+function convertToTime(hr,min) 
+{
     let hours = Math.floor(min / 60);
     let minutes = min % 60;
     minutes = minutes < 10 ? '0' + minutes : minutes;
@@ -1035,7 +879,6 @@ $(document).ready(function() {
             $('.sub_btn').attr('disabled', 'disabled');
         }
     });
-    
 })
 
 </script>

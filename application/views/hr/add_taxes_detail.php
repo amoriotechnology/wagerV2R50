@@ -1,15 +1,3 @@
-
-
-<style>
-.btnclr{
-       background-color:<?php echo $setting_detail[0]['button_color']; ?>;
-       color: white;
-
-   }</style>
-
-<!-- Add new tax start -->
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <div class="content-wrapper">
 
     <section class="content-header" style="height:70px;">
@@ -43,8 +31,6 @@
 
 
     <section class="content">
-
-         <!-- Alert Message -->
 
         <?php
 
@@ -103,7 +89,7 @@
     }
     body
 {
-    counter-reset: Serial;           /* Set the Serial counter to 0 */
+    counter-reset: Serial;           
 }
 
 table
@@ -113,8 +99,8 @@ table
 
 tbody tr td:first-child:before
 {
-  counter-increment: Serial;      /* Increment the Serial counter */
-  content: counter(Serial); /* Display the counter */
+  counter-increment: Serial;      
+  content: counter(Serial);
 }
     </style>
    <div class="row">
@@ -286,8 +272,6 @@ tbody tr td:first-child:before
     </section>
 
 </div>
-
-<!-- Add new tax end -->
 
 
 

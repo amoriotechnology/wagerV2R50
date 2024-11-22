@@ -173,18 +173,12 @@
 
                             <tbody id="tBody">
                             <?php
-                                // Initialize $i before the loop starts
                                 $i = 0;
-                                
-                                // Sorting the $time_sheet_data array based on the 'Date' field
                                 usort($time_sheet_data, 'compareDates');
-                                // Variable to track printed dates
                                 $printedDates = array();
-                                // Rendering the sorted table rows
                                 foreach($time_sheet_data as $tsheet) {
                                     $timesheetdata[$tsheet['Date']] = ['date' => $tsheet['Date'], 'day' => $tsheet['Day'], 'edit'=> $tsheet['uneditable'], 'start' => $tsheet['time_start'], 'end' => $tsheet['time_end'], 'per_hour' => $tsheet['hours_per_day'], 'check' => $tsheet['present'], 'break' => $tsheet['daily_break']];
                                     if( empty($tsheet['hours_per_day']) && !in_array($tsheet['Date'], $printedDates)) {
-                                        // Add the date to the printed dates array
                                         $printedDates[] = $tsheet['Date'];
                                     }
                                 }
@@ -219,17 +213,13 @@
                                 <?php } ?>
                             </tr>
                             <?php
-                            // Increment $i after each iteration
+                            
                             $i++;
                         } ?>
                 </tbody>
                 <?php } ?>
 
                 <tfoot>
-            <!-- <tr style="text-align:end"> 
-                    <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours :</td>  
-                    <td style="text-align: center;"> <input  type="text"    style="text-align:center;"  id="total_net" value="<?= $time_sheet_data[0]['total_hours'] ; ?>" name="total_net" />    </td> 
-                </tr>  -->
                 <tr style="text-align:end"> 
                     <?php if ($employee_name[0]['payroll_type'] == 'Hourly') { ?>
                     <td colspan="5" class="text-right" style="font-weight:bold;">Total Hours :</td> 
@@ -254,10 +244,8 @@
             }  ?>
             <input type="submit" style="<?php if($time_sheet_data[0]['uneditable']==1){ echo 'display:none;';}  ?>color:white;" value="Submit" class="btnclr btn btn-info"/> 
         </div>               
-        <!-- <?php //echo form_close() ?> -->
     <?= form_close() ?>
 
-        <!-- </form> -->
                 </div>
             </div>
         </div>
@@ -268,326 +256,247 @@
 </div>
 
 <script>
-    var csrfName = '<?= $this->security->get_csrf_token_name();?>';
-    var csrfHash = '<?= $this->security->get_csrf_hash();?>';
-      
-    $('#insert_adm').submit(function (event) {
-        event.preventDefault();
+var csrfName = '<?= $this->security->get_csrf_token_name();?>';
+var csrfHash = '<?= $this->security->get_csrf_hash();?>';
+  
+$('#insert_adm').submit(function (event) {
+    event.preventDefault();
 
-        var dataString = {
-            dataString : $("#insert_adm").serialize()
-        };
-        dataString[csrfName] = csrfHash;
-        $.ajax({
-            type:"POST",
-            dataType:"json",
-            url:"<?= base_url(); ?>Chrm/insert_data_adsr",
-            data:$("#insert_adm").serialize(),
-            success:function (data1) {  
-                var $select = $('select#insert_adm');
-                    $select.empty();
-
-                for(var i = 0; i < data1.length; i++) {
-                    var option = $('<option/>').attr('value', data1[i].adms_name).text(data1[i].adms_name);
-                    $select.append(option); // append new options
-                }
-            }
-        });
-    });
-
-    var data = {
-        value:$('#customer_name').val()
+    var dataString = {
+        dataString : $("#insert_adm").serialize()
     };
-    var csrfName = '<?= $this->security->get_csrf_token_name();?>';
-    var csrfHash = '<?= $this->security->get_csrf_hash();?>';
+    dataString[csrfName] = csrfHash;
+    $.ajax({
+        type:"POST",
+        dataType:"json",
+        url:"<?= base_url(); ?>Chrm/insert_data_adsr",
+        data:$("#insert_adm").serialize(),
+        success:function (data1) {  
+            var $select = $('select#insert_adm');
+                $select.empty();
 
-    // $(function() {
+            for(var i = 0; i < data1.length; i++) {
+                var option = $('<option/>').attr('value', data1[i].adms_name).text(data1[i].adms_name);
+                $select.append(option); 
+            }
+        }
+    });
+});
 
-    // // //
+var data = {
+    value:$('#customer_name').val()
+};
 
-    // $('#reportrange').daterangepicker({
-    //     startDate: start,
-    //     endDate: end,
-    //     ranges: {
-    //        'Today': [moment(), moment()],
-    //        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-    //        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-    //        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-    //        'This Month': [moment().startOf('month'), moment().endOf('month')],
-    //        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    //     }
-    // }, //cb
-    // );
 
-    // //cb(start, end);
-
-    // });
+var csrfName = '<?= $this->security->get_csrf_token_name();?>';
+var csrfHash = '<?= $this->security->get_csrf_hash();?>';
 
 $('body').on('input select change','#reportrange',function(){
-    var date = $(this).val();
-    $('#tBody').empty();
-    const myArray = date.split("-");
-    var start = myArray[0];
-    var s_split=start.split("/");
-    var end = myArray[1];
-    var e_split=end.split("/");
-    const weekDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    let chosenDate = start; //get chosen date from datepicker
-    var Date1 = new Date (s_split[2], s_split[0], s_split[1]);
-    var Date2 = new Date (e_split[2], e_split[0], e_split[1]);
-    var Days = Math.round((Date2.getTime() - Date1.getTime())/(1000*60*60*24));
-    console.log(s_split[2]+"/"+ s_split[1]+"/"+ s_split[0]+"/"+Days);
-    const validDate = new Date(chosenDate);
-    let newDate;
-    const monStartWeekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-    
-    for(let i = 0; i <= Days; i++) { //iterate through each weekday
-        newDate = new Date(validDate); //create date object
-        newDate.setDate(validDate.getDate() + i); //increment set date
-        //append results to table
-        var date=$('#date_'+i).html();
-        // date=date.replace(/ /g,"");
-        // var end=document.getElementById(`finishTime${monStartWeekDays[i]}`).value;
-        //      var sum=document.getElementById(`hoursWorked${monStartWeekDays[i]}`).value;
-        var day=$('#day_'+i).html();
-        //   day=day.replace("/","");
-        $('#tBody').append(
-            `<tr>
-                <td  class="date" id="date_`+i+`"><input type="hidden" value="`+`${newDate.getDate()}/${newDate.getMonth() + 1}/${newDate.getFullYear()}" name="date[]"   />`+`${newDate.getDate()} / ${newDate.getMonth() + 1} / ${newDate.getFullYear()}</td>
-                <td  class="day" id="day_`+i+`"><input type="hidden" value="`+`${weekDays[newDate.getDay()].slice(0,10)}" name="day[]"   />`+`${weekDays[newDate.getDay()].slice(0,10)}</td>
-            <?php if ($time_sheet_data[0]['payroll_type'] == 'Hourly') { ?>
-                <td style="text-align:center;" class="daily-break_<?= $i; ?>">
-                    <select name="dailybreak[]" class="form-control datepicker dailybreak" style="width: 100px; margin: auto; display: block;">
-                        <?php foreach ($dailybreak as $dbd) { ?>
-                            <option value="<?= $dbd['dailybreak_name']; ?>"><?= $dbd['dailybreak_name']; ?></option>
-                        <?php } ?>
-                    </select>
-                </td>
-                <td class="start-time_<?= $i; ?>"><input id="startTime<?= $monStartWeekDays[$i]; ?>" name="start[]" class="hasTimepicker start" type="time" /></td>
-                <td class="finish-time_<?= $i; ?>"><input id="finishTime<?= $monStartWeekDays[$i]; ?>" name="end[]" class="hasTimepicker end" type="time" /></td>
-                <td class="hours-worked_<?= $i; ?>"><input id="hoursWorked<?= $monStartWeekDays[$i]; ?>" name="sum[]" class="timeSum" readonly type="text" /></td>
-            <?php } elseif ($time_sheet_data[0]['payroll_type'] == 'Salaried-weekly' || $time_sheet_data[0]['payroll_type'] == 'Salaried-BiWeekly' || $time_sheet_data[0]['payroll_type'] == 'Salaried-Monthly' || $time_sheet_data[0]['payroll_type'] == 'Salaried-BiMonthly') { ?>
-                <td style="display:none;" class="start-time_<?= $i; ?>"><input id="startTime<?= $monStartWeekDays[$i]; ?>" name="start[]" class="hasTimepicker start" type="time" /></td>
-                <td style="display:none;" class="finish-time_<?= $i; ?>"><input id="finishTime<?= $monStartWeekDays[$i]; ?>" name="end[]" class="hasTimepicker end" type="time" /></td>
-                <td class="hours-worked_<?= $i; ?>">
-                    <input id="hoursWorked<?= $monStartWeekDays[$i]; ?>" name="present[]" class="timeSum present" readonly type="checkbox" style="width: 20px; height: 20px" />
-                </td>
-            <?php } ?>
-                <td>
-                    <a style="color:white;" class="delete_day btnclr btn m-b-5 m-r-2"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
-                </td>
-            </tr>`);
-        }
-    });
+var date = $(this).val();
+$('#tBody').empty();
+const myArray = date.split("-");
+var start = myArray[0];
+var s_split=start.split("/");
+var end = myArray[1];
+var e_split=end.split("/");
+const weekDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+let chosenDate = start; 
+var Date1 = new Date (s_split[2], s_split[0], s_split[1]);
+var Date2 = new Date (e_split[2], e_split[0], e_split[1]);
+var Days = Math.round((Date2.getTime() - Date1.getTime())/(1000*60*60*24));
+console.log(s_split[2]+"/"+ s_split[1]+"/"+ s_split[0]+"/"+Days);
+const validDate = new Date(chosenDate);
+let newDate;
+const monStartWeekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-    function converToMinutes(s) {
-        var c = s.split('.');
-        return parseInt(c[0]) * 60 + parseInt(c[1]);
+for(let i = 0; i <= Days; i++) {
+    newDate = new Date(validDate); 
+    newDate.setDate(validDate.getDate() + i); 
+    var date=$('#date_'+i).html();
+    var day=$('#day_'+i).html();
+    $('#tBody').append(
+        `<tr>
+            <td  class="date" id="date_`+i+`"><input type="hidden" value="`+`${newDate.getDate()}/${newDate.getMonth() + 1}/${newDate.getFullYear()}" name="date[]"   />`+`${newDate.getDate()} / ${newDate.getMonth() + 1} / ${newDate.getFullYear()}</td>
+            <td  class="day" id="day_`+i+`"><input type="hidden" value="`+`${weekDays[newDate.getDay()].slice(0,10)}" name="day[]"   />`+`${weekDays[newDate.getDay()].slice(0,10)}</td>
+        <?php if ($time_sheet_data[0]['payroll_type'] == 'Hourly') { ?>
+            <td style="text-align:center;" class="daily-break_<?= $i; ?>">
+                <select name="dailybreak[]" class="form-control datepicker dailybreak" style="width: 100px; margin: auto; display: block;">
+                    <?php foreach ($dailybreak as $dbd) { ?>
+                        <option value="<?= $dbd['dailybreak_name']; ?>"><?= $dbd['dailybreak_name']; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td class="start-time_<?= $i; ?>"><input id="startTime<?= $monStartWeekDays[$i]; ?>" name="start[]" class="hasTimepicker start" type="time" /></td>
+            <td class="finish-time_<?= $i; ?>"><input id="finishTime<?= $monStartWeekDays[$i]; ?>" name="end[]" class="hasTimepicker end" type="time" /></td>
+            <td class="hours-worked_<?= $i; ?>"><input id="hoursWorked<?= $monStartWeekDays[$i]; ?>" name="sum[]" class="timeSum" readonly type="text" /></td>
+        <?php } elseif ($time_sheet_data[0]['payroll_type'] == 'Salaried-weekly' || $time_sheet_data[0]['payroll_type'] == 'Salaried-BiWeekly' || $time_sheet_data[0]['payroll_type'] == 'Salaried-Monthly' || $time_sheet_data[0]['payroll_type'] == 'Salaried-BiMonthly') { ?>
+            <td style="display:none;" class="start-time_<?= $i; ?>"><input id="startTime<?= $monStartWeekDays[$i]; ?>" name="start[]" class="hasTimepicker start" type="time" /></td>
+            <td style="display:none;" class="finish-time_<?= $i; ?>"><input id="finishTime<?= $monStartWeekDays[$i]; ?>" name="end[]" class="hasTimepicker end" type="time" /></td>
+            <td class="hours-worked_<?= $i; ?>">
+                <input id="hoursWorked<?= $monStartWeekDays[$i]; ?>" name="present[]" class="timeSum present" readonly type="checkbox" style="width: 20px; height: 20px" />
+            </td>
+        <?php } ?>
+            <td>
+                <a style="color:white;" class="delete_day btnclr btn m-b-5 m-r-2"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
+            </td>
+        </tr>`);
+    }
+});
+
+function converToMinutes(s) {
+    var c = s.split('.');
+    return parseInt(c[0]) * 60 + parseInt(c[1]);
+}
+
+function parseTime(s) {
+    return Math.floor(parseInt(s) / 60) + "." + parseInt(s) % 60
+}
+
+$(document).on('select change', '.end','.dailybreak', function () {
+
+    var $begin = $(this).closest('tr').find('.start').val();
+    var $end = $(this).closest('tr').find('.end').val();
+    let valuestart = moment($begin, "HH:mm");
+    let valuestop = moment($end, "HH:mm");
+    let timeDiff = moment.duration(valuestop.diff(valuestart));
+    var dailyBreakValue = parseInt($(this).closest('tr').find('.dailybreak').val()) || 0;
+    var totalMinutes = timeDiff.asMinutes() - dailyBreakValue;
+    var hours = Math.floor(totalMinutes / 60);
+    var minutes = totalMinutes % 60;
+    var formattedTime = hours.toString().padStart(2, '0') + '.' + minutes.toString().padStart(2, '0');
+
+    if (isNaN(parseFloat(formattedTime))) {
+        $(this).closest('tr').find('.timeSum').val('00:00');
+    } else {
+        $(this).closest('tr').find('.timeSum').val(formattedTime);
     }
 
-    function parseTime(s) {
-        return Math.floor(parseInt(s) / 60) + "." + parseInt(s) % 60
-    }
+    var total_net = 0;
+    $('.table').each(function () {
+        var tableTotal = 0;
 
-    $(document).on('select change', '.end','.dailybreak', function () {
-
-        var $begin = $(this).closest('tr').find('.start').val();
-        var $end = $(this).closest('tr').find('.end').val();
-
-        // Calculate time difference
-        let valuestart = moment($begin, "HH:mm");
-        let valuestop = moment($end, "HH:mm");
-        let timeDiff = moment.duration(valuestop.diff(valuestart));
-
-        // Capture the selected daily break in minutes
-        var dailyBreakValue = parseInt($(this).closest('tr').find('.dailybreak').val()) || 0;
-
-        // Subtract daily break time from timeDiff in minutes
-        var totalMinutes = timeDiff.asMinutes() - dailyBreakValue;
-
-        // Calculate the hours and minutes
-        var hours = Math.floor(totalMinutes / 60);
-        var minutes = totalMinutes % 60;
-
-        // Format the result as "HH:mm"
-        var formattedTime = hours.toString().padStart(2, '0') + '.' + minutes.toString().padStart(2, '0');
-
-        if (isNaN(parseFloat(formattedTime))) {
-            $(this).closest('tr').find('.timeSum').val('00:00');
-        } else {
-            $(this).closest('tr').find('.timeSum').val(formattedTime);
-        }
-
-
-        var total_net = 0;
-        $('.table').each(function () {
-            var tableTotal = 0;
-
-            $(this).find('.timeSum').each(function () {
-                var precio = $(this).val();
-                if (!isNaN(precio) && precio.length !== 0) {
-                    var [hours, minutes] = precio.split('.').map(parseFloat);
-                    tableTotal += hours + minutes / 100; // Dividing minutes by 100 to get the correct decimal value
-                }
-            });
-            total_net += tableTotal;
-        });
-
-        // Convert the total back to hours and minutes format
-        var hours = Math.floor(total_net);
-        var minutes = Math.round((total_net % 1) * 100); // Multiply by 100 to get the minutes
-
-        if (minutes === 100) {
-            hours += 1;
-            minutes = 0;
-        }
-
-        $('#total_net').val(hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0')).trigger('change');
-    });
-
-
-    $(document).on('select change', '.start','.dailybreak', function () {
-
-        var $begin = $(this).closest('tr').find('.start').val();
-        var $end = $(this).closest('tr').find('.end').val();
-
-        // Calculate time difference
-        let valuestart = moment($begin, "HH:mm");
-        let valuestop = moment($end, "HH:mm");
-        let timeDiff = moment.duration(valuestop.diff(valuestart));
-
-        // Capture the selected daily break in minutes
-        var dailyBreakValue = parseInt($(this).closest('tr').find('.dailybreak').val()) || 0;
-
-        // Subtract daily break time from timeDiff in minutes
-        var totalMinutes = timeDiff.asMinutes() - dailyBreakValue;
-
-        // Calculate the hours and minutes
-        var hours = Math.floor(totalMinutes / 60);
-        var minutes = totalMinutes % 60;
-
-        // Format the result as "HH:mm"
-        var formattedTime = hours.toString().padStart(2, '0') + '.' + minutes.toString().padStart(2, '0');
-
-        if (isNaN(parseFloat(formattedTime))) {
-            $(this).closest('tr').find('.timeSum').val('00:00');
-        }else{
-            $(this).closest('tr').find('.timeSum').val(formattedTime);
-        }
-
-        var total_net = 0;
-
-        $('.table').each(function () {
-            var tableTotal = 0;
-
-            $(this).find('.timeSum').each(function () {
-                var precio = $(this).val();
-                if (!isNaN(precio) && precio.length !== 0) {
-                    var [hours, minutes] = precio.split('.').map(parseFloat);
-                    tableTotal += hours + minutes / 100; // Dividing minutes by 100 to get the correct decimal value
-                }
-            });
-
-            total_net += tableTotal;
-        });
-
-        // Convert the total back to hours and minutes format
-        var hours = Math.floor(total_net);
-        var minutes = Math.round((total_net % 1) * 100); // Multiply by 100 to get the minutes
-
-        if (minutes === 100) {
-            hours += 1;
-            minutes = 0;
-        }
-
-        $('#total_net').val(hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0')).trigger('change');
-    });
-
-
-    $(document).on('input','.timeSum', function () {
-        // $(".timeSum").change(function(){
-        var $addtotal = $(this).closest('tr').find('.timeSum').val();
-        // alert($addtotal);
-    });
-
-
-        // var timeOptions = {
-        //   interval: 15,
-        //   dropdown: true,
-        //   change: function(time) {
-        //   sumHours();
-        // }
-    // }
-
-
-    // $begin.timepicker(timeOptions);
-    // $end.timepicker(timeOptions);
-
-
-    // $(document).on('focus', $end, function() {
-    // $(this).select();  // select entire text on focus
-    // });
-
-
-    // $begin.on("click, focus", function () {
-    // $(this).select();
-    // });
-
-    $('body').on('keyup','.end',function(){
-
-        var start=$(this).closest('tr').find('.strt').val();
-        var end=$(this).closest('td').find('.end').val();
-        var breakv=$('#dailybreak').val();
-        var calculate=parseInt(start)+parseInt(end);
-        var final =calculate-parseInt(breakv);
-        // $(this).closest('tr').find('.hours-worked').html(final);
-    });
-
-
-    $(document).on('select change'  ,'#templ_name', function () {
-        
-        var data = {      
-            value:$('#templ_name').val()
-        };
-        data[csrfName] = csrfHash;
-        $.ajax({
-            type:'POST',
-            data: data, 
-            dataType:"json",
-            url:'<?= base_url();?>Chrm/getemployee_data',
-            success: function(result, statut) {
-                $('#job_title').val(result[0]['designation']);
-                $('#payroll_type').val(result[0]['payroll_type']);
+        $(this).find('.timeSum').each(function () {
+            var precio = $(this).val();
+            if (!isNaN(precio) && precio.length !== 0) {
+                var [hours, minutes] = precio.split('.').map(parseFloat);
+                tableTotal += hours + minutes / 100; 
             }
         });
+        total_net += tableTotal;
     });
 
+    var hours = Math.floor(total_net);
+    var minutes = Math.round((total_net % 1) * 100); 
 
-    function sumHours () {
-
-        var time1 = $begin.timepicker().getTime();
-        var time2 = $end.timepicker().getTime();
-
-        if ( time1 && time2 ) {
-        if ( time1 > time2 ) {
-            //Correct the day so second entry is always 
-            //after first, as in midnight shift. Use a new 
-            //date object so original is not incremented.
-            v = new Date(time2);
-            v.setDate(v.getDate() + 1);
-        } else {
-            v = time2;
-        }
-
-        var diff = ( Math.abs( v - time1) / 36e5 ).toFixed(2);
-        $input.val(diff); 
-        
-        } else {
-            $input.val(''); 
-        }
+    if (minutes === 100) {
+        hours += 1;
+        minutes = 0;
     }
 
-    $(document).on('click','.delete_day',function(){
+    $('#total_net').val(hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0')).trigger('change');
+});
+
+
+$(document).on('select change', '.start','.dailybreak', function () {
+    var $begin = $(this).closest('tr').find('.start').val();
+    var $end = $(this).closest('tr').find('.end').val();
+    let valuestart = moment($begin, "HH:mm");
+    let valuestop = moment($end, "HH:mm");
+    let timeDiff = moment.duration(valuestop.diff(valuestart));
+    var dailyBreakValue = parseInt($(this).closest('tr').find('.dailybreak').val()) || 0;
+    var totalMinutes = timeDiff.asMinutes() - dailyBreakValue;
+    var hours = Math.floor(totalMinutes / 60);
+    var minutes = totalMinutes % 60;
+    var formattedTime = hours.toString().padStart(2, '0') + '.' + minutes.toString().padStart(2, '0');
+
+    if (isNaN(parseFloat(formattedTime))) {
+        $(this).closest('tr').find('.timeSum').val('00:00');
+    }else{
+        $(this).closest('tr').find('.timeSum').val(formattedTime);
+    }
+
+    var total_net = 0;
+
+    $('.table').each(function () {
+        var tableTotal = 0;
+
+        $(this).find('.timeSum').each(function () {
+            var precio = $(this).val();
+            if (!isNaN(precio) && precio.length !== 0) {
+                var [hours, minutes] = precio.split('.').map(parseFloat);
+                tableTotal += hours + minutes / 100; 
+            }
+        });
+
+        total_net += tableTotal;
+    });
+
+    var hours = Math.floor(total_net);
+    var minutes = Math.round((total_net % 1) * 100); 
+
+    if (minutes === 100) {
+        hours += 1;
+        minutes = 0;
+    }
+
+    $('#total_net').val(hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0')).trigger('change');
+});
+
+
+$(document).on('input','.timeSum', function () {
+    var $addtotal = $(this).closest('tr').find('.timeSum').val();
+});
+
+$('body').on('keyup','.end',function(){
+
+    var start=$(this).closest('tr').find('.strt').val();
+    var end=$(this).closest('td').find('.end').val();
+    var breakv=$('#dailybreak').val();
+    var calculate=parseInt(start)+parseInt(end);
+    var final =calculate-parseInt(breakv);
+});
+
+
+$(document).on('select change'  ,'#templ_name', function () {
+    var data = {      
+        value:$('#templ_name').val()
+    };
+    data[csrfName] = csrfHash;
+    $.ajax({
+        type:'POST',
+        data: data, 
+        dataType:"json",
+        url:'<?= base_url();?>Chrm/getemployee_data',
+        success: function(result, statut) {
+            $('#job_title').val(result[0]['designation']);
+            $('#payroll_type').val(result[0]['payroll_type']);
+        }
+    });
+});
+
+
+function sumHours () 
+{
+
+    var time1 = $begin.timepicker().getTime();
+    var time2 = $end.timepicker().getTime();
+
+    if ( time1 && time2 ) {
+    if ( time1 > time2 ) {
+        v = new Date(time2);
+        v.setDate(v.getDate() + 1);
+    } else {
+        v = time2;
+    }
+    var diff = ( Math.abs( v - time1) / 36e5 ).toFixed(2);
+    $input.val(diff); 
+    
+    } else {
+        $input.val(''); 
+    }
+}
+
+$(document).on('click','.delete_day',function(){
     $(this).closest('tr').remove();
     var total_net=0;
     $('.table').each(function() {
@@ -599,51 +508,48 @@ $('body').on('input select change','#reportrange',function(){
         });
 
     });
-    //   console.log(total_net.toFixed(3));
     $('#total_net').val(total_net.toFixed(2)).trigger('change');
-    var firstDate = $('.date input').first().val(); // Get the value of the first date input
-        var lastDate = $('.date input').last().val(); // Get the value of the last date input
+    var firstDate = $('.date input').first().val(); 
+        var lastDate = $('.date input').last().val(); 
 
-        // Function to convert date format from 'd/m/y' to 'm/d/y'
         function convertDateFormat(dateStr) {
             const [day, month, year] = dateStr.split('/');
             return `${month}/${day}/${year}`;
         }
 
-        // Convert first and last dates to 'm/d/y' format
         var firstDateMDY = convertDateFormat(firstDate);
         var lastDateMDY = convertDateFormat(lastDate);
     $('#reportrange').val(firstDateMDY + ' - ' + lastDateMDY);
 
-    });
-        document.addEventListener('DOMContentLoaded', function() {
-            var checkboxes = document.querySelectorAll('.checkbox.switch-input'); // Selects all checkboxes with class 'switch-input'
-            checkboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                var idSuffix = this.id.split('_')[1]; // Extracts the unique identifier after 'blockcheck_'
-                var correspondingInputField = document.getElementById('block_' + idSuffix); // Finds the matching input field
-                // Correctly updates the input field's value based on the checkbox's checked state
-                correspondingInputField.value = this.checked ? "present" : "absent";
-            });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var checkboxes = document.querySelectorAll('.checkbox.switch-input'); 
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var idSuffix = this.id.split('_')[1];
+            var correspondingInputField = document.getElementById('block_' + idSuffix); 
+            correspondingInputField.value = this.checked ? "present" : "absent";
         });
     });
+});
 
     
 
-    $(document).ready(function() {
-        function updateCounter() {
-            var sumOfDays = 0;
-            sumOfDays = $('input[type="checkbox"].present:checked').length;
-            $('#total_net').val(sumOfDays);
-        }
-        $(document).on('change', 'input[type="checkbox"].present', function() {
-            console.log('active');
-            updateCounter();
-        });
-        var t=$('#payroll_type').val();
-        if(t !=='Hourly'){
-            updateCounter();
-        }
+$(document).ready(function() {
+    function updateCounter() {
+        var sumOfDays = 0;
+        sumOfDays = $('input[type="checkbox"].present:checked').length;
+        $('#total_net').val(sumOfDays);
+    }
+    $(document).on('change', 'input[type="checkbox"].present', function() {
+        console.log('active');
+        updateCounter();
     });
+    var t=$('#payroll_type').val();
+    if(t !=='Hourly'){
+        updateCounter();
+    }
+});
 
 </script>

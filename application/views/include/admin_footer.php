@@ -218,8 +218,8 @@
   background: #4fb845;
 }
 .table {
-    width: 100%; /* Set the table width */
-    table-layout: fixed; /* Use a fixed layout */
+    width: 100%; 
+    table-layout: fixed; 
 }
 .table th,
 .table td {
@@ -261,6 +261,156 @@ td{
 .m-3 {
     margin: 2rem;
 }
+
+table.table.table-hover.table-borderless td {
+   border: 0;
+}
+.select2{
+   display:none;
+}
+
+.btnclr{
+   background-color:<?php echo $setting_detail[0]['button_color']; ?>;
+   color: white;
+}
+
+.logo-9 i{
+   font-size:80px;
+   position:absolute;
+   z-index:0;
+   text-align:center;
+   width:100%;
+   left:0;
+   top:-10px;
+   color:#34495e;
+   -webkit-animation:ring 2s ease infinite;
+   animation:ring 2s ease infinite;
+}
+
+.logo-9 h1{
+   font-family: 'Lora', serif;
+   font-weight:600;
+   text-transform:uppercase;
+   font-size:40px;
+   position:relative;
+   z-index:1;
+   color:#e74c3c;
+   text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
+}
+   
+.logo-9{
+   position:relative;
+} 
+   
+/*//side*/
+.bar {
+  float: left;
+  width: 25px;
+  height: 3px;
+  border-radius: 4px;
+  background-color: #4b9cdb;
+}
+
+
+.load-10 .bar {
+  animation: loadingJ 2s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
+}
+
+
+@keyframes loadingJ {
+  0%,
+  100% {
+   transform: translate(0, 0);
+  }
+
+  50% {
+   transform: translate(80px, 0);
+   background-color: #f5634a;
+   width: 120px;
+  }
+}
+
+tr.noBorder td {
+   border: 0;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+   border-top:none;
+}
+
+table.table.table-hover.table-borderless td {
+   border: 0;
+}
+.select2{
+   display:none;
+}
+
+.btnclr{
+   background-color:<?php echo $setting_detail[0]['button_color']; ?>;
+   color: white;
+}
+
+.logo-9 i{
+   font-size:80px;
+   position:absolute;
+   z-index:0;
+   text-align:center;
+   width:100%;
+   left:0;
+   top:-10px;
+   color:#34495e;
+   -webkit-animation:ring 2s ease infinite;
+   animation:ring 2s ease infinite;
+}
+
+.logo-9 h1{
+   font-family: 'Lora', serif;
+   font-weight:600;
+   text-transform:uppercase;
+   font-size:40px;
+   position:relative;
+   z-index:1;
+   color:#e74c3c;
+   text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
+}
+   
+.logo-9{
+   position:relative;
+} 
+   
+/*//side*/
+.bar {
+  float: left;
+  width: 25px;
+  height: 3px;
+  border-radius: 4px;
+  background-color: #4b9cdb;
+}
+
+
+.load-10 .bar {
+  animation: loadingJ 2s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
+}
+
+
+@keyframes loadingJ {
+  0%,
+  100% {
+   transform: translate(0, 0);
+  }
+
+  50% {
+   transform: translate(80px, 0);
+   background-color: #f5634a;
+   width: 120px;
+  }
+}
+
+tr.noBorder td {
+   border: 0;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+   border-top:none;
+}
 </style>
 
 
@@ -270,7 +420,6 @@ td{
    const dt = new DataTransfer(); 
    
    $('span.file-delete').click(function(){
-    alert('hi');
            let name = $(this).next('span.name').text();
            $(this).parent().remove();
            for(let i = 0; i < dt.items.length; i++){
@@ -284,6 +433,15 @@ td{
           
            document.getElementById('attachment').files = dt.files;
        });
+
+
+// Sidebar Toggle class add
+$(document).ready(function () {
+    $(".sidebar-toggle").click(function () {
+        $("body").toggleClass("sidebar-collapse");
+    });
+});
+
 </script>
 <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/css/select2.min.css">
 <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>assets/datatables/buttons.dataTables.min.css">
