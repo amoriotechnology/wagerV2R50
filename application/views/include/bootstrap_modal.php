@@ -393,7 +393,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
                          <select name="country" id="country" class="selectpicker countrypicker form-control">
                          <option value="">Select Country</option>
                            <?php foreach($country_data as $value) { ?>
-                              <option value="<?= $value['name']; ?>"> <?= $value['name']; ?> </option>
+                              <option value="<?= $value['nickname']; ?>"> <?= $value['name']; ?> </option>
                            <?php } ?>
                          </select>
                      </div>
@@ -764,9 +764,11 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
 </div>
 <!-- /.modal -->
 
+
 <?php
 }
 if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
+
 
 <!-- Add States -->
 <div class="modal fade modal-success" id="add_states" role="dialog">
@@ -1043,4 +1045,295 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
 </div><!-- /.modal -->
 <?php  }  ?>
 
+
+<script>
+
+var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+   var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+
+   $(document).ready(function () {
+        $('#add_city_tax').submit(function (e) {
+            e.preventDefault();
+            var formData = $("#add_city_tax").serialize();
+            formData += "&" + $.param({ csrf_test_name: csrfHash });
+            $.ajax({
+                type: 'POST',
+                data: formData,
+                dataType: "json",
+                url: '<?php echo base_url(); ?>Cinvoice/add_city_tax',
+                success: function (data1, statut) {
+                    var $datalist = $('#magic_city_tax');
+                    // Clear existing options
+                    $datalist.empty();
+                    // Add new options
+                    for (var i = 0; i < data1.length; i++) {
+                        var option = $('<option/>').attr('value', data1[i].city_tax).text(data1[i].city_tax);
+                        $datalist.append(option);
+                    }
+                    $('#new_city_tax').val('');
+                    $("#bodyModal1").html("City Tax Added Successfully");
+                    $('#city_tax').modal('hide');
+                    $('#citytx').show();
+                    $('#myModal1').modal('show');
+                    window.setTimeout(function () {
+                        $('#city_tax').modal('hide');
+                        $('#myModal1').modal('hide');
+                    }, 2000);
+                }
+            });
+        });
+    });
+
+   // Payroll Insert Data
+     $('#add_payroll_type').submit(function(e){
+       e.preventDefault();
+         var data = {
+           data : $("#add_payroll_type").serialize()
+         };
+         data[csrfName] = csrfHash;
+         $.ajax({
+             type:'POST',
+             data: $("#add_payroll_type").serialize(),
+            dataType:"json",
+             url:'<?php echo base_url();?>Cinvoice/add_paymentroll_type',
+             success: function(data2, statut) {
+          var $select = $('select#payroll_type');
+               $select.empty();
+               console.log(data);
+                 for(var i = 0; i < data2.length; i++) {
+                    console.log(data2);
+           var option = $('<option/>').attr('value', data2[i].proll_type).text(data2[i].proll_type);
+           $select.append(option); // append new options
+       }
+         $('#new_payroll_type').val('');
+         $("#bodyModal1").html("Payroll Added Successfully");
+         $('#proll_type').modal('hide');
+         $('#payroll_type').show();
+          $('#myModal1').modal('show');
+         window.setTimeout(function(){
+           $('#proll_type').modal('hide');
+          $('#myModal1').modal('hide');
+       }, 2000);
+        }
+         });
+     });
+   
+   
+     $('#add_pay_type').submit(function(e){
+      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+       e.preventDefault();
+         var data = {
+           data : $("#add_pay_type").serialize()
+         
+         };
+         data[csrfName] = csrfHash;
+     
+         $.ajax({
+             type:'POST',
+             data: $("#add_pay_type").serialize(), 
+            dataType:"json",
+             url:'<?php echo base_url();?>Chrm/add_payment_type',
+             success: function(data1, statut) {
+        
+               var $select = $('select#paytype');
+               $select.empty();
+               console.log(data1, statut);
+               for(var i = 0; i < data1.length; i++) {
+                  var option = $('<option/>').attr('value', data1[i].payment_type).text(data1[i].payment_type);
+                  $select.append(option); // append new options
+               }
+         $('#new_payment_type').val('');
+         $("#bodyModal1").html("Payment Added Successfully");
+         $('#payment_type').modal('hide');
+         
+         $('#paytype').show();
+          $('#myModal1').modal('show');
+         window.setTimeout(function(){
+           $('#payment_type').modal('hide');
+        
+          $('#myModal1').modal('hide');
+      
+       }, 2000);
+       
+        }
+         });
+     });
+     
+     
+     // Insert Employeee Type
+     $('#add_employee_type').submit(function(e){
+      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+
+       e.preventDefault();
+         var data = {
+           data : $("#add_employee_type").serialize()
+         };
+         data[csrfName] = csrfHash;
+     
+         $.ajax({
+             type:'POST',
+             data: $("#add_employee_type").serialize(), 
+            dataType:"json",
+            url:'<?php echo base_url();?>Chrm/add_employee_type',
+            success: function(data2, statut) {
+        
+               var $select = $('select#emp_type');
+               $select.empty();
+               console.log(data);
+                 for(var i = 0; i < data2.length; i++) {
+                    console.log(data2);
+           var option = $('<option/>').attr('value', data2[i].employee_type).text(data2[i].employee_type);
+           $select.append(option); // append new options
+       }
+         $('#emps_type').val('');
+         $("#bodyModal1").html("Employee Type Added Successfully");
+         $('#employees_type').modal('hide');
+         
+         $('#emp_type').show();
+          $('#myModal1').modal('show');
+         window.setTimeout(function(){
+           $('#employees_type').modal('hide');
+        
+          $('#myModal1').modal('hide');
+      
+       }, 2000);
+       
+        }
+         });
+     });
+   
+
+   // End Employee Type
+   $(function() {  
+      $("#instuc_p2").hide();
+      $(".emply_form").hide();
+      
+      $(".next_pg").click(function(){  
+         $("#instuc_p2").show();
+         $("#instuc_p1").hide();
+      });  
+
+      $(".emply_form_btn").click(function(){
+         $(".emply_form").show();
+         $("#instuc_p2").hide();
+         $("#instuc_p1").hide();
+      })
+   });  
+
+   // Payroll Insert Data
+   $('#add_payroll_type').submit(function(e){
+       e.preventDefault();
+         var data = {
+           data : $("#add_payroll_type").serialize()
+         };
+         data[csrfName] = csrfHash;
+     
+         $.ajax({
+             type:'POST',
+             data: $("#add_payroll_type").serialize(), 
+            dataType:"json",
+             url:'<?php echo base_url();?>Cinvoice/add_paymentroll_type',
+             success: function(data2, statut) {
+        
+          var $select = $('select#payrolltype');
+      
+               $select.empty();
+               console.log(data);
+                 for(var i = 0; i < data2.length; i++) {
+                    console.log(data2);
+           var option = $('<option/>').attr('value', data2[i].payroll_type).text(data2[i].payroll_type);
+           $select.append(option); // append new options
+       }
+         $('#new_payroll_type').val('');
+         $("#bodyModal1").html("Payroll Added Successfully");
+         $('#payroll_type').modal('hide');
+         
+         $('#payrolltype').show();
+          $('#myModal1').modal('show');
+         window.setTimeout(function(){
+           $('#payroll_type').modal('hide');
+          $('#myModal1').modal('hide');
+      
+       }, 2000);
+       
+        }
+         });
+     });
+   
+     // End Payroll Type
+   
+   
+     $('#add_designation').submit(function(e){
+       e.preventDefault();
+         var data = {
+           data : $("#add_designation").serialize()
+         };
+         data[csrfName] = csrfHash;
+     
+         $.ajax({
+            type:'POST',
+            data: $("#add_designation").serialize(),
+            dataType:"json",
+            url:'<?php echo base_url();?>Chrm/add_designation_data',
+            success: function(data1, statut) {
+               var $select = $('select#desig');      
+               $select.empty();
+               for(var i = 0; i < data1.length; i++) {
+                  var option = $('<option/>').attr('value', data1[i].id).text(data1[i].designation);
+                  $select.append(option); // append new options
+               }
+               $('#designation').val('');
+               //    $('#desig').append(result).selectmenu('refresh',true);
+               $("#bodyModal1").html("Designation  Added Successfully");
+               $('#designation_modal').modal('hide');
+               $('#desig').show();
+               $('#myModal1').modal('show');
+               window.setTimeout(function() {
+               $('#designation_modal').modal('hide');
+               $('#myModal1').modal('hide');
+            }, 2000);
+            
+            }, error:function(res) {
+               console.log('error = '+res);
+            }
+         });
+     });
+   
+   
+   $('#add_bank').submit(function (event) {
+      var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
+      var csrfHash = '<?php echo $this->security->get_csrf_hash();?>';
+
+      var dataString = {
+         dataString : $("#add_bank").serialize()
+      };
+      dataString[csrfName] = csrfHash;
+      $.ajax({
+         type:"POST",
+         dataType:"json",
+         url:"<?php echo base_url(); ?>Chrm/add_new_bank",
+         data:$("#add_bank").serialize(),
+         success: function (data) {
+               $.each(data, function (i, item) {
+                  result = '<option value=' + data[i].bank_name + '>' + data[i].bank_name + '</option>';
+               });
+               $('.bankpayment').selectmenu(); 
+               $('.bankpayment').append(result).selectmenu('refresh',true);
+               $("#bodyModal1").html("Bank Added Successfully");
+               $('#myModal3').modal('hide');
+               $('#add_bank_info').modal('hide');
+               $('#bank').show();
+               $('#myModal1').modal('show');
+               window.setTimeout(function(){
+               $('#myModal5').modal('hide');
+               $('#myModal1').modal('hide');
+            }, 2000);
+         }
+      });
+      event.preventDefault();
+   });
+
+</script>
 

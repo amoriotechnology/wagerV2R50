@@ -3880,4 +3880,25 @@ public function get_overtime_data($id = null)
     return false;
 }
 
+<<<<<<< HEAD
+
+public function add_payment_type($postData){
+    $data=array(
+        'payment_type' => $postData,
+        'create_by' => $this->session->userdata('user_id')
+    );
+    $this->db->insert('payment_type', $data);
+
+    $this->db->select('*');
+    $this->db->from('payment_type');
+    $this->db->where('create_by' ,$this->session->userdata('user_id'));
+    $this->db->order_by('payment_type', 'asc');
+    $query = $this->db->get();
+    return $query->result_array();
+}
+
+
+
+=======
+>>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
 }
