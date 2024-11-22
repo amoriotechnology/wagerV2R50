@@ -1,3 +1,203 @@
+<style>
+input {
+  border: none;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+.text-right {
+  text-align: left; 
+}
+
+th{
+  font-size:10px;
+}
+
+#content {
+  padding: 30px;
+}
+
+.pagecontroller {
+  margin: 5px;
+}
+
+.logo-9 i{
+  font-size:80px;
+  position:absolute;
+  z-index:0;
+  text-align:center;
+  width:100%;
+  left:0;
+  top:-10px;
+  color:#34495e;
+  -webkit-animation:ring 2s ease infinite;
+  animation:ring 2s ease infinite;
+}
+
+.logo-9 h1{
+  font-family: 'Lora', serif;
+  font-weight:600;
+  text-transform:uppercase;
+  font-size:40px;
+  position:relative;
+  z-index:1;
+  color:#e74c3c;
+  text-shadow: 3px 3px 0 #fff, -3px -3px 0 #fff, 3px -3px 0 #fff, -3px 3px 0 #fff;
+}
+   
+.logo-9{
+  position:relative;
+} 
+   
+/*//side*/
+.bar {
+  float: left;
+  width: 25px;
+  height: 3px;
+  border-radius: 4px;
+  background-color: #4b9cdb;
+}
+
+.load-10 .bar {
+  animation: loadingJ 2s cubic-bezier(0.17, 0.37, 0.43, 0.67) infinite;
+}
+
+@keyframes loadingJ {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(80px, 0);
+    background-color: #f5634a;
+    width: 75px;
+  }
+}
+
+.landscape-box {
+
+  background:linear-gradient(#c2b8b9,#99b3e8);
+  color:black;
+  width: 300px;
+  text-align:center;
+  padding:10px;
+  border-radius:15px 15px 15px 15px;
+  transition: .4s transform;
+  justify-content:center;
+  margin:30px;
+  display:flex;
+}
+
+.box:hover{
+  transform: scale(1.1);
+  box-shadow:2px 2px 35px black;
+}
+
+.box img{
+  width:150px;
+}
+
+a{
+  color:black;
+}
+
+.landscape-box h2{
+  margin-right:20px;
+}
+
+.landscape-box:hover{
+  transform : scale(1.1);
+}
+
+.circular_image {
+  width: 60px;
+  height: 80px;
+  overflow: hidden;
+  background-color: blue;
+  /* commented for demo
+  float: left;
+  margin-left: 125px;
+  margin-top: 20px;
+  */
+  /*for demo*/
+  display:inline-block;
+  vertical-align:middle;
+}
+
+.nname{
+  bottom:10px;
+}
+.circular_image img{
+  width:50%;
+}
+
+.landscape-box:hover .div{
+  display: block;
+  color:black;
+}
+
+.landscape-box:hover .s_name{
+  color:black;
+}
+
+.div {
+  display: none;
+}
+
+#button{ 
+  height: 100px;
+  width: 200px;
+  background-color: #80bfff;
+  color: white;
+  font: monospace;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 20px;
+  border: 0px;
+  transition: 1s ease-in-out;
+}
+
+#button:hover{
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+#button a{
+  color: white;
+  font: monospace;
+  font-weight: bold;
+  font-size: 20px;
+  text-decoration: none;
+  transition: 0.5s ease-in-out;
+}
+
+#button:hover a{
+  color:black;
+}
+
+#button.open {
+  display:block;
+}
+
+pre {
+  outline: 1px solid #ccc; 
+  padding: 5px; 
+  margin: 5px; 
+  white-space: pre-wrap;       
+  white-space: -moz-pre-wrap;  
+  white-space: -pre-wrap;      
+  white-space: -o-pre-wrap;    
+  word-wrap: break-word;   
+  background-color: white ! important;  
+  word-break: keep-all; 
+  color:black;
+}
+
+</style>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

@@ -80,12 +80,8 @@ class Chrm extends CI_Controller {
         $result = $this->Hrm_model->delete_employee($emp_id);
         if ($result) {
             logEntry($this->session->userdata('user_id'), $this->session->userdata('unique_id'), $id, '', $this->session->userdata('userName'), 'Delete Employee', 'Human Resource', 'Employee has been deleted successfully', 'Delete', date('m-d-Y'));
-            $response = array(
-                'status' => 'success',
-                'msg'    => 'Employee has been deleted successfully!'
-            );
+            $this->session->set_flashdata('message', display('delete_successfully'));
         } 
-        echo json_encode($response);
         redirect(base_url("Chrm/manage_employee?id=".$id."&admin_id=".$_GET['admin_id']));
     }
     public function state_summary()
@@ -1175,17 +1171,13 @@ public function add_taxname_data(){
 
     public function payslip_setting() {
         $data['title'] = display('payslip');
-        $CI = & get_instance();
-        $CD = & get_instance();
-        $CD->load->model('Companies');
-        $CI->load->model('Web_settings');
-        $CI->load->model('Invoice_content');
-       $setting_detail = $CI->Web_settings->retrieve_setting_editdata();
-       $dataw = $CI->Invoice_content->get_data_payslip();
-       $datac = $CD->Companies->company_details();
-           $datacontent = $CI->Invoice_content->retrieve_data();
+        $this->CI->load->model('Web_settings');
+        $this->CI->load->model('Invoice_content');
+       $setting_detail = $this->CI->Web_settings->retrieve_setting_editdata();
+       $dataw = $this->CI->Invoice_content->get_data_payslip();
+        $datacontent = $this->CI->Invoice_content->retrieve_data();
        $data= array(
-            'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
+        'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
         'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : '') ,
         'color'=> (!empty($dataw[0]['color']) ? $dataw[0]['color'] : '') ,
         'invoice_logo' =>(!empty($setting_detail[0]['invoice_logo']) ? $setting_detail[0]['invoice_logo'] : '') ,
@@ -1193,12 +1185,11 @@ public function add_taxname_data(){
         'cname'=>(!empty($datacontent[0]['business_name']) ? $datacontent[0]['business_name'] : '') ,
         'mobile'=>(!empty($datacontent[0]['phone']) ? $datacontent[0]['phone'] : '') ,
         'email'=>(!empty($datacontent[0]['email']) ? $datacontent[0]['email'] : '') ,
-
         'template'=> (!empty($dataw[0]['template']) ? $dataw[0]['template'] : '')
-   );
+        );
         $content = $this->parser->parse('hr/payslip_view', $data, true);
-        $this->template->full_admin_html_view($content);
-        }
+    $this->template->full_admin_html_view($content);
+    }
 
 public function employee_payslip_permission() 
 {
@@ -1303,156 +1294,180 @@ public function employee_update_form() {
         $data["state_tx"]            = $this->Hrm_model->state_tax($decodedId);
         $data["cty_tax"]             = $this->Hrm_model->state_tax($decodedId);
         $data["designation"]         = $this->Hrm_model->getdesignation($data["employee_data"][0]["designation"], $decodedId);
+        $data["country_data"]         = $this->Hrm_model->getDatas('country', '*', ['id !=' => '']);
+
         $data["desig"]               = $this->Hrm_model->designation_dropdown($decodedId);
         $content                     = $this->parser->parse("hr/employee_updateform", $data, true);
         $this->template->full_admin_html_view($content);
     }
 
 
-public function update_employee() 
-{
-    $this->load->model("Hrm_model");
-    
-    $response = array();
-    
-    $insertImages = '';
 
-    if (isset($_FILES["files"]) && is_array($_FILES["files"]["name"])) {
-        $no_files = count($_FILES["files"]["name"]);
-        $images = [];
-       
-        for ($i = 0; $i < $no_files; $i++) {
-            if ($_FILES["files"]["error"][$i] > 0) {
-                // Handle file upload error if needed
+
+public function update_employee()
+    {
+        $this->load->model("Hrm_model");
+        $this->form_validation->set_rules('first_name', 'First Name', 'required');
+        $this->form_validation->set_rules('last_name', 'Last Name', 'required');
+        $this->form_validation->set_rules('designation', 'Designation', 'required');
+        $this->form_validation->set_rules('phone', 'Phone', 'required');
+        $this->form_validation->set_rules('employee_type', 'Employee Type', 'required');
+        $this->form_validation->set_rules('payroll_type', 'Payroll Type', 'required');
+        $this->form_validation->set_rules('hrate', 'Pay Rate', 'required');
+        $this->form_validation->set_rules('ssn', 'Social Security Number', 'required');
+        $this->form_validation->set_rules('emp_tax_detail', 'Employee Tax', 'required');
+        $this->form_validation->set_rules('state_tax', 'State Tax', 'required');
+        $this->form_validation->set_rules('city_tax', 'City Tax', 'required');
+        $this->form_validation->set_rules('county_tax', 'County Tax', 'required');
+        $this->form_validation->set_rules('other_working_tax', 'Other Working Tax', 'required');
+        $this->form_validation->set_rules('living_state_tax', 'Living State Tax', 'required');
+        $this->form_validation->set_rules('living_city_tax', 'Living City Tax', 'required');
+        $this->form_validation->set_rules('living_county_tax', 'Living County Tax', 'required');
+        $this->form_validation->set_rules('other_living_tax', 'Other Living Tax', 'required');
+        $this->form_validation->set_message('alpha_space', 'The {field} field should only contain alphabets and spaces.');
+        $response = array();
+        if ($this->form_validation->run() == FALSE) {
+            $response['status'] = 'failure';
+            $response['msg']    = validation_errors();
+        } else {
+            if (isset($_FILES["files"]) && is_array($_FILES["files"]["name"])) {
+                $no_files = count($_FILES["files"]["name"]);
+                $images = [];
+                for ($i = 0; $i < $no_files; $i++) {
+                    if ($_FILES["files"]["error"][$i] > 0) {
+                    } else {
+                        move_uploaded_file(
+                            $_FILES["files"]["tmp_name"][$i],
+                            "assets/uploads/employeedetails/" . $_FILES["files"]["name"][$i]
+                        );
+                        $images[] = $_FILES["files"]["name"][$i];
+                        $insertImages = implode(', ', $images);
+                    }
+                }
+                $old_images = isset($_POST['old_image']) ? $_POST['old_image'] : [];
             } else {
-                move_uploaded_file(
-                    $_FILES["files"]["tmp_name"][$i],
-                    "assets/uploads/employeedetails/" . $_FILES["files"]["name"][$i]
-                );
-                $images[] = $_FILES["files"]["name"][$i];
-                $insertImages = implode(', ', $images); 
+                echo "No files uploaded or invalid file structure.";
+            }
+            if ($_FILES["profile_image"]["name"]) {
+                $config["upload_path"]   = "assets/uploads/profile";
+                $config["allowed_types"] = "gif|jpg|png|jpeg|JPEG|GIF|JPG|PNG";
+                $config["encrypt_name"]  = true;
+                $config["max_size"]      = 2048;
+                $this->load->library("upload", $config);
+                if (!$this->upload->do_upload("profile_image")) {
+                    $error = ["error" => $this->upload->display_errors()];
+                    redirect(base_url("Chrm"));
+                } else {
+                    $data                     = $this->upload->data();
+                    $profile_image            = $data["file_name"];
+                    $config["image_library"]  = "gd2";
+                    $config["source_image"]   = $profile_image;
+                    $config["create_thumb"]   = false;
+                    $config["maintain_ratio"] = true;
+                    $config["width"]          = 200;
+                    $config["height"]         = 200;
+                    $this->load->library("image_lib", $config);
+                    $this->image_lib->resize();
+                    $profile_image = $profile_image;
+                }
+            }
+            $headname =
+            $this->input->post("employee_id", true) ."-" .
+            $this->input->post("old_first_name", true) ."" .
+            $this->input->post("old_middle_name", true) ."" .
+            $this->input->post("old_last_name", true);
+            $emp_data = [
+                "id"            => $this->input->post("employee_id", true),
+                "employee_type" => $this->input->post("employee_type", true),
+            ];
+            $pay_data = [
+                "id"           => $this->input->post("employee_id", true),
+                "payroll_type" => $this->input->post("payroll_type", true),
+            ];
+            $state_tax                 = $this->input->post("state_tax");
+            $living_state_tax          = $this->input->post("living_state_tax");
+            $data_employee["working_state_tax"] = $state_tax;
+            if ($state_tax != $living_state_tax) {
+                $data_employee["living_state_tax"] = $living_state_tax;
+            }
+            $city_tax                   = $this->input->post("city_tax");
+            $living_city_tax            = $this->input->post("living_city_tax");
+            $data_employee["working_city_tax"] = $city_tax;
+            if ($city_tax != $living_city_tax) {
+                $data_employee["living_city_tax"] = $living_city_tax;
+            }
+            $county_tax               = $this->input->post("county_tax");
+            $living_county_tax        = $this->input->post("living_county_tax");
+            $data_employee["working_county_tax"] = $county_tax;
+            if ($county_tax != $living_county_tax) {
+                $data_employee["living_county_tax"] = $living_county_tax;
+            }
+            $other_working_tax            = $this->input->post("other_working_tax");
+            $other_living_tax             = $this->input->post("other_living_tax");
+            $data_employee["working_other_tax"] = $other_working_tax;
+            if ($other_working_tax != $other_living_tax) {
+                $data_employee["living_other_tax"] = $other_living_tax;
+            }
+            $data_employee["working_state_tax"]  = $state_tax;
+            $data_employee["living_state_tax"]   = $living_state_tax;
+            $city_tax                             = $this->input->post("city_tax");
+            $living_city_tax                      = $this->input->post("living_city_tax");
+            $data_employee["working_city_tax"]   = $city_tax;
+            $data_employee["living_city_tax"]    = $living_city_tax;
+            $county_tax                           = $this->input->post("county_tax");
+            $living_county_tax                    = $this->input->post("living_county_tax");
+            $data_employee["working_county_tax"] = $county_tax;
+            $data_employee["living_county_tax"]  = $living_county_tax;
+            $other_working_tax                    = $this->input->post("other_working_tax");
+            $other_living_tax                     = $this->input->post("other_living_tax");
+            $data_employee["working_other_tax"]  = $other_working_tax;
+            $data_employee["living_other_tax"]   = $other_living_tax;
+            $postData = [
+                "id"                     => $this->input->post("employee_id", true),
+                "first_name"             => $this->input->post("first_name", true),
+                "middle_name"            => $this->input->post("middle_name", true),
+                "last_name"              => $this->input->post("last_name", true),
+                "designation"            => $this->input->post("designation", true),
+                "phone"                  => $this->input->post("phone", true),
+                "files" => !empty($old_images) ? $old_images: $insertImages,
+                "rate_type"              => $this->input->post("paytype", true),
+                "sc"                     => $this->input->post("sc", true),
+                "email"                  => $this->input->post("email", true),
+                "employee_tax"           => $this->input->post("emp_tax_detail", true),
+                "social_security_number" => $this->input->post("ssn", true),
+                "routing_number"         => $this->input->post("routing_number", true),
+                "hrate"                  => $this->input->post("hrate", true),
+                "address_line_1"         => $this->input->post("address_line_1", true),
+                "address_line_2"         => $this->input->post("address_line_2", true),
+                "country"                => $this->input->post("country", true),
+                "modified_by" => decodeBase64UrlParameter($this->input->post("admin_id", true)),
+                "city"                   => $this->input->post("city", true),
+                "zip"                    => $this->input->post("zip", true),
+                "state"                  => $this->input->post("state", true),
+                "emergencycontact"       => $this->input->post("emergencycontact", true),
+                "emergencycontactnum"    => $this->input->post("emergencycontactnum",true),
+                "profile_image"          => !empty($profile_image) ? $profile_image : $this->input->post("old_profileimage", true),
+                "payroll_type"           => $this->input->post("payroll_type"),
+                "working_state_tax"     => $state_tax,
+                "working_city_tax"     => $city_tax,
+                "working_county_tax"     => $county_tax,
+                "working_other_tax"     => $other_working_tax,
+                "living_state_tax"     => $living_state_tax,
+                "living_city_tax"     => $living_city_tax,
+                "living_county_tax"     => $living_county_tax,
+                "living_other_tax"     => $other_living_tax,
+            ];
+            $result = $this->Hrm_model->update_employee($id, $postData);
+            if ($result) {
+                $response['status'] = 'success';
+                $response['msg']    = 'Employee has been updated successfully';
+            } else {
+                $response['status'] = 'failure';
+                $response['msg']    = 'Failed to update Employee. Please try again.';
             }
         }
-        $old_images = isset($_POST['old_image']) ? $_POST['old_image'] : [];
-    } else {
-        echo "No files uploaded or invalid file structure.";
+        echo json_encode($response);
     }
-
-    if ($_FILES["profile_image"]["name"]) {
-        $config["upload_path"]   = "assets/uploads/profile";
-        $config["allowed_types"] = "gif|jpg|png|jpeg|JPEG|GIF|JPG|PNG";
-        $config["encrypt_name"]  = true;
-        $config["max_size"]      = 2048;
-        $this->load->library("upload", $config);
-        if (!$this->upload->do_upload("profile_image")) {
-            $error = ["error" => $this->upload->display_errors()];
-            redirect(base_url("Chrm"));
-        } else {
-            $data                     = $this->upload->data();
-            $profile_image            = $data["file_name"];
-            $config["image_library"]  = "gd2";
-            $config["source_image"]   = $profile_image;
-            $config["create_thumb"]   = false;
-            $config["maintain_ratio"] = true;
-            $config["width"]          = 200;
-            $config["height"]         = 200;
-            $this->load->library("image_lib", $config);
-            $this->image_lib->resize();
-            $profile_image = $profile_image;
-        }
-    }
-
-    $headname = $this->input->post("employee_id", true) . "-" .
-               $this->input->post("old_first_name", true) . "" .
-               $this->input->post("old_middle_name", true) . "" .
-               $this->input->post("old_last_name", true);
-
-    $emp_data = [
-        "id"            => $this->input->post("employee_id", true),
-        "employee_type" => $this->input->post("employee_type", true),
-    ];
-
-    $pay_data = [
-        "id"           => $this->input->post("employee_id", true),
-        "payroll_type" => $this->input->post("payroll_type", true),
-    ];
-
-    $state_tax                 = $this->input->post("state_tax");
-    $living_state_tax          = $this->input->post("living_state_tax");
-
-    $data_employee["working_state_tax"] = $state_tax;
-    if ($state_tax != $living_state_tax) {
-        $data_employee["living_state_tax"] = $living_state_tax;
-    }
-
-    $city_tax                   = $this->input->post("city_tax");
-    $living_city_tax            = $this->input->post("living_city_tax");
-    $data_employee["working_city_tax"] = $city_tax;
-    if ($city_tax != $living_city_tax) {
-        $data_employee["living_city_tax"] = $living_city_tax;
-    }
-
-    $county_tax               = $this->input->post("county_tax");
-    $living_county_tax        = $this->input->post("living_county_tax");
-    $data_employee["working_county_tax"] = $county_tax;
-    if ($county_tax != $living_county_tax) {
-        $data_employee["living_county_tax"] = $living_county_tax;
-    }
-
-    $other_working_tax            = $this->input->post("other_working_tax");
-    $other_living_tax             = $this->input->post("other_living_tax");
-    $data_employee["working_other_tax"] = $other_working_tax;
-    if ($other_working_tax != $other_living_tax) {
-        $data_employee["living_other_tax"] = $other_living_tax;
-    }
-
-    $id = $this->input->post("employee_id", true);
-
-    $postData = [
-        "id"                     => $this->input->post("employee_id", true),
-        "first_name"             => $this->input->post("first_name", true),
-        "middle_name"            => $this->input->post("middle_name", true),
-        "last_name"              => $this->input->post("last_name", true),
-        "designation"            => $this->input->post("designation", true),
-        "phone"                  => $this->input->post("phone", true),
-        "files" => !empty($old_images) ? $old_images : $insertImages, 
-        "rate_type"              => $this->input->post("paytype", true),
-        "sc"                     => $this->input->post("sc", true),
-        "email"                  => $this->input->post("email", true),
-        "employee_tax"           => $this->input->post("emp_tax_detail", true),
-        "social_security_number" => $this->input->post("ssn", true),
-        "routing_number"         => $this->input->post("routing_number", true),
-        "hrate"                  => $this->input->post("hrate", true),
-        "address_line_1"         => $this->input->post("address_line_1", true),
-        "address_line_2"         => $this->input->post("address_line_2", true),
-        "country"                => $this->input->post("country", true),
-        "city"                   => $this->input->post("city", true),
-        "zip"                    => $this->input->post("zip", true),
-        "state"                  => $this->input->post("state", true),
-        "emergencycontact"       => $this->input->post("emergencycontact", true),
-        "emergencycontactnum"    => $this->input->post("emergencycontactnum", true),
-        "profile_image"          => !empty($profile_image) ? $profile_image : $this->input->post("old_profileimage", true),
-        "payroll_type"           => $this->input->post("payroll_type"),
-        "working_state_tax"     => $state_tax,
-        "working_city_tax"     => $city_tax,
-        "working_county_tax"     => $county_tax,
-        "working_other_tax"     => $other_working_tax,
-        "living_state_tax"     => $living_state_tax,
-        "living_city_tax"     => $living_city_tax,
-        "living_county_tax"     => $living_county_tax,
-        "living_other_tax"     => $other_living_tax,
-    ];
-
-    $result = $this->Hrm_model->update_employee($id, $postData);
-    if ($result) {
-        $response['status'] = 'success';
-        $response['msg']    = 'Employee has been updated successfully';
-    } else {
-        $response['status'] = 'failure';
-        $response['msg']    = 'Failed to update Employee. Please try again.';
-    }
-    echo json_encode($response);
-}
 
 
 
@@ -1574,6 +1589,7 @@ public function update_employee()
                          $content = $this->load->view('hr/timesheet_pdf', $data, true);
                   $this->template->full_admin_html_view($content);   
            }
+
 public function timesheed_inserted_data() {
     $this->auth->check_admin_auth();
     $this->load->model('Web_settings');
@@ -1584,6 +1600,7 @@ public function timesheed_inserted_data() {
     $company_info = $this->CI->Web_settings->retrieve_companysetting_editdata();
   if($type == 'emp_data') {
     $id = $this->input->get('employee');
+
     $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]);
   } else {
     /* return timesheet_info and employee history datas */
@@ -3484,6 +3501,7 @@ public function manage_workinghours()
                 '<i class="fa-solid fa-pen text-warning" style="font-size: 11px;"></i>' : 
                 '<i class="fa-solid fa-check text-success"></i>'
             );
+
             $row = [
                 "id"  => $i,
                 "c_date" => $status . ' ' . $item["c_date"],
@@ -3511,25 +3529,21 @@ public function manage_workinghours()
         echo json_encode($response);
     }
 
-
     public function add_employee_type(){
         $this->load->model('Hrm_model');
         $data = array(
          'employee_type' => $this->input->post('employee_type'),
          'created_by' => $this->session->userdata('user_id')
         );
-        $employee_data = $this->Hrm_model->insertData('employee_type', $data);
+        $this->Hrm_model->insertData('employee_type', $data);
+        $employee_data = $this->Hrm_model->getDatas('employee_type', '*', ['created_by' => $this->session->userdata('user_id')]);
         echo json_encode($employee_data);
     }
 
 
     public function add_payment_type(){
-        $this->load->model('Hrm_model');
-        $data = array(
-         'payroll_type' => $this->input->post('new_payment_type'),
-         'created_by' => $this->session->userdata('user_id')
-        );
-        $payroll_data = $this->Hrm_model->insertData('payroll_type', $data);
+        $this->load->model(model: 'Hrm_model');
+        $payroll_data = $this->Hrm_model->add_payment_type($this->input->post('new_payment_type'));
         echo json_encode($payroll_data);
     }
 

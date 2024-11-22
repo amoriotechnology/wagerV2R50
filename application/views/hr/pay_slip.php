@@ -44,9 +44,7 @@
       class='btn btn-primary'> <i class="fa fa-download"></i><?php echo display(
       "Download"
       ); ?></a>
-      <a id="mange" style="color:white;background-color:#38469f;"
-        href="<?php echo base_url(); ?>/Chrm/pay_slip_list"
-        class='btn btn-primary'><?php echo "Manage Pay Slip"; ?></a>
+     
     </p>
     <div id="content" style="margin-left:12px;padding:10px;">
       <div class="row" style="padding:0px;width:780px;">
@@ -602,8 +600,8 @@ echo "00:00";
          }
          function third(){
          setTimeout( function(){
-             window.location='<?php  echo base_url();   ?>'+'Chrm/pay_slip_list';
-             window.close();
+             window.location='<?php  echo base_url();   ?>'+'Chrm/pay_slip_list?id='+<?php  echo $_GET['id'] ?>+'&admin_id='+<?php echo $_GET['admin_id']; ?>;
+            window.close();
          }, 3000 );
         }
          first(second,third);

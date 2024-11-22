@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/toastr.min.css')?>" />
+<script src="<?php echo base_url('assets/js/toastr.min.js')?>" ></script>
 <?php error_reporting(1);?>
 <style>
     .toast-success {
@@ -54,9 +56,9 @@
         
     <section class="content">
         <div class="panel panel-bd lobidrag">
-            <div class="panel-heading" >
+            <div class="panel-heading" style='height:50px;'>
                 <div class="panel">
-                    <div class="panel-body">
+                    <div class="panel-body" style='padding:0px !important'>
                         <div class="col-sm-12">
                         <?php 
                             foreach ($this->session->userdata('admin_data') as $test) {
@@ -77,7 +79,7 @@
 
                         <a class="btn btnclr dropdown-toggle"  aria-hidden="true" data-toggle="modal" data-target="#designation_modal" ><b class="fa fa-legal"> </b>&nbsp;<?= ('Form instructions') ?></a>
 
-                            <a class="btn btnclr dropdown-toggle" aria-hidden="true" href="<?= base_url() . 'Chrm/new_employee?id=' . $_id . '&admin_id=' . $admin_id; ?>">
+                            <a class="btn btnclr dropdown-toggle" aria-hidden="true" href="<?= base_url() . 'Chrm/new_employee?id=' . $id . '&admin_id=' . $admin_id; ?>">
                                 <b class="fa fa-file-alt"></b>&nbsp;<?= 'New Employee Form'; ?>
                             </a>
 
