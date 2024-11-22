@@ -1,6 +1,5 @@
 <?php 
 if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
-
     <!------ add new designation_modal -->
 <div class="modal fade" id="designation_modal" role="dialog">
     <div class="modal-dialog" role="document" style="margin-right: 900px;">
@@ -9,7 +8,6 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
                 <a href="#" class="close" data-dismiss="modal">&times;</a>
                 <h4 class="modal-title"><?= ('Form instructions') ?></h4>
             </div>
-
             <div class="modal-body">
             <div id="customeMessage" class="alert hide"></div>
                 <form id="add_designation" method="post">
@@ -343,9 +341,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
 <?php } if(in_array(BOOTSTRAP_MODALS['bank_info_modal'], $bootstrap_modals)) { ?>
-
 <div class="modal fade" id="add_bank_info">
    <div class="modal-dialog">
       <div class="modal-content" style="text-align:center;" >
@@ -358,7 +354,6 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
             <div id="customeMessage" class="alert hide"></div>
             <form id="add_bank"  method="post">
                <div class="panel-body">
-
                <div class="form-group row">
                      <label for="bank_name" class="col-sm-4 col-form-label"><?php echo display('bank_name') ?> <i class="text-danger">*</i></label>
                      <div class="col-sm-6">
@@ -586,9 +581,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
       </div>
    </div>
 </div>
-
 <?php } if(in_array(BOOTSTRAP_MODALS['designation_modal'], $bootstrap_modals)) { ?>
-
     <!------ add new designation_modal -->  
 <div class="modal fade" id="designation_modal" role="dialog">
    <div class="modal-dialog" role="document">
@@ -622,9 +615,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 <?php } if(in_array(BOOTSTRAP_MODALS['city_tax_modal'], $bootstrap_modals)) { ?>
-
     <!------ add new city tax -->
 <div class="modal fade" id="city_tax" role="dialog">
    <div class="modal-dialog" role="document">
@@ -657,9 +648,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 <?php } if(in_array(BOOTSTRAP_MODALS['payroll_type_modal'], $bootstrap_modals)) { ?>
-
     <!------ add new payroll Type -->
 <div class="modal fade" id="proll_type" role="dialog">
    <div class="modal-dialog" role="document">
@@ -692,9 +681,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 <?php } if(in_array(BOOTSTRAP_MODALS['emp_type_modal'], $bootstrap_modals)) { ?>
-
 <!------ add new Payment Type -->  
 <div class="modal fade" id="employees_type" role="dialog">
    <div class="modal-dialog" role="document">
@@ -708,7 +695,6 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
             <form id="add_employee_type" method="post">
                <div class="panel-body">
                <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
-
                   <div class="form-group row">
                      <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">New Employee Type <i class="text-danger">*</i></label>
                      <div class="col-sm-6">
@@ -728,9 +714,7 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
    <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-
 <?php } if(in_array(BOOTSTRAP_MODALS['pay_type_modal'], $bootstrap_modals)) { ?>
-
     <!------ add new Payment Type -->  
 <div class="modal fade" id="payment_type" role="dialog">
    <div class="modal-dialog" role="document">
@@ -764,12 +748,10 @@ if(in_array(BOOTSTRAP_MODALS['new_emp_form'], $bootstrap_modals)) { ?>
 </div>
 <!-- /.modal -->
 
-
-<<<<<<< HEAD
-=======
 <?php
 }
 if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
+
 
 
 <!-- Add States -->
@@ -791,10 +773,8 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
                   <label for="customer_name" class="col-sm-3 col-form-label">State Name<i class="text-danger">*</i></label>
                   <div class="col-sm-6">
                      <input class="form-control" name ="state_name" id="" type="text" placeholder="State Name"  required="" tabindex="1">
-
                      <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
                      <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-
                   </div>
                </div>
             </div>
@@ -808,9 +788,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
    </div>
 </div>
 
->>>>>>> 87c45f7a0514557e2320c2e302684381bfb82d59
 <?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modals)){ ?>
- 
  <!-- Add New State Tax  -->
 <div class="modal fade modal-success" id="add_state_tax" role="dialog">
    <div class="modal-dialog" role="document">
@@ -839,10 +817,8 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
                   <label for="customer_name" class="col-sm-3 col-form-label">Tax Name<i class="text-danger">*</i></label>
                   <div class="col-sm-6">
                      <input class="form-control" name ="state_tax_name" id="" type="text" placeholder="State Tax Name"  required="" tabindex="1">
-
                      <input type ="hidden"  id="admin_company_id" value="<?php echo $_GET['id'];  ?>" name="admin_company_id" />
                      <input type ="hidden" id="adminId" value="<?php echo $_GET['admin_id'];  ?>" name="adminId" />
-
                   </div>
                </div>
             </div>
@@ -855,9 +831,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
       </div>
    </div>
 </div>
-
 <?php } if(in_array(BOOTSTRAP_MODALS['add_state_tax'],$bootstrap_modals)){ ?>
-
 <!-- Add New City -->
 <div class="modal fade modal-success" id="add_city_info" role="dialog">
    <div class="modal-dialog" role="document">
@@ -889,11 +863,8 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
       </div>
    </div>
 </div>
-
 <?php } if(in_array(BOOTSTRAP_MODALS['add_city_tax'],$bootstrap_modals)){ ?>
-
 <!-- Add New City Tax -->
-
 <div class="modal fade modal-success" id="add_city_tax" role="dialog">
    <div class="modal-dialog" role="document">
       <div class="modal-content" style="text-align:center;">
@@ -935,9 +906,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
       </div>
    </div>
 </div>
-
 <?php } if(in_array(BOOTSTRAP_MODALS['add_county_info'],$bootstrap_modals)){ ?>
-
 <!-- Add County -->
 <div class="modal fade modal-success" id="add_county_info" role="dialog">
    <div class="modal-dialog" role="document">
@@ -969,9 +938,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
       </div>
    </div>
 </div>
-
 <?php } if(in_array(BOOTSTRAP_MODALS['add_county_tax'],$bootstrap_modals)){ ?>
-
 <!-- Add New County Tax -->
 <div class="modal fade modal-success" id="add_county_tax" role="dialog">
    <div class="modal-dialog" role="document">
@@ -1014,9 +981,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
       </div>
    </div>
 </div>
-
 <?php } if(in_array(BOOTSTRAP_MODALS['daily_break'],$bootstrap_modals)){ ?>
-
 <div class="modal fade" id="dailybreak_add" role="dialog">
 <div class="modal-dialog" role="document">
     <div class="modal-content" style="margin-top: 190px;text-align:center;">
@@ -1032,7 +997,6 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
                     <div class="form-group row">
                         <label for="customer_name" class="col-sm-3 col-form-label" style="width: auto;">Daily Break<i class="text-danger">*</i></label>
                         <div class="col-sm-6">
-                         
                             <input type="text"   class="decimal form-control" name ="dbreak" id="dbreak" placeholder="Integer and decimal only"/>
                         </div>
                     </div>
@@ -1046,6 +1010,7 @@ if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){ ?>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
 <?php  } if(in_array(BOOTSTRAP_MODALS['add_states'],$bootstrap_modals)){   ?>
 
 <!-- Add States -->
@@ -1103,9 +1068,7 @@ var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
                 url: '<?php echo base_url(); ?>Cinvoice/add_city_tax',
                 success: function (data1, statut) {
                     var $datalist = $('#magic_city_tax');
-                    // Clear existing options
                     $datalist.empty();
-                    // Add new options
                     for (var i = 0; i < data1.length; i++) {
                         var option = $('<option/>').attr('value', data1[i].city_tax).text(data1[i].city_tax);
                         $datalist.append(option);
@@ -1143,7 +1106,7 @@ var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
                  for(var i = 0; i < data2.length; i++) {
                     console.log(data2);
            var option = $('<option/>').attr('value', data2[i].proll_type).text(data2[i].proll_type);
-           $select.append(option); // append new options
+           $select.append(option); 
        }
          $('#new_payroll_type').val('');
          $("#bodyModal1").html("Payroll Added Successfully");
@@ -1181,7 +1144,7 @@ var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
                console.log(data1, statut);
                for(var i = 0; i < data1.length; i++) {
                   var option = $('<option/>').attr('value', data1[i].payment_type).text(data1[i].payment_type);
-                  $select.append(option); // append new options
+                  $select.append(option); 
                }
          $('#new_payment_type').val('');
          $("#bodyModal1").html("Payment Added Successfully");
@@ -1377,3 +1340,4 @@ var csrfName = '<?php echo $this->security->get_csrf_token_name();?>';
 
 </script>
 
+>>>>>>> 26bfeda8f799c9d1c6a8df8b0d8e47bfacd0d627

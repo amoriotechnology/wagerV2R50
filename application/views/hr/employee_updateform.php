@@ -957,7 +957,7 @@
       emp_tax_detail: "required",  
    },
    messages: {
-      first_name: "Frist Name is required",
+      first_name: "First Name is required",
       last_name: "Last Name is required",
       designation: "Designation is required",
       phone: "Phone is required",
