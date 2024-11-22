@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/toastr.min.css" />
+<script src="<?php echo base_url()?>assets/js/toastr.min.js" ></script>
 
 <?php  error_reporting(1); ?>
 <!-- Manage Invoice Start -->
@@ -52,22 +54,18 @@ tr.noBorder td {
    <section class="content">
       <!-- Alert Message -->
       <?php
-         $message = $this->session->userdata('message');
-         if (isset($message)) { ?>
-      <div class="alert alert-info alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?= $message ?>                    
-      </div>
-
-      <?php
-         $this->session->unset_userdata('message'); }
-         $error_message = $this->session->userdata('error_message');
-         if (isset($error_message)) { ?>
-      <div class="alert alert-danger alert-dismissable" style="color:white;background-color:#38469f;">
-         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-         <?= $error_message ?>                    
-      </div>
-      <?php $this->session->unset_userdata('error_message'); } ?>
+      $message = $this->session->userdata('message');
+      $error_message = $this->session->userdata('error_message');
+      if (isset($message) || isset($error_message)) { ?>
+          <script type="text/javascript">
+              <?php if (isset($message)) { ?>
+                  toastr.success("<?php echo $message; ?>", "Success", { closeButton: false });
+              <?php $this->session->unset_userdata('message'); } ?>
+              <?php if (isset($error_message)) { ?>
+                  toastr.error("<?php echo $message; ?>", "Error", { closeButton: false });
+              <?php $this->session->unset_userdata('error_message'); } ?>
+          </script>
+      <?php } ?>
       <!-- date between search -->
 
         <div class="row">
@@ -104,10 +102,9 @@ tr.noBorder td {
                                     </div>
 
                                     <div class="col-md-3">
-                                        <div class="form-group mt-4">
-                                            <br>
-                                            <button type="submit" name="submit" class="btn btn-primary mt-4">Save</button>
-                                        </div>
+                                        <input type="hidden" name="url_id" value="<?= $_GET['id']; ?>">
+                                        <input type="hidden" name="url_admin_id" value="<?= $_GET['admin_id']; ?>">
+                                        <button type="submit" name="submit" class="btn btn-primary mt-4">Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -160,27 +157,3 @@ tr.noBorder td {
             </div>
          </div>
       </div>
-
-
-<script type="text/javascript">
-   var csrfName = "<?= $this->security->get_csrf_token_name();?>";
-   var csrfHash = "<?= $this->security->get_csrf_hash();?>";
-   
-   $(document).ready(function(){
-     
-    $(".federal_tax").click(function(){
-       var tax = $(this).closest('tr').find('#federal_tax').val();
-       $.ajax({
-           type: "POST",
-           url: '<?= base_url(); ?>Chrm/add_taxes_detail',
-           data: {<?= $this->security->get_csrf_token_name();?>: csrfHash,tax:tax},
-           success:function(data) {    
-            location.reload(); 
-           },
-           error: function (){ }
-       })
-     });
-
-   });
-
-</script>

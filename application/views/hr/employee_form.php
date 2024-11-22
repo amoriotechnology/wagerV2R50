@@ -1,12 +1,10 @@
 
 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/daterangepicker.css'); ?>" />
-<<<<<<< HEAD
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/toastr.min.css')?>" />
 <script src="<?php echo base_url('assets/js/toastr.min.js')?>" ></script>
 
-=======
->>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
+
 <div class="content-wrapper">
    <section class="content-header">
       <div class="header-icon">
@@ -587,10 +585,8 @@
                         <div class="col-sm-6">
                            <p>
                               <label for="attachment">
-                              <a class="btnclr btn   text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
+                              <a class="btnclr btn text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
                               </label>
-                                 <!-- <p id="msg"></p> -->
-                                 <!-- <input type="hidden" name="sub_menu" value="ocean_export_tracking"> -->
                               <input type="file" name="files[]" class="upload" id="attachment" style="visibility: hidden; position: absolute;" multiple/>
                            </p>
                            <p id="files-area">
@@ -600,27 +596,6 @@
                            </p>
                         </div>
                   </div>
-                 <!--  <div class="form-group row" id="employee_type">
-                     <label for="employee_type" class="col-sm-4 col-form-label">
-                     Attachments <i class="text-danger">*</i>
-                     </label>
-                     <div class="col-sm-8">
-                        <input type="file" name="files[]" class="form-control" placeholder="<?php echo display('picture') ?>" id="image" multiple>
-                        <input type="hidden" name="old_image" value="">
-                        <br>
-                        <?php
-                           echo '<div class="file-container">';
-                              foreach ($employee_data as $attachment) {
-                                  $Final_files = explode(",", $attachment['files']);
-                                  foreach ($Final_files as $file) {
-                                      $encoded_file = rawurlencode(trim($file));
-                                      echo '<p><a href="' . base_url() . 'uploads/' . $encoded_file . '" target="_blank">' . trim($file) . '</a></p>';
-                                  } 
-                              }
-                              echo '</div>';
-                           ?>
-                     </div>
-                  </div> -->
 
                   <div class="form-group row"  id="payrolltype">
                      <label for="profile_image" class="col-sm-4 col-form-label">
@@ -747,35 +722,12 @@
                </div>
                <!-- Right Side -->
                <div class="col-sm-6">
-                  <!--<div class="form-group row">-->
-                  <!--   <label for="employee_type" class="col-sm-4 col-form-div">-->
-                  <!--   Employee Type <i class="text-danger">*</i>-->
-                  <!--   </label>-->
-                  <!--   <div class="col-sm-7">-->
-                  <!--      <select  name="employee_type" id="emp_type" class="required form-control" required>-->
-                  <!--         <option value="">Select Employee Type</option>-->
-                  <!--         <option value="Full Time (W4)">Full Time (W4)</option>-->
-                           <!-- <option value="Contractor (W9)">Contractor (W9)</option> -->
-                  <!--         <option value="Part time">Part time</option>-->
-                  <!--         <?php //foreach($emp_data as $emp_type){ ?>-->
-                  <!--         <option value="<?php  //echo $emp_type['employee_type'] ;?>"><?php  //echo $emp_type['employee_type'] ;?></option>-->
-                  <!--         <?php  //} ?>-->
-                  <!--      </select>-->
-                  <!--   </div>-->
-                  <!--   <div class="col-sm-1">-->
-                  <!--      <a  class="btnclr client-add-btn btn" aria-hidden="true"   data-toggle="modal" data-target="#employees_type" ><i class="fa fa-plus"></i></a>-->
-                  <!--   </div>-->
-                  <!--</div>-->
                   <div class="form-group row" id="payment_from">
                      <label for="city" class="col-sm-4 col-form-div"><?php echo  ('Sales Commission') ?></label>
                      <div class="col-sm-8">
                         <input name="sc" class="form-control" type="text" placeholder="<?php echo 'sales commission percentage' ?>">
                      </div>
-
-
                   </div>
-
-
                   <div class="form-group row" id="payment_from">
                         <label for="choice" class="col-sm-4 col-form-div">Commission Withholding</label>
                      <div class="col-sm-8">
@@ -1010,9 +962,6 @@
                               <label for="stateTax2Dropdown">Other Work Tax<i class="text-danger">*</i></label>
                               <input list="magic_state_tax_2" name="other_working_tax" id="stateTax2Dropdown" class="form-control">
                               <datalist id="magic_state_tax_2">
-                                 <!--<?php //foreach ($state_tx as $st) { ?>-->
-                                 <!--    <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
-                                 <!--<?php // } ?>-->
                                  <option value="Not Applicable">Not Applicable</option>
                               </datalist>
                            </div>
@@ -1055,9 +1004,6 @@
                               <label for="livingOtherTax">Other living Tax<i class="text-danger">*</i></label>
                               <input list="magic_living_other_tax" name="other_living_tax" id="livingOtherTax" class="form-control">
                               <datalist id="magic_living_other_tax">
-                                 <!--<?php //foreach ($state_tx as $st) { ?>-->
-                                 <!--    <option value="<?php //echo $st['state']; ?>"><?php //echo $st['state']; ?></option>-->
-                                 <!--<?php //} ?>-->
                                  <option value="Not Applicable">Not Applicable</option>
                               </datalist>
                            </div>
@@ -1078,25 +1024,22 @@
                         <button type="button" class="btnclr btn" id="showPopupsalespartner">Add Withholding Tax</button>
                      </div>
                   </div>
+
                   <div class="form-group row">
                      <label for="ETA" class="col-sm-4 col-form-label"><?php echo display('Attachments ') ?></label>
                         <div class="col-sm-6">
-                            <input type="file" name="files[]" class="form-control" multiple/>
-                           <!--<p>-->
-                           <!--   <label for="attachment">-->
-                           <!--   <a class="btnclr btn   text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>-->
-                           <!--   </label>-->
-                                 <!-- <p id="msg"></p> -->
-                                 <!-- <input type="hidden" name="sub_menu" value="ocean_export_tracking"> -->
-                           <!--   <input type="file" name="files[]" class="upload" id="attachment" style="visibility: hidden; position: absolute;" multiple/>-->
-                           <!--</p>-->
-                           <!--<p id="files-area">-->
-                           <!--   <span id="filesList">-->
-                           <!--   <span id="files-names"></span>-->
-                           <!--      </span>-->
-                           <!--</p>-->
+                           <p>
+                              <label for="attachment">
+                              <a class="btnclr btn text-light" role="button" aria-disabled="false"><i class="fa fa-upload"></i>&nbsp; Choose Files</a>
+                              </label>
+                              <input type="file" name="files[]" class="upload" style="visibility: hidden; position: absolute;" multiple/>
+                           </p>
+                           <p id="files-area">
+                              <span id="filesList"><span id="files-names"></span></span>
+                           </p>
                         </div>
                   </div>
+
                   <div class="form-group row"  id="payrolltype">
                      <label for="profile_image" class="col-sm-4 col-form-label">
                      Profile Image
@@ -1118,11 +1061,9 @@
             <?php echo form_close() ?>
          </div>
       </div>
-      <!-- </div> -->
    </div>
    </section>
 </div>
-
 
 <div class="modal fade" id="myModal1" role="dialog" >
    <div class="modal-dialog">
@@ -1178,9 +1119,8 @@
    });
    
    
-      const dt = new DataTransfer(); // Permet de manipuler les fichiers de l'input file
+      const dt = new DataTransfer();
       $("#attachment").on('change', function(e){
-          // alert('hi');
           for(var i = 0; i < this.files.length; i++){
               let fileBloc = $('<span/>', {class: 'file-block'}),
                    fileName = $('<span/>', {class: 'name', text: this.files.item(i).name});
@@ -1188,27 +1128,20 @@
                   .append(fileName);
               $("#filesList > #files-names").append(fileBloc);
           };
-          // Ajout des fichiers dans l'objet DataTransfer
           for (let file of this.files) {
               dt.items.add(file);
           }
-          // Mise à jour des fichiers de l'input file après ajout
           this.files = dt.files;
       
-          // EventListener pour le bouton de suppression créé
           $('span.file-delete').click(function(){
               let name = $(this).next('span.name').text();
-              // Supprimer l'affichage du nom de fichier
               $(this).parent().remove();
               for(let i = 0; i < dt.items.length; i++){
-                  // Correspondance du fichier et du nom
                   if(name === dt.items[i].getAsFile().name){
-                      // Suppression du fichier dans l'objet DataTransfer
                       dt.items.remove(i);
                       continue;
                   }
               }
-              // Mise à jour des fichiers de l'input file après suppression
               document.getElementById('attachment').files = dt.files;
           });
       });
@@ -1286,11 +1219,9 @@
    
       // Allow Numbers
       function validateInput(input) {
-         // Remove any non-numeric and non-decimal characters from the input value
          input.value = input.value.replace(/[^0-9.]/g, '');
       }
    
-      // Allow Numbers Remove Decimal
       function exitnumbers(input, maxLength) {
          input.value = input.value.replace(/\D/g, '');
          if (input.value.length > maxLength) {
@@ -1354,7 +1285,6 @@
 
 <style>
    #files-area{
-      /*  width: 30%;*/
       margin: 0 auto;
    }
    .file-block{
@@ -1393,9 +1323,9 @@
       margin-bottom: 15px;
    }
    .fg label {
-      width: 40%; /* Adjust the width as needed */
+      width: 40%;
    }
    .fg input {
-      width: 60%; /* Adjust the width as needed */
+      width: 60%;
    }
 </style>

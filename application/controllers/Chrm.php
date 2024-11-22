@@ -1170,12 +1170,15 @@ public function add_taxname_data(){
 
 
     public function payslip_setting() {
+
         $data['title'] = display('payslip');
+
         $this->CI->load->model('Web_settings');
         $this->CI->load->model('Invoice_content');
        $setting_detail = $this->CI->Web_settings->retrieve_setting_editdata();
        $dataw = $this->CI->Invoice_content->get_data_payslip();
         $datacontent = $this->CI->Invoice_content->retrieve_data();
+
        $data= array(
         'header'=> (!empty($dataw[0]['header']) ? $dataw[0]['header'] : '') ,
         'logo'=> (!empty($dataw[0]['logo']) ? $dataw[0]['logo'] : '') ,
@@ -1330,6 +1333,11 @@ public function update_employee()
             $response['status'] = 'failure';
             $response['msg']    = validation_errors();
         } else {
+
+
+            $form_type = $this->input->post('form_type');
+
+
             if (isset($_FILES["files"]) && is_array($_FILES["files"]["name"])) {
                 $no_files = count($_FILES["files"]["name"]);
                 $images = [];
@@ -1448,6 +1456,13 @@ public function update_employee()
                 "emergencycontactnum"    => $this->input->post("emergencycontactnum",true),
                 "profile_image"          => !empty($profile_image) ? $profile_image : $this->input->post("old_profileimage", true),
                 "payroll_type"           => $this->input->post("payroll_type"),
+
+                "account_number"         => $this->input->post("account_number"),
+                "employee_type"         => $this->input->post("employee_type"),
+                "bank_name"             => $this->input->post("bank_name"),
+
+
+
                 "working_state_tax"     => $state_tax,
                 "working_city_tax"     => $city_tax,
                 "working_county_tax"     => $county_tax,
@@ -1590,6 +1605,7 @@ public function update_employee()
                   $this->template->full_admin_html_view($content);   
            }
 
+
 public function timesheed_inserted_data() {
     $this->auth->check_admin_auth();
     $this->load->model('Web_settings');
@@ -1600,8 +1616,7 @@ public function timesheed_inserted_data() {
     $company_info = $this->CI->Web_settings->retrieve_companysetting_editdata();
   if($type == 'emp_data') {
     $id = $this->input->get('employee');
-
-    $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]);
+    $emp_data = $this->Hrm_model->getDatas('employee_history', '*', ['id' => $id]); 
   } else {
     /* return timesheet_info and employee history datas */
     $id = $this->input->get('timesheet_id');
@@ -3400,9 +3415,13 @@ public function manage_workinghours()
       $uid = $this->session->userdata('user_id');
       $start_week = $this->input->post('start_week');
       $end_week = $this->input->post('end_week');
+
+      $url_id = $this->input->post('url_id');
+      $url_admin_id = $this->input->post('url_admin_id');
+
       $CI->Hrm_model->updateData('web_setting', ['start_week' => $start_week, 'end_week' => $end_week], ['create_by' => $uid]);
       $this->session->set_flashdata("message", display("successfully_updated"));
-      redirect(base_url("Chrm/week_setting"));
+      redirect(base_url("Chrm/week_setting?id=".$url_id.'&admin_id='.$url_admin_id));
     }
     // Get Quater Function - Madhu
     public function getQuarter($month) 

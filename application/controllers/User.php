@@ -355,26 +355,31 @@ public function company_insert_branch(){
 }
 public function company_update_branch($company_id){
         $uid=$_SESSION['user_id'];
-     $id=$company_id;
+        $id=$company_id;
+
         $url=$this->input->post('url',TRUE);
         $url_st=$this->input->post('url_st',TRUE);
         $url_lctx=$this->input->post('url_lctx',TRUE);
         $url_sstx=$this->input->post('url_sstx',TRUE);
-   $c_id=$this->input->post('company_id',TRUE);
-   $this->db->where('company_id',$c_id,TRUE);
-   $this->db->delete('company_information');
-   $this->db->where('company_id',$c_id,TRUE);
-   $this->db->delete('url');
-   $this->db->where('company_id',$c_id,TRUE);
-   $this->db->delete('url_st');
-   $this->db->where('company_id',$c_id,TRUE);
-   $this->db->delete('url_lctx');
-   $this->db->where('company_id',$c_id,TRUE);
-   $this->db->delete('url_sstx');
+        $c_id=$this->input->post('company_id',TRUE);
+
+        $this->db->where('company_id',$c_id,TRUE);
+        $this->db->delete('company_information');
+        $this->db->where('company_id',$c_id,TRUE);
+        $this->db->delete('url');
+        $this->db->where('company_id',$c_id,TRUE);
+        $this->db->delete('url_st');
+        $this->db->where('company_id',$c_id,TRUE);
+        $this->db->delete('url_lctx');
+        $this->db->where('company_id',$c_id,TRUE);
+        $this->db->delete('url_sstx');
+
     $data = array(
         'company_id'   => $id,
         'company_name'    =>$this->input->post('company_name',true),
         'email' => $this->input->post('email',true),
+        'c_city' => $this->input->post('c_city',true),
+        'c_state' => $this->input->post('c_state',true),
         'address'      => $this->input->post('address',true),
         'mobile'   => $this->input->post('mobile',true),
         'website'  => $this->input->post('website',true),
@@ -389,11 +394,14 @@ public function company_update_branch($company_id){
         'create_by'     => $uid,
         'status'     => 0
     );
-    $insert=  $this->db->insert('company_information',$data);  // echo $this->db->last_query();
+
+    
+    $insert=  $this->db->insert('company_information',$data); 
     $insert_id = $this->db->insert_id();
     $user_name=$this->input->post('user_name',TRUE);
     $password=$this->input->post('password',TRUE);
     $pin_number=$this->input->post('pin_number',TRUE);
+
     if($url){
     for ($i = 0, $n = count($url); $i < $n; $i++) {
         $url1 = $url[$i];
@@ -402,12 +410,12 @@ public function company_update_branch($company_id){
         $pin_number1 = $pin_number[$i];
         $data = array(
             'company_id'   => $id,
-        'url'         =>$url1,
-        'user_name'         =>$user_name1,
-        'password'         =>$password1,
-        'create_by'     => $uid,
-        'company_id'  =>$insert_id,
-        'pin_number'         =>$pin_number1
+            'url'         =>$url1,
+            'user_name'         =>$user_name1,
+            'password'         =>$password1,
+            'create_by'     => $uid,
+            'company_id'  =>$insert_id,
+            'pin_number'         =>$pin_number1
         );
         $this->db->insert('url', $data);
     }
@@ -432,7 +440,6 @@ public function company_update_branch($company_id){
             'pin_number_st'         =>$pin_number_st1
             );
             $this->db->insert('url_st', $data);
-
         }}
         
         $user_name_lctx=$this->input->post('user_name_lctx',TRUE);
@@ -477,13 +484,13 @@ public function company_update_branch($company_id){
             'pin_number_sstx'         =>$pin_number_sstx1
             );
             $this->db->insert('url_sstx', $data);
-// echo $this->db->last_query(); die();
         }
     }
-     
-    if($insert)
-    {
-       redirect('Company_setup/manage_company');
+    
+    $url_id = $this->input->post('url_id');
+    $url_admin_id=$this->input->post('url_admin_id');
+    if($insert) {
+       redirect('Company_setup/manage_company?id='.$url_id.'&admin_id='.$url_admin_id);
     }
 }
 
