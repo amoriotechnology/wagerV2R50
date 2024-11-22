@@ -1,9 +1,12 @@
 
 <input type="hidden" name="<?php echo $this->security->get_csrf_token_name();?>" value="<?php echo $this->security->get_csrf_hash();?>">
 <link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/daterangepicker.css'); ?>" />
+<<<<<<< HEAD
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/toastr.min.css')?>" />
 <script src="<?php echo base_url('assets/js/toastr.min.js')?>" ></script>
 
+=======
+>>>>>>> 642a0616e69a0ee4347edf03462b0643a673cf67
 <div class="content-wrapper">
    <section class="content-header">
       <div class="header-icon">

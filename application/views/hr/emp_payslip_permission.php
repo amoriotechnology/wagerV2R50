@@ -1,193 +1,4 @@
-<link rel="stylesheet" type="text/css" href="<?= base_url()?>my-assets/css/css.css" />
-<input type="hidden" name="<?= $this->security->get_csrf_token_name();?>" value="<?= $this->security->get_csrf_hash();?>">
-<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" integrity="sha512-CryKbMe7sjSCDPl18jtJI5DR5jtkUWxPXWaLCst6QjH8wxDexfRJic2WRmRXmstr2Y8SxDDWuBO6CQC6IE4KTA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
-<!-- <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script> -->
-<link href="<?= base_url() ?>assets/css/daterangepicker.css" rel="stylesheet">
-<link href="<?= base_url() ?>assets/css/style.css" rel="stylesheet">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-
-<style>
-.switch-input[disabled] + .switch-label {
-    pointer-events: none;
-    background-color: #f2f2f2; /* Change background color to indicate disabled */
-    color: #999; /* Change text color to indicate disabled */
-}
-
-.switch-input[disabled] + .switch-label::after {
-    border-color: #999; /* Change border color to indicate disabled */
-}
-.switch {
-  margin-top: 5px;
-  position: relative;
-  display: inline-block;
-  vertical-align: top;
-  width: 56px;
-  height: 20px;
-  padding: 3px;
-  background-color: white;
-  border-radius: 18px;
-  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  background-image: -webkit-linear-gradient(top, #EEEEEE, white 25px);
-  background-image: -moz-linear-gradient(top, #EEEEEE, white 25px);
-  background-image: -o-linear-gradient(top, #EEEEEE, white 25px);
-  background-image: linear-gradient(to bottom, #EEEEEE, white 25px);
-}
-.switch-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-}
-.switch-label {
-  position: relative;
-  display: block;
-  height: inherit;
-  font-size: 10px;
-  text-transform: uppercase;
-  background: #ECEEEF;
-  border-radius: inherit;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
-  -webkit-transition: 0.15s ease-out;
-  -moz-transition: 0.15s ease-out;
-  -o-transition: 0.15s ease-out;
-  transition: 0.15s ease-out;
-  -webkit-transition-property: opacity background;
-  -moz-transition-property: opacity background;
-  -o-transition-property: opacity background;
-  transition-property: opacity background;
-}
-.switch-label:before, .switch-label:after {
-  position: absolute;
-  top: 50%;
-  margin-top: -.5em;
-  line-height: 1;
-  -webkit-transition: inherit;
-  -moz-transition: inherit;
-  -o-transition: inherit;
-  transition: inherit;
-}
-.switch-label:before {
-  content: attr(data-off);
-  right: 11px;
-  color: #aaa;
-  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
-}
-.switch-label:after {
-  content: attr(data-on);
-  left: 11px;
-  color: white;
-  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-}
-.switch-input:checked ~ .switch-label {
-  background: #38469F;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
-}
-.switch-input:checked ~ .switch-label:before {
-  opacity: 0;
-}
-.switch-input:checked ~ .switch-label:after {
-  opacity: 1;
-}
-.switch-handle {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 18px;
-  height: 18px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
-  background-image: -webkit-linear-gradient(top, white 40%, #F0F0F0);
-  background-image: -moz-linear-gradient(top, white 40%, #F0F0F0);
-  background-image: -o-linear-gradient(top, white 40%, #F0F0F0);
-  background-image: linear-gradient(to bottom, white 40%, #F0F0F0);
-  -webkit-transition: left 0.15s ease-out;
-  -moz-transition: left 0.15s ease-out;
-  -o-transition: left 0.15s ease-out;
-  transition: left 0.15s ease-out;
-}
-.switch-handle:before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -6px 0 0 -6px;
-  width: 12px;
-  height: 12px;
-  background: #F9F9F9;
-  border-radius: 6px;
-  box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
-  background-image: -webkit-linear-gradient(top, #EEEEEE, white);
-  background-image: -moz-linear-gradient(top, #EEEEEE, white);
-  background-image: -o-linear-gradient(top, #EEEEEE, white);
-  background-image: linear-gradient(to bottom, #EEEEEE, white);
-}
-.switch-input:checked ~ .switch-handle {
-  left: 85px;
-  box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
-}
-.switch-green > .switch-input:checked ~ .switch-label {
-  background: #4FB845;
-}
- .btnclr ,th{
-   background-color:<?= $setting_detail[0]['button_color']; ?>;
-   color: white;
-   }
-.table {
-    width: 100%; /* Set the table width */
-    table-layout: fixed; /* Use a fixed layout */
-}
-
-.table th,
-.table td {
-    width: auto; /* Or set the width as per your requirement */
-    /* Additional styling properties */
-    border: 1px solid #ccc;
-    padding: 8px;
-    /* Other styling properties */
-}
-.table input[type="text"],input[type="time"] {
-    text-align:center;
-    background-color: inherit; /* Set your desired background color */
-    /* Additional styling properties */
-    /*border: 1px solid #ccc;*/
-    border-radius: 4px;
-    padding: 8px;
-    /* Other styling properties */
-}
-input {border:0;outline:0;}
-.work_table td {
-    height: 36px;
-}
-.btnclr{
-    background-color:<?= $setting_detail[0]['button_color']; ?>;
-    color: <?= $setting_detail[0]['button_color']; ?>;
-
-}
-th,td{
-    text-align:center;
-}
-.select2-selection{
-    display :none;
-}
-.mt-4 {
-    margin-top: 3rem;
-}
-.m-3 {
-    margin: 2rem;
-}
-</style>
-
+<?php  error_reporting(1); ?>
 <div class="content-wrapper">
     <section class="content-header" style="height:70px;">
         <div class="header-icon"><i class="pe-7s-note2"></i></div>
@@ -212,11 +23,8 @@ th,td{
                     <div class="panel-title">
                         <a style="float:right;color:white;" href="<?php echo base_url('Chrm/manage_timesheet').'?id='.urlencode($_GET['id']).'&admin_id='.urlencode($_GET['admin_id']); ?>" class="btnclr btn  m-b-5 m-r-2"><i class="ti-align-justify"> </i> <?php echo "Manage TimeSheet" ?></a> 
                     </div>
-                </div>
-                <?php // echo form_open('Cquotation/insert_quotation', array('class' => 'form-vertical', 'id' => 'insert_quotation')) ?>
-                <!-- <form id="insert_timesheet"  method="post">   -->                  
+                </div>               
                 <?= form_open_multipart('Chrm/adminApprove?id=' . $_GET['id'],'id="validate"' ) ?>
-
                 <div class="panel-body">
                     <div class="form-group row">
                         <div class="col-sm-6">
@@ -546,11 +354,11 @@ th,td{
                             <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  $get_value * $employee_name[0]['hrate'] ; ?>" />
                     
                         <?php } else { ?>
-                        <input type="hidden" readonly id="above_extra_beforehours" value="<?php   echo $time_sheet_data[0]['total_hours']; ?>" name="above_extra_beforehours" />
+                        <input type="hidden" readonly id="above_extra_beforehours" value="<?php   echo $time_sheet_data[0]['total_hours'] *8; ?>" name="above_extra_beforehours" />
                         <input type="hidden" id="above_extra_rate" name="above_extra_rate" value="<?=  $employee_name[0]['hrate']; ?>" />
-                        <input type="hidden" id="above_extra_sum" name="above_extra_sum" value="<?=  $time_sheet_data[0]['total_hours'] * $employee_name[0]['hrate'] ; ?>" />
-                        <input type="hidden" id="above_this_hours" name="above_this_hours" value="<?= $time_sheet_data[0]['total_hours']; ?>" />
-                        <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  $time_sheet_data[0]['total_hours'] * $employee_name[0]['hrate']; ?>" />
+                        <input type="hidden" id="above_extra_sum" name="above_extra_sum" value="<?=  ($time_sheet_data[0]['total_hours']*8) * $employee_name[0]['hrate'] ; ?>" />
+                        <input type="hidden" id="above_this_hours" name="above_this_hours" value="<?= $time_sheet_data[0]['total_hours'] *8; ?>" />
+                        <input type="hidden" id="above_extra_ytd" name="above_extra_ytd" value="<?=  ($time_sheet_data[0]['total_hours']*8) * $employee_name[0]['hrate']; ?>" />
                         <?php } ?>
                             
                         <?php } elseif ($employee_name[0]['payroll_type'] == 'SalesCommission') { ?>
@@ -597,8 +405,11 @@ th,td{
                         // Optional: Round the total cost
                         $total_cost = round($total_cost, 2);
                         ?>
+
                         <input type="hidden" id="extra_hour" name="extra_hour" value="<?= ($time_sheet_data[0]['total_hours'] > $extratime_info[0]['work_hour']) ? ($get_value) : '0'; ?>" />
+
                         <input type="hidden" id="extra_rate" name="extra_rate" value="<?=  $employee_name[0]['hrate'] * $extratime_info[0]['extra_workamount']; ?>" />
+
                         <input type="hidden" id="extra_thisrate" name="extra_thisrate" value="<?= $total_cost; ?>" />
                         <input type="hidden" id="extra_this_hour" name="extra_this_hour" value="<?php   echo  ($get_value); ?>" />
                         <input type="hidden" id="extra_ytd" name="extra_ytd" value="<?=  $total_cost; ?>"   />
@@ -799,52 +610,6 @@ $(document).ready(function(){
 
 </script>
 
-
-
-<!------ add new Duration-->  
-<div class="modal fade" id="add_admst" role="dialog">
-<div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header" style="color:white;background-color:#38469f;" >
-            <a href="#" class="close" data-dismiss="modal">&times;</a>
-            <h4 class="modal-title"><?= ('Add New Administrator ') ?></h4>
-        </div>
-        
-        <div class="modal-body">
-
-        <div id="customeMessage" class="alert hide"></div>
-        <form id="insert_adm" method="post">
-            <div class="panel-body">
-                <input type ="hidden" name="csrf_test_name" id="" value="<?= $this->security->get_csrf_hash();?>">
-                <div class="form-group row">
-                    <label for="adms_name" class="col-sm-4 col-form-label" ><?= ('Administrator Name') ?> <i class="text-danger">*</i></label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name ="adms_name" id="adms_name" type="text" placeholder="Administrator Name"   required="" tabindex="1">
-                    </div>
-                </div>
-
-                <input type ="hidden" name="csrf_test_name" id="" value="<?= $this->security->get_csrf_hash();?>">
-                <div class="form-group row">
-                    <label for="address" class="col-sm-4 col-form-label" ><?= ('Administrator Address') ?> </label>
-                    <div class="col-sm-6">
-                        <input class="form-control" name ="address" id="address" type="text" placeholder="Administrator Adress"  required="" tabindex="1">
-                    </div>
-                </div>
-            </div>
-            </div>
-
-            <div class="modal-footer">
-                <a href="#" class="btn" style="color:white;background-color:#38469f;" data-dismiss="modal"><?= display('Close') ?> </a>
-                <input type="submit" class="btn" style="color:white;background-color: #38469f;" value=<?= display('Submit') ?>>
-            </div>
-        </form>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
-
 <script>
 var csrfName = '<?= $this->security->get_csrf_token_name();?>';
 var csrfHash = '<?= $this->security->get_csrf_hash();?>';
@@ -879,27 +644,6 @@ var data = {
 var csrfName = '<?= $this->security->get_csrf_token_name();?>';
 var csrfHash = '<?= $this->security->get_csrf_hash();?>';
 
-// $(function() {
-
-// // //
-
-// $('#reportrange').daterangepicker({
-//     startDate: start,
-//     endDate: end,
-//     ranges: {
-//        'Today': [moment(), moment()],
-//        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-//        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-//        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-//        'This Month': [moment().startOf('month'), moment().endOf('month')],
-//        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-//     }
-// }, //cb
-// );
-
-// //cb(start, end);
-
-// });
 
 
 $('body').on('input select change','#reportrange',function(){
@@ -940,9 +684,6 @@ function getTimesheet(start, end) {
         let month = ("0" + (newDate.getMonth() + 1)).slice(-2); 
         let dateString = `${month}/${days}/${newDate.getFullYear()}`;
 
-        // date=date.replace(/ /g,"");
-        // var end=document.getElementById(`finishTime${monStartWeekDays[i]}`).value;
-        // var sum=document.getElementById(`hoursWorked${monStartWeekDays[i]}`).value;
         var day=$('#day_'+i).html();
         //   day=day.replace("/","");
         tbody += $('#tBody').append( `
@@ -1125,14 +866,7 @@ $(document).on('select change'  ,'.start','.dailybreak', function () {
         total_netH += tableHours;
         total_netM += tableMinutes;
     });
-    /*alert('total_net:'+total_netH+'.'+total_netM);
-    // Convert the total back to hours and minutes format
-    var hours = Math.floor(total_net);
-    var minutes = Math.round((total_net % 1) * 100); // Multiply by 100 to get the minutes
-    if (minutes === 100) {
-        hours += 1;
-        minutes = 0;
-    }*/
+   
     var timeConvertion = convertToTime(total_netH,total_netM);
     $('#total_net').val(timeConvertion).trigger('change');
 });
